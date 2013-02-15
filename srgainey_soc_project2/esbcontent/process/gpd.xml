@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<root-container name="conciergeProcess" width="738" height="416">
+  <node name="start" x="240" y="13" width="140" height="40">
+    <edge>
+      <label x="5" y="-10"/>
+    </edge>
+  </node>
+  <node name="extractRequest" x="242" y="79" width="140" height="40">
+    <edge>
+      <label x="5" y="-10"/>
+    </edge>
+  </node>
+  <node name="Tickets Procurement" x="49" y="168" width="132" height="36"/>
+  <node name="Dinner Reservation" x="463" y="168" width="132" height="36"/>
+  <node name="printResults" x="251" y="277" width="132" height="36">
+    <edge>
+      <label x="5" y="-10"/>
+    </edge>
+  </node>
+  <node name="end" x="249" y="338" width="140" height="40"/>
+  <deployment serverName="localhost" serverPort="8080" serverDeployer="/jbpm-console/upload">
+    <classesAndResources/>
+    <filesAndFolders>
+      <element value="/srgainey_soc_project2/esbcontent/process/gpd.xml"/>
+      <element value="/srgainey_soc_project2/esbcontent/process/processdefinition.xml"/>
+      <element value="/srgainey_soc_project2/esbcontent/process/processimage.jpg"/>
+    </filesAndFolders>
+  </deployment>
+</root-container>
