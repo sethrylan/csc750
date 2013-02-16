@@ -1,6 +1,7 @@
 package soc.project3;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,8 @@ import org.slf4j.LoggerFactory;
 import soc.project3.MyWordnetReasoner.ModelType;
 
 import com.hp.hpl.jena.rdf.model.Model;
+
+import static soc.project3.MyWordnetReasoner.*;
 
 @SuppressWarnings({"serial", "unused"})
 public class MyWordnetReasonerTest extends TestCase {
@@ -62,6 +65,14 @@ public class MyWordnetReasonerTest extends TestCase {
 	}};
 	private static Pair<List<String>,List<String>> wordGroupPairD = new Pair<List<String>,List<String>>(wordGroupD1, wordGroupD2);
 
+    private static List<String> wordGroupE1 = new ArrayList<String>() {{
+		add("do");
+	}};
+	private static List<String> wordGroupE2 = new ArrayList<String>() {{
+		add("make");
+	}};
+	private static Pair<List<String>,List<String>> wordGroupPairE = new Pair<List<String>,List<String>>(wordGroupE1, wordGroupE2);
+	
     private static List<String> wordGroupZ1 = new ArrayList<String>() {{
 		add("fungible");
 		add("papistic");
@@ -81,16 +92,19 @@ public class MyWordnetReasonerTest extends TestCase {
     	put(wordGroupC2, Boolean.TRUE);
     	put(wordGroupD1, Boolean.TRUE);
     	put(wordGroupD2, Boolean.TRUE);
+    	put(wordGroupE1, Boolean.TRUE);
+    	put(wordGroupE2, Boolean.TRUE);
     	put(wordGroupZ1, Boolean.FALSE);
     	put(wordGroupZ2, Boolean.FALSE);
     }};
     
-    private static Map<Pair<List<String>, List<String>>, Relation> wordGroupsToRelationMap = new HashMap<Pair<List<String>, List<String>>, Relation>() {{
-    	put(wordGroupPairA, Relation.ENTAILMENT);
-    	put(wordGroupPairB, Relation.MERONYMY);
-    	put(wordGroupPairC, Relation.HYPONYMY);
-    	put(wordGroupPairD, Relation.CAUSE);
-    	put(wordGroupPairZ, Relation.NONE);    	
+    private static Map<Pair<List<String>, List<String>>, List<Relation>> wordGroupsToRelationsMap = new HashMap<Pair<List<String>, List<String>>, List<Relation>>() {{
+    	put(wordGroupPairA, Collections.singletonList(Relation.ENTAILMENT));
+    	put(wordGroupPairB, Collections.singletonList(Relation.MERONYMY));
+    	put(wordGroupPairC, Collections.singletonList(Relation.HYPONYMY));
+    	put(wordGroupPairD, Collections.singletonList(Relation.CAUSE));
+    	put(wordGroupPairE, new ArrayList<Relation>() {{ add(Relation.HYPONYMY); add(Relation.HYPONYMY); }});
+    	put(wordGroupPairZ, Collections.singletonList(Relation.NONE));    	
     }};
     
     private MyWordnetReasoner myReason = new MyWordnetReasoner();
@@ -128,17 +142,17 @@ public class MyWordnetReasonerTest extends TestCase {
     	for(Entry<List<String>, Boolean> entry : wordGroupsToSynsetMap.entrySet()) {
     		Boolean expected = entry.getValue();
     		Boolean synsetsExist = myReason.getSynset(entry.getKey()).size() > 0;
-        	Assert.assertSame(MyWordnetReasoner.asCommaList(entry.getKey()) + " should have at least one synset.", expected, synsetsExist);
+        	Assert.assertSame(asCommaList(entry.getKey()) + " should have at least one synset.", expected, synsetsExist);
     	}
     }
 
     @Test
     public void testGetRelation() {
-    	for(Entry<Pair<List<String>, List<String>>, Relation> entry : wordGroupsToRelationMap.entrySet()) {
-    		Relation expected = entry.getValue();
-    		Relation relation = myReason.getRelation( myReason.getSynset(entry.getKey().getfirst()), myReason.getSynset(entry.getKey().getsecond()));
-    		String message = MyWordnetReasoner.asCommaList(entry.getKey().getfirst()) + " should " + entry.getValue().toString() + " " + MyWordnetReasoner.asCommaList(entry.getKey().getsecond());
-    		Assert.assertEquals(message, expected, relation);
+    	for(Entry<Pair<List<String>, List<String>>, List<Relation>> entry : wordGroupsToRelationsMap.entrySet()) {
+    		List<Relation> expected = entry.getValue();
+    		List<Relation> actualRelations = myReason.getRelations( myReason.getSynset(entry.getKey().getfirst()), myReason.getSynset(entry.getKey().getsecond()));
+    		String message = asCommaList(entry.getKey().getfirst()) + " should " + asCommaList(entry.getValue()) + " " + asCommaList(entry.getKey().getsecond());
+    		Assert.assertEquals(message, expected, actualRelations);
     	}
     }
     

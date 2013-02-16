@@ -2,10 +2,12 @@ package soc.project3;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.map.MultiKeyMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +25,10 @@ public class MyWordnetReasoner {
 	
     private static Logger logger = LoggerFactory.getLogger(MyWordnetReasoner.class);
     
-    public enum ModelType {CORE, CAUSES, ENTAILMENT, HYPONYM, MERONYM_MEMBER, MERONYM_SUBSTANCE};
+//    <ModelType, Model, String, Relation>
+    public MultiKeyMap modelMap;
+    
+    public enum ModelType {CORE, CAUSES, ENTAILMENT, HYPONYM, MERONYM_MEMBER, MERONYM_SUBSTANCE, MERONYM_PART};
     
     private Map<ModelType, Relation> modelRelationMap = null;
     private Map<ModelType, Property> modelRelationPropertyMap = null;
@@ -34,7 +39,8 @@ public class MyWordnetReasoner {
 	private static final String WORDNET_HYPONYM = "wordnet-hyponym.rdf";
 	private static final String WORDNET_MERONYM_MEMBER = "wordnet-membermeronym.rdf";
 	private static final String WORDNET_MERONYM_SUBSTANCE = "wordnet-substancemeronym.rdf";
-
+	private static final String WORDNET_MERONYM_PART = "wordnet-partmeronym.rdf";
+	
 	private static final String WN20SCHEMA = "http://www.w3.org/2006/03/wn/wn20/schema/";
 	
 	private Model coreModel = null;
@@ -43,7 +49,7 @@ public class MyWordnetReasoner {
 	private Model hyponymModel = null;
 	private Model meronymMemberModel = null;
 	private Model meronymSubstanceModel = null;
-
+	private Model meronymPartModel = null;
 	
 	/**
 	 * Given two comma-delimted lists of words, if both lists represent
@@ -80,7 +86,7 @@ public class MyWordnetReasoner {
 			System.exit(1);
 		}
 				
-		System.out.println(myReasoner.getRelation(synsets1, synsets2));
+		System.out.println(myReasoner.getRelations(synsets1, synsets2));
 	}
 
 	@SuppressWarnings("serial")
@@ -103,6 +109,9 @@ public class MyWordnetReasoner {
 		
 		meronymSubstanceModel = ModelFactory.createDefaultModel();
 		FileManager.get().readModel(meronymSubstanceModel, WORDNET_MERONYM_SUBSTANCE);	
+		
+		meronymPartModel = ModelFactory.createDefaultModel();
+		FileManager.get().readModel(meronymPartModel, WORDNET_MERONYM_PART);	
 
 		this.modelRelationMap = new HashMap<ModelType, Relation>() {{
 	    	put(ModelType.CAUSES, Relation.CAUSE);
@@ -110,8 +119,8 @@ public class MyWordnetReasoner {
 	    	put(ModelType.HYPONYM, Relation.HYPONYMY);
 	    	put(ModelType.MERONYM_MEMBER, Relation.MERONYMY);
 	    	put(ModelType.MERONYM_SUBSTANCE, Relation.MERONYMY);
+	    	put(ModelType.MERONYM_PART, Relation.MERONYMY);
 	    }};
-
 		
 		this.modelRelationPropertyMap = new HashMap<ModelType, Property>() {{
 	    	put(ModelType.CAUSES, causesModel.getProperty(WN20SCHEMA + "causes"));
@@ -119,15 +128,15 @@ public class MyWordnetReasoner {
 	    	put(ModelType.HYPONYM, hyponymModel.getProperty(WN20SCHEMA + "hyponymOf"));
 	    	put(ModelType.MERONYM_MEMBER, meronymMemberModel.getProperty(WN20SCHEMA + "memberMeronymOf"));
 	    	put(ModelType.MERONYM_SUBSTANCE, meronymSubstanceModel.getProperty(WN20SCHEMA + "substanceMeronymOf"));
-
+	    	put(ModelType.MERONYM_PART, meronymPartModel.getProperty(WN20SCHEMA + "partMeronymOf"));
 	    }};
 	}
 		
-	public Relation getRelation(final List<Resource> synsetList1, final List<Resource> synsetList2) {
+	public List<Relation> getRelations(final List<Resource> synsetList1, final List<Resource> synsetList2) {
 		if(synsetList1 == null || synsetList2 == null ) {
 			throw new IllegalArgumentException("Synsets must not be null.");
 		}
-		
+		List<Relation> relations = new ArrayList<Relation>();
 		
 //		List<String> words1 = new ArrayList<String>() {{
 ////			add("teach");
@@ -168,12 +177,16 @@ public class MyWordnetReasoner {
 					Statement statement = statements.nextStatement();
 					System.out.println(statement);
 					if(statement.getObject().isResource() && synsetList2.contains(statement.getObject().asResource())) {
-							return this.modelRelationMap.get(modelType);
+						relations.add(this.modelRelationMap.get(modelType));
 					} 
 				}
 			}
 		}	
-		return Relation.NONE;
+		if(relations.size() > 0) {
+			return relations;
+		} else {
+			return Collections.singletonList(Relation.NONE);
+		}
 	}
 	
 
@@ -247,6 +260,8 @@ public class MyWordnetReasoner {
 				return this.meronymMemberModel;
 			case MERONYM_SUBSTANCE:
 				return this.meronymSubstanceModel;
+			case MERONYM_PART:
+				return this.meronymPartModel;
 			default:
 				return null;		
 		}
