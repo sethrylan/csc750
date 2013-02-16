@@ -11,6 +11,12 @@ import org.apache.commons.collections.map.MultiKeyMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.ResultSet;
+import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
@@ -24,10 +30,7 @@ import com.hp.hpl.jena.util.FileManager;
 public class MyWordnetReasoner {
 	
     private static Logger logger = LoggerFactory.getLogger(MyWordnetReasoner.class);
-    
-//    <ModelType, Model, String, Relation>
-    public MultiKeyMap modelMap;
-    
+        
     public enum ModelType {CORE, CAUSES, ENTAILMENT, HYPONYM, MERONYM_MEMBER, MERONYM_SUBSTANCE, MERONYM_PART};
     
     private Map<ModelType, Relation> modelRelationMap = null;
@@ -78,8 +81,8 @@ public class MyWordnetReasoner {
 		
 		MyWordnetReasoner myReasoner = new MyWordnetReasoner();
 		List<Resource> synsets1, synsets2 = null;
-		synsets1 = myReasoner.getSynset(wordGroup1);
-		synsets2 = myReasoner.getSynset(wordGroup2);
+		synsets1 = myReasoner.getSynsets(wordGroup1);
+		synsets2 = myReasoner.getSynsets(wordGroup2);
 		
 		if(synsets1.size() == 0  || synsets2.size() == 0) {
 			logger.error("Invalid word-group");
@@ -93,26 +96,13 @@ public class MyWordnetReasoner {
 	@SuppressWarnings("serial")
 	public MyWordnetReasoner() {
 		// create an empty model and read from file
-		coreModel = ModelFactory.createDefaultModel();
-		FileManager.get().readModel(coreModel, WORDNET_CORE);
-
-		entailmentModel = ModelFactory.createDefaultModel();
-		FileManager.get().readModel(entailmentModel, WORDNET_ENTAILMENT);
-
-		causesModel = ModelFactory.createDefaultModel();
-		FileManager.get().readModel(causesModel, WORDNET_CAUSES);
-		
-		hyponymModel = ModelFactory.createDefaultModel();
-		FileManager.get().readModel(hyponymModel, WORDNET_HYPONYM);
-
-		meronymMemberModel = ModelFactory.createDefaultModel();
-		FileManager.get().readModel(meronymMemberModel, WORDNET_MERONYM_MEMBER);	
-		
-		meronymSubstanceModel = ModelFactory.createDefaultModel();
-		FileManager.get().readModel(meronymSubstanceModel, WORDNET_MERONYM_SUBSTANCE);	
-		
-		meronymPartModel = ModelFactory.createDefaultModel();
-		FileManager.get().readModel(meronymPartModel, WORDNET_MERONYM_PART);	
+		coreModel = FileManager.get().loadModel(WORDNET_CORE);
+		entailmentModel = FileManager.get().loadModel(WORDNET_ENTAILMENT);
+		causesModel = FileManager.get().loadModel(WORDNET_CAUSES);
+		hyponymModel = FileManager.get().loadModel(WORDNET_HYPONYM);
+		meronymMemberModel = FileManager.get().loadModel( WORDNET_MERONYM_MEMBER);	
+		meronymSubstanceModel = FileManager.get().loadModel(WORDNET_MERONYM_SUBSTANCE);	
+		meronymPartModel = FileManager.get().loadModel(WORDNET_MERONYM_PART);	
 
 		this.modelRelationMap = new HashMap<ModelType, Relation>() {{
 	    	put(ModelType.CAUSES, Relation.CAUSE);
@@ -209,43 +199,31 @@ public class MyWordnetReasoner {
 	 * @param wordGroup	list of words
 	 * @return list of synsets containing all words in the word-group; list of size 0 if no such synset exists
 	 */
-	protected List<Resource> getSynset(List<String> wordGroup) {
+	protected List<Resource> getSynsets(List<String> wordGroup) {
 		if(wordGroup == null || wordGroup.size() == 0) {
 			throw new IllegalArgumentException("WordGroup must have 1 or more elements.");
 		} else {			
 			List<Resource> synsets = new ArrayList<Resource>();
-			final String firstWord = wordGroup.get(0);
-			Property senseLabelProperty = coreModel.getProperty(WN20SCHEMA + "senseLabel");
-			/*
-			 * Statements are formed [Subject, Predicate, Object]
-			 * e.g., [http://www.w3.org/2006/03/wn/wn20/instances/synset-teach-verb-1, http://www.w3.org/2006/03/wn/wn20/schema/senseLabel, "teach"@en-US]
-			 */
-	        StmtIterator statements = coreModel.listStatements(
-	        	new  SimpleSelector(null, senseLabelProperty, (RDFNode)null) {
-                    @Override
-                    public boolean selects(Statement s) {
-                            return s.getString().equals(firstWord);
-                    }
-	            }
-        	);
-	        
-            while (statements.hasNext()) {
-            	Statement statement = statements.nextStatement();
-            	logger.debug("  " + statement.getObject().asLiteral().getString() + "  found in  " + statement.getSubject());
-            	StmtIterator subjectProperties = statement.getSubject().listProperties(senseLabelProperty);
-            	List<String> synsetWords = new ArrayList<String>();
-            	while (subjectProperties.hasNext()) {
-            		Statement propertyStatement = subjectProperties.nextStatement();
-                	logger.debug("  		" + propertyStatement.getObject().asLiteral().getString() + "  found in  " + propertyStatement.getSubject());
-            		synsetWords.add(propertyStatement.getObject().asLiteral().getString());
-				}
-            	if(synsetWords.containsAll(wordGroup)) {
-            		synsets.add(statement.getSubject());
-            	}
-            }
+			StringBuilder querySb = new StringBuilder();
+			querySb.append("PREFIX  wn20schema: <http://www.w3.org/2006/03/wn/wn20/schema/> ");
+			querySb.append("	SELECT  ?synset ");
+			querySb.append("	WHERE   { ");
+			for(String word : wordGroup) {
+				querySb.append("		?synset wn20schema:senseLabel \"" + word +"\"@en-US . ");
+			}
+			querySb.append("	}");
+			
+			Query query = QueryFactory.create(querySb.toString());
+			QueryExecution qe = QueryExecutionFactory.create(query, coreModel);
+			ResultSet results = qe.execSelect();
+			while(results.hasNext()) {
+				synsets.add(results.next().getResource("synset"));
+			}
+			qe.close();	
 			return synsets;			
 		}
 	}
+	
 	
 	protected static String asCommaList(List list) {
 		StringBuilder sb = new StringBuilder();

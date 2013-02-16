@@ -21,6 +21,12 @@ import org.slf4j.LoggerFactory;
 import soc.project3.MyWordnetReasoner.ModelType;
 
 import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.RDFNode;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.SimpleSelector;
+import com.hp.hpl.jena.rdf.model.Statement;
+import com.hp.hpl.jena.rdf.model.StmtIterator;
 
 import static soc.project3.MyWordnetReasoner.*;
 
@@ -167,7 +173,7 @@ public class MyWordnetReasonerTest extends TestCase {
     public void testIsValidSynset() {
     	for(Entry<List<String>, Boolean> entry : wordGroupsToSynsetMap.entrySet()) {
     		Boolean expected = entry.getValue();
-    		Boolean synsetsExist = myReason.getSynset(entry.getKey()).size() > 0;
+    		Boolean synsetsExist = myReason.getSynsets(entry.getKey()).size() > 0;
         	Assert.assertSame(asCommaList(entry.getKey()) + " should have at least one synset.", expected, synsetsExist);
     	}
     }
@@ -176,12 +182,72 @@ public class MyWordnetReasonerTest extends TestCase {
     public void testGetRelation() {
     	for(Entry<Pair<List<String>, List<String>>, List<Relation>> entry : wordGroupsToRelationsMap.entrySet()) {
     		List<Relation> expected = entry.getValue();
-    		List<Relation> actualRelations = myReason.getRelations( myReason.getSynset(entry.getKey().getfirst()), myReason.getSynset(entry.getKey().getsecond()));
+    		List<Relation> actualRelations = myReason.getRelations( myReason.getSynsets(entry.getKey().getfirst()), myReason.getSynsets(entry.getKey().getsecond()));
     		String message = asCommaList(entry.getKey().getfirst()) + " should " + asCommaList(entry.getValue()) + " " + asCommaList(entry.getKey().getsecond());
     		Assert.assertEquals(message, expected, actualRelations);
     	}
     }
+
+    /*
+    @Test
+    public void testSynsetEquivalentsInSparql() {
+    	for(List<String> wordGroup : wordGroupsToSynsetMap.keySet()) {
+    		long startTime = System.nanoTime();
+    		List<Resource> synsets = myReason.getSynset(wordGroup);
+    		long endTime = System.nanoTime();
+    		System.out.println("getSysnset took " + (endTime - startTime)/1000 + "ms");
+
+    		startTime = System.nanoTime();
+    		List<Resource> sparqlSynsets = myReason.getSynsetSparql(wordGroup);
+    		endTime = System.nanoTime();
+    		System.out.println("getSparqlSysnset took " + (endTime - startTime)/1000 + "ms");
+
+    		String message = MyWordnetReasoner.asCommaList(synsets) + " is not " + MyWordnetReasoner.asCommaList(sparqlSynsets);
+    		assertTrue(message, synsets.containsAll(sparqlSynsets));
+    		assertTrue(message, sparqlSynsets.containsAll(synsets));
+    	}
+    }
+    */
     
+    /***** Older get synset for comparison purposes; SPARQL query runs at ~1% of original time.
+     * 
+	protected List<Resource> getSynset(List<String> wordGroup) {
+		if(wordGroup == null || wordGroup.size() == 0) {
+			throw new IllegalArgumentException("WordGroup must have 1 or more elements.");
+		} else {			
+			List<Resource> synsets = new ArrayList<Resource>();
+			final String firstWord = wordGroup.get(0);
+			Property senseLabelProperty = coreModel.getProperty(WN20SCHEMA + "senseLabel");
+			//Statements are formed [Subject, Predicate, Object]
+			//e.g., [http://www.w3.org/2006/03/wn/wn20/instances/synset-teach-verb-1, http://www.w3.org/2006/03/wn/wn20/schema/senseLabel, "teach"@en-US]
+	        StmtIterator statements = coreModel.listStatements(
+	        	new  SimpleSelector(null, senseLabelProperty, (RDFNode)null) {
+                    @Override
+                    public boolean selects(Statement s) {
+                            return s.getString().equals(firstWord);
+                    }
+	            }
+        	);
+	        
+            while (statements.hasNext()) {
+            	Statement statement = statements.nextStatement();
+            	logger.debug("  " + statement.getObject().asLiteral().getString() + "  found in  " + statement.getSubject());
+            	StmtIterator subjectProperties = statement.getSubject().listProperties(senseLabelProperty);
+            	List<String> synsetWords = new ArrayList<String>();
+            	while (subjectProperties.hasNext()) {
+            		Statement propertyStatement = subjectProperties.nextStatement();
+                	logger.debug("  		" + propertyStatement.getObject().asLiteral().getString() + "  found in  " + propertyStatement.getSubject());
+            		synsetWords.add(propertyStatement.getObject().asLiteral().getString());
+				}
+            	if(synsetWords.containsAll(wordGroup)) {
+            		synsets.add(statement.getSubject());
+            	}
+            }
+			return synsets;			
+		}
+	}
+
+     */
 
     private static class Pair<K, V> {
 		private final K first;
