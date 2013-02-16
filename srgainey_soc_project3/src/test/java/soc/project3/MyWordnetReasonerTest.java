@@ -17,9 +17,12 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.hp.hpl.jena.rdf.model.Model;
+
+@SuppressWarnings({"serial", "unused"})
 public class MyWordnetReasonerTest extends TestCase {
 
-    private Logger logger = LoggerFactory.getLogger(MyWordnetReasonerTest.class);
+	private Logger logger = LoggerFactory.getLogger(MyWordnetReasonerTest.class);
 	    
 	private static List<String> wordGroupA1 = new ArrayList<String>() {{
 		add("call");
@@ -28,7 +31,7 @@ public class MyWordnetReasonerTest extends TestCase {
 	private static List<String> wordGroupA2 = new ArrayList<String>() {{
 		add("dial");
 	}};
-	private static Pair<List<String>,List<String>> wordGroupPairA = new Pair(wordGroupA1, wordGroupA2);
+	private static Pair<List<String>,List<String>> wordGroupPairA = new Pair<List<String>,List<String>>(wordGroupA1, wordGroupA2);
     
     private static List<String> wordGroupB1 = new ArrayList<String>() {{
 		add("warp");
@@ -37,7 +40,7 @@ public class MyWordnetReasonerTest extends TestCase {
 		add("fabric");
 		add("textile");
 	}};
-	private static Pair<List<String>,List<String>> wordGroupPairB = new Pair(wordGroupB1, wordGroupB2);
+	private static Pair<List<String>,List<String>> wordGroupPairB = new Pair<List<String>,List<String>>(wordGroupB1, wordGroupB2);
 
     private static List<String> wordGroupC1 = new ArrayList<String>() {{
 		add("relation");
@@ -45,7 +48,7 @@ public class MyWordnetReasonerTest extends TestCase {
 	private static List<String> wordGroupC2 = new ArrayList<String>() {{
 		add("abstraction");
 	}};
-	private static Pair<List<String>,List<String>> wordGroupPairC = new Pair(wordGroupC1, wordGroupC2);
+	private static Pair<List<String>,List<String>> wordGroupPairC = new Pair<List<String>,List<String>>(wordGroupC1, wordGroupC2);
 
     private static List<String> wordGroupD1 = new ArrayList<String>() {{
 		add("teach");
@@ -55,7 +58,7 @@ public class MyWordnetReasonerTest extends TestCase {
 		add("learn");
 		add("acquire");
 	}};
-	private static Pair<List<String>,List<String>> wordGroupPairD = new Pair(wordGroupD1, wordGroupD2);
+	private static Pair<List<String>,List<String>> wordGroupPairD = new Pair<List<String>,List<String>>(wordGroupD1, wordGroupD2);
 
     private static List<String> wordGroupZ1 = new ArrayList<String>() {{
 		add("fungible");
@@ -65,7 +68,7 @@ public class MyWordnetReasonerTest extends TestCase {
 		add("bananas");
 		add("marigold");
 	}};
-	private static Pair<List<String>,List<String>> wordGroupPairZ = new Pair(wordGroupD1, wordGroupD2);
+	private static Pair<List<String>,List<String>> wordGroupPairZ = new Pair<List<String>,List<String>>(wordGroupD1, wordGroupD2);
     
     private Map<List<String>, Boolean> wordGroupsToSynsetMap = new HashMap<List<String>, Boolean>() {{
     	put(wordGroupA1, Boolean.TRUE);
@@ -88,7 +91,7 @@ public class MyWordnetReasonerTest extends TestCase {
     	put(wordGroupPairZ, Relation.NONE);    	
     }};
     
-    private MyWordnetReasoner myReason = null;
+    private MyWordnetReasoner myReason = new MyWordnetReasoner();
     
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -100,26 +103,31 @@ public class MyWordnetReasonerTest extends TestCase {
 
     @Before
     public void setUp() {
-    	myReason = new MyWordnetReasoner();
     }
 
     @After
     public void tearDown() {
-    	myReason = null;
     }
     
+	@Test
+    public void testModel() {
+		Model model = myReason.getModel();
+		Assert.assertNotNull(model);
+		Assert.assertTrue("There should be over 9,000 triples.", model.size() > 9000L);
+	}
+
     
     @Test
     public void testIsValidSynset() {
     	for(Entry<List<String>, Boolean> entry : wordGroupsToSynsetMap.entrySet()) {
-        	Assert.assertSame(entry.getValue(), myReason.isValidSynset(entry.getKey()));
+        	Assert.assertSame(MyWordnetReasoner.asCommaList(entry.getKey()) + " should be a synset.", entry.getValue(), myReason.isValidSynset(entry.getKey()));
     	}
     }
 
     @Test
     public void testGetRelation() {
     	for(Entry<Pair<List<String>, List<String>>, Relation> entry : wordGroupsToRelationMap.entrySet()) {
-        	Assert.assertEquals(entry.getValue(), myReason.getRelation(entry.getKey().getfirst(), entry.getKey().getfirst()));
+    		Assert.assertEquals(entry.getValue(), myReason.getRelation(entry.getKey().getfirst(), entry.getKey().getsecond()));
     	}
     }
     

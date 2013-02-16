@@ -9,8 +9,21 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.ResultSet;
+import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.NodeIterator;
+import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.RDFNode;
+import com.hp.hpl.jena.rdf.model.ResIterator;
+import com.hp.hpl.jena.rdf.model.SimpleSelector;
+import com.hp.hpl.jena.rdf.model.Statement;
+import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.util.FileManager;
 
 public class MyWordnetReasoner {
@@ -50,10 +63,13 @@ public class MyWordnetReasoner {
 		wordGroups.add(wordGroup1);
 		wordGroups.add(wordGroup2);
 			
+		
+		MyWordnetReasoner myReasoner = new MyWordnetReasoner();
+		
 		for(List<String> wordGroup : wordGroups) {
 			boolean validWordGroups = true;
-			if(!isValidSynset(wordGroup)) {
-				logger.error("Invalid word-group: " + asCommaList(wordGroup));
+			if(!myReasoner.isValidSynset(wordGroup)) {
+				logger.error("Invalid word-group");
 				validWordGroups = false;
 			}
 			if(!validWordGroups) {
@@ -61,8 +77,7 @@ public class MyWordnetReasoner {
 			}
 		}
 		
-		MyWordnetReasoner myReason = new MyWordnetReasoner();
-		System.out.println(myReason.getRelation(wordGroups.get(0), wordGroups.get(1)));
+		System.out.println(myReasoner.getRelation(wordGroups));
 	}
 
 	public MyWordnetReasoner() {
@@ -70,21 +85,29 @@ public class MyWordnetReasoner {
 		model = ModelFactory.createDefaultModel();
 
 		// use the FileManager to find the input file
-		InputStream in = FileManager.get().open( WORDNET_CORE );
-		if(in == null) {
-			throw new IllegalArgumentException("File: " + WORDNET_CORE + " not found");
-		}
-		model.read(in, null);	// read the RDF/XML file
+		FileManager.get().readModel(model, WORDNET_CORE);
 		//model.write(System.out);	// write it to standard out
-		try {
-			in.close();
-		} catch (IOException e) {
-			logger.error("Could not close file", e);
-		}
 	}
 	
-	public Relation getRelation(List<String> wordGroup1, List<String> wordGroup2) {
-		// TODO
+	@SuppressWarnings("serial")
+	public Relation getRelation(final List<String> wordGroup1, final List<String> wordGroup2) {
+		List<List<String>> wordGroups = new ArrayList<List<String>>() {{
+			add(wordGroup1);
+			add(wordGroup2);
+		}};
+		return this.getRelation(wordGroups);
+	}
+	
+	public Relation getRelation(List<List<String>> wordGroups) {
+		for(List<String> wordGroup: wordGroups) {
+			if(wordGroup == null | wordGroup.size() == 0) {
+				throw new IllegalArgumentException("WordGroups must have at least one word each.");
+			}
+		}
+		
+		
+		
+		
 		return Relation.NONE;
 	}
 
@@ -95,9 +118,43 @@ public class MyWordnetReasoner {
 	 * @param wordGroup	list of words
 	 * @return true if all words in the word-group are senseLabels of the same synset
 	 */
-	protected static Boolean isValidSynset(List<String> wordGroup) {
-		// TODO:
-		return Boolean.FALSE;
+	protected Boolean isValidSynset(List<String> wordGroup) {
+		if(wordGroup.size() == 0) {
+			throw new IllegalArgumentException("WordGroup must have 1 or more elements.");
+		} else {			
+			final String firstWord = wordGroup.get(0);
+
+			Property senseLabelProperty = model.getProperty("http://www.w3.org/2006/03/wn/wn20/schema/senseLabel");
+
+			/*
+			 * Statements are formed [Subject, Predicate, Object]
+			 * e.g., [http://www.w3.org/2006/03/wn/wn20/instances/synset-teach-verb-1, http://www.w3.org/2006/03/wn/wn20/schema/senseLabel, "teach"@en-US]
+			 */
+	        StmtIterator iter = model.listStatements(
+	        	new  SimpleSelector(null, senseLabelProperty, (RDFNode)null) {
+                    @Override
+                    public boolean selects(Statement s) {
+                            return s.getString().equals(firstWord);
+                    }
+	            }
+        	);
+	        
+            while (iter.hasNext()) {
+            	Statement statement = iter.nextStatement();
+            	logger.debug("  " + statement.getObject().asLiteral().getString() + "  found in  " + statement.getSubject());
+            	StmtIterator subPropIter = statement.getSubject().listProperties(senseLabelProperty);
+            	List<String> synsetWords = new ArrayList<String>();
+            	while (subPropIter.hasNext()) {
+            		Statement propertyStatement = subPropIter.nextStatement();
+                	logger.debug("  		" + propertyStatement.getObject().asLiteral().getString() + "  found in  " + propertyStatement.getSubject());
+            		synsetWords.add(propertyStatement.getObject().asLiteral().getString());
+				}
+            	if(synsetWords.containsAll(wordGroup)) {
+            		return Boolean.TRUE;
+            	}
+            }
+			return Boolean.FALSE;			
+		}
 	}
 	
 	
@@ -111,5 +168,10 @@ public class MyWordnetReasoner {
 		}
 		return sb.toString();
 	}
+	
+	protected Model getModel() {
+		return this.model;
+	}
+		
 	
 }
