@@ -85,8 +85,9 @@ public class MyWordnetReasoner {
 			logger.error("Invalid word-group");
 			System.exit(1);
 		}
-				
-		System.out.println(myReasoner.getRelations(synsets1, synsets2));
+		
+		List<Relation> relations = myReasoner.getRelations(synsets1, synsets2);
+		System.out.println(asCommaList(relations));
 	}
 
 	@SuppressWarnings("serial")
@@ -130,6 +131,7 @@ public class MyWordnetReasoner {
 	    	put(ModelType.MERONYM_SUBSTANCE, meronymSubstanceModel.getProperty(WN20SCHEMA + "substanceMeronymOf"));
 	    	put(ModelType.MERONYM_PART, meronymPartModel.getProperty(WN20SCHEMA + "partMeronymOf"));
 	    }};
+	    
 	}
 		
 	public List<Relation> getRelations(final List<Resource> synsetList1, final List<Resource> synsetList2) {
@@ -166,8 +168,8 @@ public class MyWordnetReasoner {
 //    	}
 //    	
 //    	System.out.println("s2causesprop=" + causesModel.getProperty(s2, causesModel.getProperty(WN20SCHEMA + "causes")));
-    	System.out.println("s1=" + asCommaList(synsetList1));
-    	System.out.println("s2=" + asCommaList(synsetList2));
+//    	System.out.println("s1=" + asCommaList(synsetList1));
+//    	System.out.println("s2=" + asCommaList(synsetList2));
     	
 		for(ModelType modelType : modelRelationMap.keySet()) {
 			Model model = this.getModel(modelType);
@@ -175,9 +177,20 @@ public class MyWordnetReasoner {
 		    	StmtIterator statements = model.listStatements(synset1, modelRelationPropertyMap.get(modelType), (RDFNode)null);
 				while(statements.hasNext()) {
 					Statement statement = statements.nextStatement();
-					System.out.println(statement);
+					logger.debug(statement.toString());
 					if(statement.getObject().isResource() && synsetList2.contains(statement.getObject().asResource())) {
 						relations.add(this.modelRelationMap.get(modelType));
+					} 
+				}
+			}
+			
+			for(Resource synset2 : synsetList2) {
+		    	StmtIterator statements = model.listStatements(synset2, modelRelationPropertyMap.get(modelType), (RDFNode)null);
+				while(statements.hasNext()) {
+					Statement statement = statements.nextStatement();
+					logger.debug(statement.toString());
+					if(statement.getObject().isResource() && synsetList1.contains(statement.getObject().asResource())) {
+						relations.add(this.modelRelationMap.get(modelType).getInverse());
 					} 
 				}
 			}
@@ -244,7 +257,6 @@ public class MyWordnetReasoner {
 		}
 		return sb.toString();
 	}
-
 
 	protected Model getModel(ModelType modelType) {
 		switch(modelType) {
