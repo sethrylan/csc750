@@ -2,7 +2,9 @@ package soc.project3;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,19 +23,26 @@ public class MyWordnetReasoner {
 	
     private static Logger logger = LoggerFactory.getLogger(MyWordnetReasoner.class);
     
-    public enum ModelType {CORE, CAUSES, ENTAILMENT, HYPONYM, MERONYM};
+    public enum ModelType {CORE, CAUSES, ENTAILMENT, HYPONYM, MERONYM_MEMBER, MERONYM_SUBSTANCE};
+    
+    private Map<ModelType, Relation> modelRelationMap = null;
+    private Map<ModelType, Property> modelRelationPropertyMap = null;
     
 	private static final String WORDNET_CORE = "wordnet-senselabels.rdf";
 	private static final String WORDNET_CAUSES = "wordnet-causes.rdf";
 	private static final String WORDNET_ENTAILMENT = "wordnet-entailment.rdf";
 	private static final String WORDNET_HYPONYM = "wordnet-hyponym.rdf";
-	private static final String WORDNET_MERONYM = "wordnet-membermeronym.rdf";
+	private static final String WORDNET_MERONYM_MEMBER = "wordnet-membermeronym.rdf";
+	private static final String WORDNET_MERONYM_SUBSTANCE = "wordnet-substancemeronym.rdf";
+
+	private static final String WN20SCHEMA = "http://www.w3.org/2006/03/wn/wn20/schema/";
 	
 	private Model coreModel = null;
 	private Model causesModel = null;
 	private Model entailmentModel = null;
 	private Model hyponymModel = null;
-	private Model meronymModel = null;
+	private Model meronymMemberModel = null;
+	private Model meronymSubstanceModel = null;
 
 	
 	/**
@@ -62,18 +71,19 @@ public class MyWordnetReasoner {
 		List<String> wordGroup2 = Arrays.asList(args[1].split("\\s*,\\s*"));
 		
 		MyWordnetReasoner myReasoner = new MyWordnetReasoner();
-		Resource synset1, synset2 = null;
-		synset1 = myReasoner.getSynset(wordGroup1);
-		synset2 = myReasoner.getSynset(wordGroup2);
+		List<Resource> synsets1, synsets2 = null;
+		synsets1 = myReasoner.getSynset(wordGroup1);
+		synsets2 = myReasoner.getSynset(wordGroup2);
 		
-		if(synset1 == null || synset2 == null) {
+		if(synsets1.size() == 0  || synsets2.size() == 0) {
 			logger.error("Invalid word-group");
 			System.exit(1);
 		}
 				
-		System.out.println(myReasoner.getRelation(synset1, synset2));
+		System.out.println(myReasoner.getRelation(synsets1, synsets2));
 	}
 
+	@SuppressWarnings("serial")
 	public MyWordnetReasoner() {
 		// create an empty model and read from file
 		coreModel = ModelFactory.createDefaultModel();
@@ -88,73 +98,103 @@ public class MyWordnetReasoner {
 		hyponymModel = ModelFactory.createDefaultModel();
 		FileManager.get().readModel(hyponymModel, WORDNET_HYPONYM);
 
-		meronymModel = ModelFactory.createDefaultModel();
-		FileManager.get().readModel(meronymModel, WORDNET_MERONYM);	
+		meronymMemberModel = ModelFactory.createDefaultModel();
+		FileManager.get().readModel(meronymMemberModel, WORDNET_MERONYM_MEMBER);	
+		
+		meronymSubstanceModel = ModelFactory.createDefaultModel();
+		FileManager.get().readModel(meronymSubstanceModel, WORDNET_MERONYM_SUBSTANCE);	
+
+		this.modelRelationMap = new HashMap<ModelType, Relation>() {{
+	    	put(ModelType.CAUSES, Relation.CAUSE);
+	    	put(ModelType.ENTAILMENT, Relation.ENTAILMENT);
+	    	put(ModelType.HYPONYM, Relation.HYPONYMY);
+	    	put(ModelType.MERONYM_MEMBER, Relation.MERONYMY);
+	    	put(ModelType.MERONYM_SUBSTANCE, Relation.MERONYMY);
+	    }};
+
+		
+		this.modelRelationPropertyMap = new HashMap<ModelType, Property>() {{
+	    	put(ModelType.CAUSES, causesModel.getProperty(WN20SCHEMA + "causes"));
+	    	put(ModelType.ENTAILMENT, entailmentModel.getProperty(WN20SCHEMA + "entails"));
+	    	put(ModelType.HYPONYM, hyponymModel.getProperty(WN20SCHEMA + "hyponymOf"));
+	    	put(ModelType.MERONYM_MEMBER, meronymMemberModel.getProperty(WN20SCHEMA + "memberMeronymOf"));
+	    	put(ModelType.MERONYM_SUBSTANCE, meronymSubstanceModel.getProperty(WN20SCHEMA + "substanceMeronymOf"));
+
+	    }};
 	}
-	
-//	public Relation getRelation(List<List<String>> wordGroups) {
-//		if(wordGroups == null || wordGroups.size() != 2) {
-//			throw new IllegalArgumentException("There must be two wordgroups.");
-//		}
-//		return this.getRelation(wordGroups.get(0), wordGroups.get(1));
-//	}
-	
-	public Relation getRelation(Resource synset1, Resource synset2) {
-		if(synset1 == null || synset2 == null  ) {
+		
+	public Relation getRelation(final List<Resource> synsetList1, final List<Resource> synsetList2) {
+		if(synsetList1 == null || synsetList2 == null ) {
 			throw new IllegalArgumentException("Synsets must not be null.");
 		}
-				
-//
-//        StmtIterator iter = coreModel.listStatements(
-//	        	new  SimpleSelector(null, senseLabelProperty, (RDFNode)null) {
-//                    @Override
-//                    public boolean selects(Statement s) {
-//                            return s.getString().equals(firstWord);
-//                    }
-//	            }
-//        	);
-//	        
-//            while (iter.hasNext()) {
-//            	Statement statement = iter.nextStatement();
-//            	logger.debug("  " + statement.getObject().asLiteral().getString() + "  found in  " + statement.getSubject());
-//            	StmtIterator subPropIter = statement.getSubject().listProperties(senseLabelProperty);
-//            	List<String> synsetWords = new ArrayList<String>();
-//            	while (subPropIter.hasNext()) {
-//            		Statement propertyStatement = subPropIter.nextStatement();
-//                	logger.debug("  		" + propertyStatement.getObject().asLiteral().getString() + "  found in  " + propertyStatement.getSubject());
-//            		synsetWords.add(propertyStatement.getObject().asLiteral().getString());
-//				}
-//            	if(synsetWords.containsAll(wordGroup)) {
-//            		return Boolean.TRUE;
-//            	}
-//            }
-
 		
 		
-		
+//		List<String> words1 = new ArrayList<String>() {{
+////			add("teach");
+////			add("instruct");
+//			add("develop");
+//			add("make grow");
+//		}};
+//		Resource s1 = this.getSynset(words1);
+//		
+//		List<String> words2 = new ArrayList<String>() {{
+//			add("learn");
+//			add("acquire");
+//		}};
+//		Resource s2 = this.getSynset(words2);
+//    	System.out.println("s1=" + s1);
+//    	System.out.println("s2=" + s2);
+//    	System.out.println(causesModel.listObjectsOfProperty(causesModel.getProperty(WN20SCHEMA + "causes")).toList().size());    	
+//    	System.out.println("s1bag=" + causesModel.getBag(s1));
+//    	System.out.println("s2bag=" + causesModel.getBag(s2));
+//    	System.out.println("s1alt=" + causesModel.getAlt(s1));
+//    	System.out.println("s2alt=" + causesModel.getAlt(s2));
+//    	System.out.println("s1causesprop=" + causesModel.getProperty(s1, causesModel.getProperty(WN20SCHEMA + "causes")));
+//    	
+//    	StmtIterator statements = causesModel.listStatements(s1, causesModel.getProperty(WN20SCHEMA + "causes"), (RDFNode)null);
+//    	while(statements.hasNext()) {
+//        	System.out.println("    " + statements.nextStatement());
+//    	}
+//    	
+//    	System.out.println("s2causesprop=" + causesModel.getProperty(s2, causesModel.getProperty(WN20SCHEMA + "causes")));
+    	System.out.println("s1=" + asCommaList(synsetList1));
+    	System.out.println("s2=" + asCommaList(synsetList2));
+    	
+		for(ModelType modelType : modelRelationMap.keySet()) {
+			Model model = this.getModel(modelType);
+			for(Resource synset1 : synsetList1) {
+		    	StmtIterator statements = model.listStatements(synset1, modelRelationPropertyMap.get(modelType), (RDFNode)null);
+				while(statements.hasNext()) {
+					Statement statement = statements.nextStatement();
+					System.out.println(statement);
+					if(statement.getObject().isResource() && synsetList2.contains(statement.getObject().asResource())) {
+							return this.modelRelationMap.get(modelType);
+					} 
+				}
+			}
+		}	
 		return Relation.NONE;
 	}
-
 	
+
 	/**
-	 * Returns synset containing all words in the word group.
+	 * Returns a List of the synsets containing all words in the word group.
 	 * From wordnet.princeton.edu: "Synonyms--words that denote the same concept and are interchangeable in many contexts--are grouped into unordered sets (synsets)." 
 	 * @param wordGroup	list of words
-	 * @return synset containing all words in the word-group; null if no such synset exists
+	 * @return list of synsets containing all words in the word-group; list of size 0 if no such synset exists
 	 */
-	protected Resource getSynset(List<String> wordGroup) {
+	protected List<Resource> getSynset(List<String> wordGroup) {
 		if(wordGroup == null || wordGroup.size() == 0) {
 			throw new IllegalArgumentException("WordGroup must have 1 or more elements.");
 		} else {			
+			List<Resource> synsets = new ArrayList<Resource>();
 			final String firstWord = wordGroup.get(0);
-
-			Property senseLabelProperty = coreModel.getProperty("http://www.w3.org/2006/03/wn/wn20/schema/senseLabel");
-
+			Property senseLabelProperty = coreModel.getProperty(WN20SCHEMA + "senseLabel");
 			/*
 			 * Statements are formed [Subject, Predicate, Object]
 			 * e.g., [http://www.w3.org/2006/03/wn/wn20/instances/synset-teach-verb-1, http://www.w3.org/2006/03/wn/wn20/schema/senseLabel, "teach"@en-US]
 			 */
-	        StmtIterator iter = coreModel.listStatements(
+	        StmtIterator statements = coreModel.listStatements(
 	        	new  SimpleSelector(null, senseLabelProperty, (RDFNode)null) {
                     @Override
                     public boolean selects(Statement s) {
@@ -163,53 +203,52 @@ public class MyWordnetReasoner {
 	            }
         	);
 	        
-            while (iter.hasNext()) {
-            	Statement statement = iter.nextStatement();
+            while (statements.hasNext()) {
+            	Statement statement = statements.nextStatement();
             	logger.debug("  " + statement.getObject().asLiteral().getString() + "  found in  " + statement.getSubject());
-            	StmtIterator subPropIter = statement.getSubject().listProperties(senseLabelProperty);
+            	StmtIterator subjectProperties = statement.getSubject().listProperties(senseLabelProperty);
             	List<String> synsetWords = new ArrayList<String>();
-            	while (subPropIter.hasNext()) {
-            		Statement propertyStatement = subPropIter.nextStatement();
+            	while (subjectProperties.hasNext()) {
+            		Statement propertyStatement = subjectProperties.nextStatement();
                 	logger.debug("  		" + propertyStatement.getObject().asLiteral().getString() + "  found in  " + propertyStatement.getSubject());
             		synsetWords.add(propertyStatement.getObject().asLiteral().getString());
 				}
             	if(synsetWords.containsAll(wordGroup)) {
-            		return statement.getSubject();
+            		synsets.add(statement.getSubject());
             	}
             }
-			return null;			
+			return synsets;			
 		}
 	}
 	
-	
-	protected static String asCommaList(List<String> stringList) {
+	protected static String asCommaList(List list) {
 		StringBuilder sb = new StringBuilder();
 		String delimiter = "";
-		for(String string : stringList) {
+		for(Object o : list) {
 			sb.append(delimiter)
-			.append(string);
+			.append(o.toString());
 			delimiter = ",";
 		}
 		return sb.toString();
 	}
-	
+
+
 	protected Model getModel(ModelType modelType) {
 		switch(modelType) {
 			case CORE:
 				return this.coreModel;
 			case CAUSES:
-				return this.hyponymModel;
+				return this.causesModel;
 			case ENTAILMENT:
 				return this.entailmentModel;
 			case HYPONYM:
 				return this.hyponymModel;
-			case MERONYM:
-				return this.meronymModel;
+			case MERONYM_MEMBER:
+				return this.meronymMemberModel;
+			case MERONYM_SUBSTANCE:
+				return this.meronymSubstanceModel;
 			default:
 				return null;		
 		}
 	}
-	
-		
-	
 }

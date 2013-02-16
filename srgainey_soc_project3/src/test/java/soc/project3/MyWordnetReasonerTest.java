@@ -70,7 +70,7 @@ public class MyWordnetReasonerTest extends TestCase {
 		add("bananas");
 		add("marigold");
 	}};
-	private static Pair<List<String>,List<String>> wordGroupPairZ = new Pair<List<String>,List<String>>(wordGroupD1, wordGroupD2);
+	private static Pair<List<String>,List<String>> wordGroupPairZ = new Pair<List<String>,List<String>>(wordGroupZ1, wordGroupZ2);
     
     private Map<List<String>, Boolean> wordGroupsToSynsetMap = new HashMap<List<String>, Boolean>() {{
     	put(wordGroupA1, Boolean.TRUE);
@@ -126,14 +126,19 @@ public class MyWordnetReasonerTest extends TestCase {
     @Test
     public void testIsValidSynset() {
     	for(Entry<List<String>, Boolean> entry : wordGroupsToSynsetMap.entrySet()) {
-        	Assert.assertSame(MyWordnetReasoner.asCommaList(entry.getKey()) + " should be a synset.", entry.getValue(), myReason.getSynset(entry.getKey()) != null);
+    		Boolean expected = entry.getValue();
+    		Boolean synsetsExist = myReason.getSynset(entry.getKey()).size() > 0;
+        	Assert.assertSame(MyWordnetReasoner.asCommaList(entry.getKey()) + " should have at least one synset.", expected, synsetsExist);
     	}
     }
 
     @Test
     public void testGetRelation() {
     	for(Entry<Pair<List<String>, List<String>>, Relation> entry : wordGroupsToRelationMap.entrySet()) {
-    		Assert.assertEquals(entry.getValue(), myReason.getRelation( myReason.getSynset(entry.getKey().getfirst()), myReason.getSynset(entry.getKey().getsecond())));
+    		Relation expected = entry.getValue();
+    		Relation relation = myReason.getRelation( myReason.getSynset(entry.getKey().getfirst()), myReason.getSynset(entry.getKey().getsecond()));
+    		String message = MyWordnetReasoner.asCommaList(entry.getKey().getfirst()) + " should " + entry.getValue().toString() + " " + MyWordnetReasoner.asCommaList(entry.getKey().getsecond());
+    		Assert.assertEquals(message, expected, relation);
     	}
     }
     
