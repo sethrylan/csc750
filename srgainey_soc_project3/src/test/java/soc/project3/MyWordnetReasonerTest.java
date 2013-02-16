@@ -17,6 +17,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import soc.project3.MyWordnetReasoner.ModelType;
+
 import com.hp.hpl.jena.rdf.model.Model;
 
 @SuppressWarnings({"serial", "unused"})
@@ -110,24 +112,28 @@ public class MyWordnetReasonerTest extends TestCase {
     }
     
 	@Test
-    public void testModel() {
-		Model model = myReason.getModel();
-		Assert.assertNotNull(model);
-		Assert.assertTrue("There should be over 9,000 triples.", model.size() > 9000L);
+    public void testGetModel() {
+		for(ModelType modelType : ModelType.values()) {
+			Model model = myReason.getModel(modelType);
+			Assert.assertNotNull(model);
+			if(modelType == ModelType.CORE) {
+				Assert.assertTrue("There should be over 9,000 triples.", model.size() > 9000L);
+			}
+		}
 	}
 
     
     @Test
     public void testIsValidSynset() {
     	for(Entry<List<String>, Boolean> entry : wordGroupsToSynsetMap.entrySet()) {
-        	Assert.assertSame(MyWordnetReasoner.asCommaList(entry.getKey()) + " should be a synset.", entry.getValue(), myReason.isValidSynset(entry.getKey()));
+        	Assert.assertSame(MyWordnetReasoner.asCommaList(entry.getKey()) + " should be a synset.", entry.getValue(), myReason.getSynset(entry.getKey()) != null);
     	}
     }
 
     @Test
     public void testGetRelation() {
     	for(Entry<Pair<List<String>, List<String>>, Relation> entry : wordGroupsToRelationMap.entrySet()) {
-    		Assert.assertEquals(entry.getValue(), myReason.getRelation(entry.getKey().getfirst(), entry.getKey().getsecond()));
+    		Assert.assertEquals(entry.getValue(), myReason.getRelation( myReason.getSynset(entry.getKey().getfirst()), myReason.getSynset(entry.getKey().getsecond())));
     	}
     }
     
