@@ -35,67 +35,67 @@ public class MyWordnetReasonerTest extends TestCase {
 
 	private Logger logger = LoggerFactory.getLogger(MyWordnetReasonerTest.class);
 	    
-	private static List<String> wordGroupA1 = new ArrayList<String>() {{
+	private static final List<String> wordGroupA1 = new ArrayList<String>() {{
 		add("call");
 		add("ring");
 	}};
-	private static List<String> wordGroupA2 = new ArrayList<String>() {{
+	private static final List<String> wordGroupA2 = new ArrayList<String>() {{
 		add("dial");
 	}};
-	private static Pair<List<String>,List<String>> wordGroupPairA = new Pair<List<String>,List<String>>(wordGroupA1, wordGroupA2);
-	private static Pair<List<String>,List<String>> wordGroupPairA_I = new Pair<List<String>,List<String>>(wordGroupA2, wordGroupA1);
+	private static final Pair<List<String>,List<String>> wordGroupPairA = new Pair<List<String>,List<String>>(wordGroupA1, wordGroupA2);
+	private static final Pair<List<String>,List<String>> wordGroupPairA_I = new Pair<List<String>,List<String>>(wordGroupA2, wordGroupA1);
 	
-    private static List<String> wordGroupB1 = new ArrayList<String>() {{
+    private static final List<String> wordGroupB1 = new ArrayList<String>() {{
 		add("warp");
 	}};
-	private static List<String> wordGroupB2 = new ArrayList<String>() {{
+	private static final List<String> wordGroupB2 = new ArrayList<String>() {{
 		add("fabric");
 		add("textile");
 	}};
-	private static Pair<List<String>,List<String>> wordGroupPairB = new Pair<List<String>,List<String>>(wordGroupB1, wordGroupB2);
-	private static Pair<List<String>,List<String>> wordGroupPairB_I = new Pair<List<String>,List<String>>(wordGroupB2, wordGroupB1);
+	private static final Pair<List<String>,List<String>> wordGroupPairB = new Pair<List<String>,List<String>>(wordGroupB1, wordGroupB2);
+	private static final Pair<List<String>,List<String>> wordGroupPairB_I = new Pair<List<String>,List<String>>(wordGroupB2, wordGroupB1);
 
-	private static List<String> wordGroupC1 = new ArrayList<String>() {{
+	private static final List<String> wordGroupC1 = new ArrayList<String>() {{
 		add("relation");
 	}};
-	private static List<String> wordGroupC2 = new ArrayList<String>() {{
+	private static final List<String> wordGroupC2 = new ArrayList<String>() {{
 		add("abstraction");
 	}};
-	private static Pair<List<String>,List<String>> wordGroupPairC = new Pair<List<String>,List<String>>(wordGroupC1, wordGroupC2);
-	private static Pair<List<String>,List<String>> wordGroupPairC_I = new Pair<List<String>,List<String>>(wordGroupC2, wordGroupC1);
+	private static final Pair<List<String>,List<String>> wordGroupPairC = new Pair<List<String>,List<String>>(wordGroupC1, wordGroupC2);
+	private static final Pair<List<String>,List<String>> wordGroupPairC_I = new Pair<List<String>,List<String>>(wordGroupC2, wordGroupC1);
 
-    private static List<String> wordGroupD1 = new ArrayList<String>() {{
+    private static final List<String> wordGroupD1 = new ArrayList<String>() {{
 		add("teach");
 		add("instruct");
 	}};
-	private static List<String> wordGroupD2 = new ArrayList<String>() {{
+	private static final List<String> wordGroupD2 = new ArrayList<String>() {{
 		add("learn");
 		add("acquire");
 	}};
-	private static Pair<List<String>,List<String>> wordGroupPairD = new Pair<List<String>,List<String>>(wordGroupD1, wordGroupD2);
-	private static Pair<List<String>,List<String>> wordGroupPairD_I = new Pair<List<String>,List<String>>(wordGroupD2, wordGroupD1);
+	private static final Pair<List<String>,List<String>> wordGroupPairD = new Pair<List<String>,List<String>>(wordGroupD1, wordGroupD2);
+	private static final Pair<List<String>,List<String>> wordGroupPairD_I = new Pair<List<String>,List<String>>(wordGroupD2, wordGroupD1);
 
-    private static List<String> wordGroupE1 = new ArrayList<String>() {{
+    private static final List<String> wordGroupE1 = new ArrayList<String>() {{
 		add("do");
 	}};
-	private static List<String> wordGroupE2 = new ArrayList<String>() {{
+	private static final List<String> wordGroupE2 = new ArrayList<String>() {{
 		add("make");
 	}};
-	private static Pair<List<String>,List<String>> wordGroupPairE = new Pair<List<String>,List<String>>(wordGroupE1, wordGroupE2);
-	private static Pair<List<String>,List<String>> wordGroupPairE_I = new Pair<List<String>,List<String>>(wordGroupE2, wordGroupE1);
+	private static final Pair<List<String>,List<String>> wordGroupPairE = new Pair<List<String>,List<String>>(wordGroupE1, wordGroupE2);
+	private static final Pair<List<String>,List<String>> wordGroupPairE_I = new Pair<List<String>,List<String>>(wordGroupE2, wordGroupE1);
 
-    private static List<String> wordGroupZ1 = new ArrayList<String>() {{
+    private static final List<String> wordGroupZ1 = new ArrayList<String>() {{
 		add("fungible");
 		add("papistic");
 	}};
-	private static List<String> wordGroupZ2 = new ArrayList<String>() {{
+	private static final List<String> wordGroupZ2 = new ArrayList<String>() {{
 		add("bananas");
 		add("marigold");
 	}};
-	private static Pair<List<String>,List<String>> wordGroupPairZ = new Pair<List<String>,List<String>>(wordGroupZ1, wordGroupZ2);
-	private static Pair<List<String>,List<String>> wordGroupPairZ_I = new Pair<List<String>,List<String>>(wordGroupZ2, wordGroupZ1);
+	private static final Pair<List<String>,List<String>> wordGroupPairZ = new Pair<List<String>,List<String>>(wordGroupZ1, wordGroupZ2);
+	private static final Pair<List<String>,List<String>> wordGroupPairZ_I = new Pair<List<String>,List<String>>(wordGroupZ2, wordGroupZ1);
 
-    private Map<List<String>, Boolean> wordGroupsToSynsetMap = new HashMap<List<String>, Boolean>() {{
+    private static final Map<List<String>, Boolean> wordGroupsToSynsetMap = new HashMap<List<String>, Boolean>() {{
     	put(wordGroupA1, Boolean.TRUE);
     	put(wordGroupA2, Boolean.TRUE);
     	put(wordGroupB1, Boolean.TRUE);
@@ -110,7 +110,7 @@ public class MyWordnetReasonerTest extends TestCase {
     	put(wordGroupZ2, Boolean.FALSE);
     }};
     
-    private static Map<Pair<List<String>, List<String>>, List<Relation>> wordGroupsToRelationsMap = new HashMap<Pair<List<String>, List<String>>, List<Relation>>() {{
+    private static final Map<Pair<List<String>, List<String>>, List<Relation>> wordGroupsToRelationsMap = new HashMap<Pair<List<String>, List<String>>, List<Relation>>() {{
     	put(wordGroupPairA, Collections.singletonList(Relation.ENTAILMENT));
     	put(wordGroupPairA_I, Collections.singletonList(Relation.ENTAILMENT_I));
     	put(wordGroupPairB, Collections.singletonList(Relation.MERONYMY));
@@ -139,7 +139,7 @@ public class MyWordnetReasonerTest extends TestCase {
     	put(wordGroupPairZ_I, Collections.singletonList(Relation.NONE));    	
     }};
     
-    private MyWordnetReasoner myReason = new MyWordnetReasoner();
+    private static MyWordnetReasoner myReason = new MyWordnetReasoner();
     
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -187,20 +187,19 @@ public class MyWordnetReasonerTest extends TestCase {
     		Assert.assertEquals(message, expected, actualRelations);
     	}
     }
-
     /*
     @Test
     public void testSynsetEquivalentsInSparql() {
     	for(List<String> wordGroup : wordGroupsToSynsetMap.keySet()) {
-    		long startTime = System.nanoTime();
-    		List<Resource> synsets = myReason.getSynset(wordGroup);
-    		long endTime = System.nanoTime();
-    		System.out.println("getSysnset took " + (endTime - startTime)/1000 + "ms");
+    		long startTime = System.currentTimeMillis();
+    		List<Resource> synsets = myReason.getSynsets(wordGroup);
+    		long endTime = System.currentTimeMillis();
+    		System.out.println("getSysnset took " + (endTime - startTime) + "ms");
 
-    		startTime = System.nanoTime();
-    		List<Resource> sparqlSynsets = myReason.getSynsetSparql(wordGroup);
-    		endTime = System.nanoTime();
-    		System.out.println("getSparqlSysnset took " + (endTime - startTime)/1000 + "ms");
+    		startTime = System.currentTimeMillis();
+    		List<Resource> sparqlSynsets = myReason.getSynsetsSparql(wordGroup);
+    		endTime = System.currentTimeMillis();
+    		System.out.println("getSparqlSysnset took " + (endTime - startTime) + "ms");
 
     		String message = MyWordnetReasoner.asCommaList(synsets) + " is not " + MyWordnetReasoner.asCommaList(sparqlSynsets);
     		assertTrue(message, synsets.containsAll(sparqlSynsets));
@@ -246,9 +245,10 @@ public class MyWordnetReasonerTest extends TestCase {
 			return synsets;			
 		}
 	}
-
      */
 
+    
+    
     private static class Pair<K, V> {
 		private final K first;
 		private final V second;

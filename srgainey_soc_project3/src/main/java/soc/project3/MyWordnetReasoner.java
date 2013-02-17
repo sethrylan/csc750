@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.collections.map.MultiKeyMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,13 +15,10 @@ import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.SimpleSelector;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.util.FileManager;
@@ -35,6 +31,14 @@ public class MyWordnetReasoner {
     
     private Map<ModelType, Relation> modelRelationMap = null;
     private Map<ModelType, Property> modelRelationPropertyMap = null;
+//    private static final Map<String, Relation> resourceStringToRelationMap = new HashMap<String, Relation>() {{
+//    	put("causes", Relation.CAUSE);
+//    	put("entails", Relation.ENTAILMENT);
+//    	put("hyponymOf", Relation.HYPONYMY);
+//    	put("memberMeronymOf", Relation.MERONYMY);
+//    	put("partMeronymOf", Relation.MERONYMY);
+//    	put("substanceMeronymOf", Relation.MERONYMY);
+//    }};
     
 	private static final String WORDNET_CORE = "wordnet-senselabels.rdf";
 	private static final String WORDNET_CAUSES = "wordnet-causes.rdf";
@@ -53,6 +57,8 @@ public class MyWordnetReasoner {
 	private Model meronymMemberModel = null;
 	private Model meronymSubstanceModel = null;
 	private Model meronymPartModel = null;
+	
+//	private Model unifiedModel = null;
 	
 	/**
 	 * Given two comma-delimted lists of words, if both lists represent
@@ -122,8 +128,52 @@ public class MyWordnetReasoner {
 	    	put(ModelType.MERONYM_PART, meronymPartModel.getProperty(WN20SCHEMA + "partMeronymOf"));
 	    }};
 	    
+	    
+//		this.unifiedModel = ModelFactory.createOntologyModel(OntModelSpec.RDFS_MEM_RDFS_INF );
+//		this.unifiedModel.add(coreModel, Boolean.TRUE); // include reified statements
+//		this.unifiedModel.add(entailmentModel, Boolean.TRUE); // include reified statements
+//		this.unifiedModel.add(causesModel, Boolean.TRUE); // include reified statements
+//		this.unifiedModel.add(hyponymModel, Boolean.TRUE); // include reified statements
+//		this.unifiedModel.add(meronymMemberModel, Boolean.TRUE); // include reified statements
+//		this.unifiedModel.add(meronymPartModel, Boolean.TRUE); // include reified statements
+//		this.unifiedModel.add(meronymSubstanceModel, Boolean.TRUE); // include reified statements
+
+	    
 	}
-		
+	
+	/**
+	 * Returns a List of the synsets containing all words in the word group.
+	 * From wordnet.princeton.edu: "Synonyms--words that denote the same concept and are interchangeable in many contexts--are grouped into unordered sets (synsets)." 
+	 * @param wordGroup	list of words
+	 * @return list of synsets containing all words in the word-group; list of size 0 if no such synset exists
+	 */
+	protected List<Resource> getSynsets(final List<String> wordGroup) {
+		if(wordGroup == null || wordGroup.size() == 0) {
+			throw new IllegalArgumentException("WordGroup must have 1 or more elements.");
+		} else {			
+			List<Resource> synsets = new ArrayList<Resource>();
+			StringBuilder querySb = new StringBuilder();
+			querySb.append("PREFIX  wn20schema: <http://www.w3.org/2006/03/wn/wn20/schema/> ");
+			querySb.append("	SELECT  ?synset ");
+			querySb.append("	WHERE   { ");
+			for(String word : wordGroup) {
+				querySb.append("		?synset wn20schema:senseLabel \"" + word +"\"@en-US . ");
+			}
+			querySb.append("	}");
+			
+			Query query = QueryFactory.create(querySb.toString());
+			QueryExecution qe = QueryExecutionFactory.create(query, coreModel);
+			ResultSet results = qe.execSelect();
+			while(results.hasNext()) {
+				synsets.add(results.next().getResource("synset"));
+			}
+			qe.close();	
+			return synsets;			
+		}
+	}
+
+	
+	
 	public List<Relation> getRelations(final List<Resource> synsetList1, final List<Resource> synsetList2) {
 		if(synsetList1 == null || synsetList2 == null ) {
 			throw new IllegalArgumentException("Synsets must not be null.");
@@ -191,41 +241,9 @@ public class MyWordnetReasoner {
 			return Collections.singletonList(Relation.NONE);
 		}
 	}
+		
 	
-
-	/**
-	 * Returns a List of the synsets containing all words in the word group.
-	 * From wordnet.princeton.edu: "Synonyms--words that denote the same concept and are interchangeable in many contexts--are grouped into unordered sets (synsets)." 
-	 * @param wordGroup	list of words
-	 * @return list of synsets containing all words in the word-group; list of size 0 if no such synset exists
-	 */
-	protected List<Resource> getSynsets(List<String> wordGroup) {
-		if(wordGroup == null || wordGroup.size() == 0) {
-			throw new IllegalArgumentException("WordGroup must have 1 or more elements.");
-		} else {			
-			List<Resource> synsets = new ArrayList<Resource>();
-			StringBuilder querySb = new StringBuilder();
-			querySb.append("PREFIX  wn20schema: <http://www.w3.org/2006/03/wn/wn20/schema/> ");
-			querySb.append("	SELECT  ?synset ");
-			querySb.append("	WHERE   { ");
-			for(String word : wordGroup) {
-				querySb.append("		?synset wn20schema:senseLabel \"" + word +"\"@en-US . ");
-			}
-			querySb.append("	}");
-			
-			Query query = QueryFactory.create(querySb.toString());
-			QueryExecution qe = QueryExecutionFactory.create(query, coreModel);
-			ResultSet results = qe.execSelect();
-			while(results.hasNext()) {
-				synsets.add(results.next().getResource("synset"));
-			}
-			qe.close();	
-			return synsets;			
-		}
-	}
-	
-	
-	protected static String asCommaList(List list) {
+	protected static String asCommaList(final List list) {
 		StringBuilder sb = new StringBuilder();
 		String delimiter = "";
 		for(Object o : list) {
