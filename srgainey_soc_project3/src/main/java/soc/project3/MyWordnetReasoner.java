@@ -75,7 +75,7 @@ public class MyWordnetReasoner {
 	 *
 	 * @param args commandline arguments of two comma-delimited strings representing word groups
 	 */
-	public static void main(String[] args) {
+	public static void main(String args[]) {
 		if (args.length != 2) {
 			System.out.println("Usage: " + MyWordnetReasoner.class.getName() + " \"word-group-1\" \"word-group-2\"");
 			System.out.println("\tE.g., " + MyWordnetReasoner.class.getName() + " \"teach, instruct\" \"learn, acquire\"");
@@ -91,7 +91,7 @@ public class MyWordnetReasoner {
 		synsets2 = myReasoner.getSynsets(wordGroup2);
 		
 		if(synsets1.size() == 0  || synsets2.size() == 0) {
-			logger.error("Invalid word-group");
+			System.err.println("Invalid word-group");
 			System.exit(1);
 		}
 		
