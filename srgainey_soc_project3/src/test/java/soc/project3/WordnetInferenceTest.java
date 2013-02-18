@@ -30,7 +30,7 @@ public class WordnetInferenceTest extends TestCase {
     }
     
     @Test
-    public void testCheckWordUri() {
+    public void testInfer() {
 //    	WordnetInference.checkWordUri("learn", "teach");
     	inferenceEngine.infer();
     	

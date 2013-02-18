@@ -2,25 +2,26 @@ package soc.project3;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.Statement;
-import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.util.FileManager;
 
 public class MyWordnetReasoner {
@@ -31,14 +32,14 @@ public class MyWordnetReasoner {
     
     private Map<ModelType, Relation> modelRelationMap = null;
     private Map<ModelType, Property> modelRelationPropertyMap = null;
-//    private static final Map<String, Relation> resourceStringToRelationMap = new HashMap<String, Relation>() {{
-//    	put("causes", Relation.CAUSE);
-//    	put("entails", Relation.ENTAILMENT);
-//    	put("hyponymOf", Relation.HYPONYMY);
-//    	put("memberMeronymOf", Relation.MERONYMY);
-//    	put("partMeronymOf", Relation.MERONYMY);
-//    	put("substanceMeronymOf", Relation.MERONYMY);
-//    }};
+    private static final Map<String, Relation> resourceStringToRelationMap = new HashMap<String, Relation>() {{
+    	put("causes", Relation.CAUSE);
+    	put("entails", Relation.ENTAILMENT);
+    	put("hyponymOf", Relation.HYPONYMY);
+    	put("memberMeronymOf", Relation.MERONYMY);
+    	put("partMeronymOf", Relation.MERONYMY);
+    	put("substanceMeronymOf", Relation.MERONYMY);
+    }};
     
 	private static final String WORDNET_CORE = "wordnet-senselabels.rdf";
 	private static final String WORDNET_CAUSES = "wordnet-causes.rdf";
@@ -58,7 +59,7 @@ public class MyWordnetReasoner {
 	private Model meronymSubstanceModel = null;
 	private Model meronymPartModel = null;
 	
-//	private Model unifiedModel = null;
+	private Model unifiedModel = null;
 	
 	/**
 	 * Given two comma-delimted lists of words, if both lists represent
@@ -90,13 +91,21 @@ public class MyWordnetReasoner {
 		synsets1 = myReasoner.getSynsets(wordGroup1);
 		synsets2 = myReasoner.getSynsets(wordGroup2);
 		
-		if(synsets1.size() == 0  || synsets2.size() == 0) {
-			System.err.println("Invalid word-group");
+		boolean validWordGroups = true;
+		if(synsets1.size() == 0 ) {
+			System.err.println("Invalid word-group: " + asCommaList(wordGroup1));
+			validWordGroups = false;
+		}
+		if(synsets2.size() == 0 ) {
+			System.err.println("Invalid word-group: " + asCommaList(wordGroup2));
+			validWordGroups = false;
+		}
+		if(!validWordGroups) {
 			System.exit(1);
 		}
-		
-		List<Relation> relations = myReasoner.getRelations(synsets1, synsets2);
-		System.out.println(asCommaList(relations));
+
+		List<Relation> relations = myReasoner.getRelations(wordGroup1, wordGroup2);
+		System.out.println(asCommaList(new HashSet<Relation>(relations)));
 	}
 
 	@SuppressWarnings("serial")
@@ -128,16 +137,14 @@ public class MyWordnetReasoner {
 	    	put(ModelType.MERONYM_PART, meronymPartModel.getProperty(WN20SCHEMA + "partMeronymOf"));
 	    }};
 	    
-	    
-//		this.unifiedModel = ModelFactory.createOntologyModel(OntModelSpec.RDFS_MEM_RDFS_INF );
-//		this.unifiedModel.add(coreModel, Boolean.TRUE); // include reified statements
-//		this.unifiedModel.add(entailmentModel, Boolean.TRUE); // include reified statements
-//		this.unifiedModel.add(causesModel, Boolean.TRUE); // include reified statements
-//		this.unifiedModel.add(hyponymModel, Boolean.TRUE); // include reified statements
-//		this.unifiedModel.add(meronymMemberModel, Boolean.TRUE); // include reified statements
-//		this.unifiedModel.add(meronymPartModel, Boolean.TRUE); // include reified statements
-//		this.unifiedModel.add(meronymSubstanceModel, Boolean.TRUE); // include reified statements
-
+		this.unifiedModel = ModelFactory.createOntologyModel(OntModelSpec.RDFS_MEM_RDFS_INF );
+		this.unifiedModel.add(coreModel, Boolean.TRUE); // include reified statements
+		this.unifiedModel.add(entailmentModel, Boolean.TRUE); // include reified statements
+		this.unifiedModel.add(causesModel, Boolean.TRUE); // include reified statements
+		this.unifiedModel.add(hyponymModel, Boolean.TRUE); // include reified statements
+		this.unifiedModel.add(meronymMemberModel, Boolean.TRUE); // include reified statements
+		this.unifiedModel.add(meronymPartModel, Boolean.TRUE); // include reified statements
+		this.unifiedModel.add(meronymSubstanceModel, Boolean.TRUE); // include reified statements
 	    
 	}
 	
@@ -172,81 +179,70 @@ public class MyWordnetReasoner {
 		}
 	}
 
-	
-	
-	public List<Relation> getRelations(final List<Resource> synsetList1, final List<Resource> synsetList2) {
-		if(synsetList1 == null || synsetList2 == null ) {
-			throw new IllegalArgumentException("Synsets must not be null.");
+	public List<Relation> getRelations(final List<String> wordGroup1, final List<String> wordGroup2) {
+		if(wordGroup1 == null || wordGroup2.size() == 0 || wordGroup2 == null || wordGroup2.size() == 0) {
+			throw new IllegalArgumentException("WordGroups must have 1 or more elements.");
 		}
 		List<Relation> relations = new ArrayList<Relation>();
 		
-//		List<String> words1 = new ArrayList<String>() {{
-////			add("teach");
-////			add("instruct");
-//			add("develop");
-//			add("make grow");
-//		}};
-//		Resource s1 = this.getSynset(words1);
-//		
-//		List<String> words2 = new ArrayList<String>() {{
-//			add("learn");
-//			add("acquire");
-//		}};
-//		Resource s2 = this.getSynset(words2);
-//    	System.out.println("s1=" + s1);
-//    	System.out.println("s2=" + s2);
-//    	System.out.println(causesModel.listObjectsOfProperty(causesModel.getProperty(WN20SCHEMA + "causes")).toList().size());    	
-//    	System.out.println("s1bag=" + causesModel.getBag(s1));
-//    	System.out.println("s2bag=" + causesModel.getBag(s2));
-//    	System.out.println("s1alt=" + causesModel.getAlt(s1));
-//    	System.out.println("s2alt=" + causesModel.getAlt(s2));
-//    	System.out.println("s1causesprop=" + causesModel.getProperty(s1, causesModel.getProperty(WN20SCHEMA + "causes")));
-//    	
-//    	StmtIterator statements = causesModel.listStatements(s1, causesModel.getProperty(WN20SCHEMA + "causes"), (RDFNode)null);
-//    	while(statements.hasNext()) {
-//        	System.out.println("    " + statements.nextStatement());
-//    	}
-//    	
-//    	System.out.println("s2causesprop=" + causesModel.getProperty(s2, causesModel.getProperty(WN20SCHEMA + "causes")));
-//    	System.out.println("s1=" + asCommaList(synsetList1));
-//    	System.out.println("s2=" + asCommaList(synsetList2));
-    	
-		for(ModelType modelType : modelRelationMap.keySet()) {
-			Model model = this.getModel(modelType);
-			for(Resource synset1 : synsetList1) {
-		    	StmtIterator statements = model.listStatements(synset1, modelRelationPropertyMap.get(modelType), (RDFNode)null);
-				while(statements.hasNext()) {
-					Statement statement = statements.nextStatement();
-					logger.debug(statement.toString());
-					if(statement.getObject().isResource() && synsetList2.contains(statement.getObject().asResource())) {
-						relations.add(this.modelRelationMap.get(modelType));
-					} 
-				}
+		StringBuilder queryBaseSb = new StringBuilder();
+		queryBaseSb.append("PREFIX wn20schema: <http://www.w3.org/2006/03/wn/wn20/schema/> ");
+		queryBaseSb.append("SELECT ?relation ");
+		queryBaseSb.append("WHERE { ");
+		for(String word : wordGroup1) {
+			queryBaseSb.append("	?synset1 wn20schema:senseLabel \"" + word +"\"@en-US . ");
+		}
+		for(String word : wordGroup2) {
+			queryBaseSb.append("	?synset2 wn20schema:senseLabel \"" + word +"\"@en-US . ");
+		}
+		StringBuilder relationQuerySb = new StringBuilder(queryBaseSb);
+		relationQuerySb.append("	?synset1 ?relation ?synset2");
+		relationQuerySb.append("}");
+		StringBuilder inverseRelationQuerySb = new StringBuilder(queryBaseSb);
+		inverseRelationQuerySb.append("	?synset2 ?relation ?synset1");
+		inverseRelationQuerySb.append("}");	
+		
+		Query query = QueryFactory.create(relationQuerySb.toString());
+		//System.out.println(query);
+		QueryExecution qe = QueryExecutionFactory.create(query, unifiedModel);
+		ResultSet results = qe.execSelect();
+		while(results.hasNext()) {
+			Resource next = results.next().getResource("relation");
+			if(next != null) {
+				//System.out.println(next);
+				Relation relation = resourceStringToRelationMap.get(next.getLocalName());
+				//System.out.println(relation);
+				relations.add(relation);
 			}
-			
-			for(Resource synset2 : synsetList2) {
-		    	StmtIterator statements = model.listStatements(synset2, modelRelationPropertyMap.get(modelType), (RDFNode)null);
-				while(statements.hasNext()) {
-					Statement statement = statements.nextStatement();
-					logger.debug(statement.toString());
-					if(statement.getObject().isResource() && synsetList1.contains(statement.getObject().asResource())) {
-						relations.add(this.modelRelationMap.get(modelType).getInverse());
-					} 
-				}
+		}
+		
+		query = QueryFactory.create(inverseRelationQuerySb.toString());
+		//System.out.println(query);
+		qe = QueryExecutionFactory.create(query, unifiedModel);
+		results = qe.execSelect();
+		while(results.hasNext()) {
+			Resource next = results.next().getResource("relation");
+			if(next != null) {
+				//System.out.println(next);
+				Relation relation = resourceStringToRelationMap.get(next.getLocalName()).getInverse();
+				//System.out.println(relation);
+				relations.add(relation);
 			}
-		}	
+		}
+		qe.close();	
+		
 		if(relations.size() > 0) {
 			return relations;
 		} else {
 			return Collections.singletonList(Relation.NONE);
 		}
+
 	}
 		
-	
-	protected static String asCommaList(final List list) {
+	protected static String asCommaList(final Collection collection) {
 		StringBuilder sb = new StringBuilder();
 		String delimiter = "";
-		for(Object o : list) {
+		for(Object o : collection) {
 			sb.append(delimiter)
 			.append(o.toString());
 			delimiter = ",";

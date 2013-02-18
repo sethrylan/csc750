@@ -84,6 +84,22 @@ public class MyWordnetReasonerTest extends TestCase {
 	private static final Pair<List<String>,List<String>> wordGroupPairE = new Pair<List<String>,List<String>>(wordGroupE1, wordGroupE2);
 	private static final Pair<List<String>,List<String>> wordGroupPairE_I = new Pair<List<String>,List<String>>(wordGroupE2, wordGroupE1);
 
+	
+    private static final List<String> wordGroupF1 = new ArrayList<String>() {{
+		add("breathe in");
+		add("inhale");
+		add("inspire");
+	}};
+	private static final List<String> wordGroupF2 = new ArrayList<String>() {{
+		add("breathe");
+		add("respire");
+		add("suspire");
+		add("take a breath");
+	}};
+	private static final Pair<List<String>,List<String>> wordGroupPairF = new Pair<List<String>,List<String>>(wordGroupF1, wordGroupF2);
+	private static final Pair<List<String>,List<String>> wordGroupPairF_I = new Pair<List<String>,List<String>>(wordGroupF2, wordGroupF1);
+
+	
     private static final List<String> wordGroupZ1 = new ArrayList<String>() {{
 		add("fungible");
 		add("papistic");
@@ -106,6 +122,8 @@ public class MyWordnetReasonerTest extends TestCase {
     	put(wordGroupD2, Boolean.TRUE);
     	put(wordGroupE1, Boolean.TRUE);
     	put(wordGroupE2, Boolean.TRUE);
+    	put(wordGroupF1, Boolean.TRUE);
+    	put(wordGroupF2, Boolean.TRUE);
     	put(wordGroupZ1, Boolean.FALSE);
     	put(wordGroupZ2, Boolean.FALSE);
     }};
@@ -135,6 +153,16 @@ public class MyWordnetReasonerTest extends TestCase {
 					add(Relation.HYPONYMY_I);
 					add(Relation.HYPONYMY_I);
 				}});
+    	
+    	put(wordGroupPairF, new ArrayList<Relation>() {{  
+    			add(Relation.HYPONYMY);
+				add(Relation.ENTAILMENT_I);
+			}});
+    	put(wordGroupPairF_I, new ArrayList<Relation>() {{
+    			add(Relation.HYPONYMY_I);
+				add(Relation.ENTAILMENT);
+			}});
+
     	put(wordGroupPairZ, Collections.singletonList(Relation.NONE));
     	put(wordGroupPairZ_I, Collections.singletonList(Relation.NONE));    	
     }};
@@ -182,11 +210,81 @@ public class MyWordnetReasonerTest extends TestCase {
     public void testGetRelation() {
     	for(Entry<Pair<List<String>, List<String>>, List<Relation>> entry : wordGroupsToRelationsMap.entrySet()) {
     		List<Relation> expected = entry.getValue();
-    		List<Relation> actualRelations = myReason.getRelations( myReason.getSynsets(entry.getKey().getfirst()), myReason.getSynsets(entry.getKey().getsecond()));
+    		List<Relation> actualRelations = myReason.getRelations( entry.getKey().getfirst(), entry.getKey().getsecond());
     		String message = asCommaList(entry.getKey().getfirst()) + " should " + asCommaList(entry.getValue()) + " " + asCommaList(entry.getKey().getsecond());
-    		Assert.assertEquals(message, expected, actualRelations);
+    		Assert.assertTrue(message, expected.containsAll(actualRelations) && actualRelations.containsAll(expected));
     	}
     }
+    
+    
+    /*
+    @Test
+    public void testRelationsEquivalentsInSparql() {
+    	for(Entry<Pair<List<String>, List<String>>, List<Relation>> entry : wordGroupsToRelationsMap.entrySet()) {
+    		List<String> wordGroup1 = entry.getKey().getfirst();
+    		List<String> wordGroup2 = entry.getKey().getsecond();
+    		List<Relation> expectedRelations = entry.getValue();
+
+    		long startTime = System.currentTimeMillis();
+    		List<Relation> oldRelations = myReason.getRelations(myReason.getSynsets(wordGroup1), myReason.getSynsets(wordGroup2));
+    		long endTime = System.currentTimeMillis();
+    		System.out.println("getRelations took " + (endTime - startTime) + "ms");
+
+    		startTime = System.currentTimeMillis();
+    		List<Relation> newRelations = myReason.getRelationsSPARQL(wordGroup1, wordGroup2);
+    		endTime = System.currentTimeMillis();
+    		System.out.println("getRelationsSPARQL took " + (endTime - startTime) + "ms");
+
+    		String message1 = MyWordnetReasoner.asCommaList(expectedRelations) + " is not " + MyWordnetReasoner.asCommaList(oldRelations);
+    		String message2 = MyWordnetReasoner.asCommaList(expectedRelations) + " is not " + MyWordnetReasoner.asCommaList(newRelations);
+    		
+    		Assert.assertTrue(message1, oldRelations.containsAll(expectedRelations) && expectedRelations.containsAll(oldRelations));
+    		Assert.assertTrue(message2, newRelations.containsAll(expectedRelations) && expectedRelations.containsAll(newRelations));
+    	}
+    }
+    */
+    
+    /***** Older getRelations for comparison purposes.
+     * 
+	public List<Relation> getRelations(final List<Resource> synsetList1, final List<Resource> synsetList2) {
+		if(synsetList1 == null || synsetList2 == null ) {
+			throw new IllegalArgumentException("Synsets must not be null.");
+		}
+		List<Relation> relations = new ArrayList<Relation>();
+		    	
+		for(ModelType modelType : modelRelationMap.keySet()) {
+			Model model = this.getModel(modelType);
+			for(Resource synset1 : synsetList1) {
+		    	StmtIterator statements = model.listStatements(synset1, modelRelationPropertyMap.get(modelType), (RDFNode)null);
+				while(statements.hasNext()) {
+					Statement statement = statements.nextStatement();
+					logger.debug(statement.toString());
+					if(statement.getObject().isResource() && synsetList2.contains(statement.getObject().asResource())) {
+						relations.add(this.modelRelationMap.get(modelType));
+					} 
+				}
+			}
+			
+			for(Resource synset2 : synsetList2) {
+		    	StmtIterator statements = model.listStatements(synset2, modelRelationPropertyMap.get(modelType), (RDFNode)null);
+				while(statements.hasNext()) {
+					Statement statement = statements.nextStatement();
+					logger.debug(statement.toString());
+					if(statement.getObject().isResource() && synsetList1.contains(statement.getObject().asResource())) {
+						relations.add(this.modelRelationMap.get(modelType).getInverse());
+					} 
+				}
+			}
+		}	
+		if(relations.size() > 0) {
+			return relations;
+		} else {
+			return Collections.singletonList(Relation.NONE);
+		}
+	}
+	*/
+
+    
     /*
     @Test
     public void testSynsetEquivalentsInSparql() {
