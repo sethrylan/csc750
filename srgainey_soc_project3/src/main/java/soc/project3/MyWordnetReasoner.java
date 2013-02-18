@@ -20,7 +20,6 @@ import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.util.FileManager;
 
@@ -28,14 +27,15 @@ public class MyWordnetReasoner {
 	
     private static Logger logger = LoggerFactory.getLogger(MyWordnetReasoner.class);
         
-    public enum ModelType {CORE, CAUSES, ENTAILMENT, HYPONYM, MERONYM_MEMBER, MERONYM_SUBSTANCE, MERONYM_PART};
+    public enum ModelType {CORE, UNIFIED};
     
-    private Map<ModelType, Relation> modelRelationMap = null;
-    private Map<ModelType, Property> modelRelationPropertyMap = null;
+//    private Map<ModelType, Relation> modelRelationMap = null;
+//    private Map<ModelType, Property> modelRelationPropertyMap = null;
     private static final Map<String, Relation> resourceStringToRelationMap = new HashMap<String, Relation>() {{
     	put("causes", Relation.CAUSE);
     	put("entails", Relation.ENTAILMENT);
     	put("hyponymOf", Relation.HYPONYMY);
+    	put("meronymOf", Relation.MERONYMY);
     	put("memberMeronymOf", Relation.MERONYMY);
     	put("partMeronymOf", Relation.MERONYMY);
     	put("substanceMeronymOf", Relation.MERONYMY);
@@ -49,16 +49,11 @@ public class MyWordnetReasoner {
 	private static final String WORDNET_MERONYM_SUBSTANCE = "wordnet-substancemeronym.rdf";
 	private static final String WORDNET_MERONYM_PART = "wordnet-partmeronym.rdf";
 	
+	public static String WNBASIC_OWL = "wnbasic.owl";
+	
 	private static final String WN20SCHEMA = "http://www.w3.org/2006/03/wn/wn20/schema/";
 	
 	private Model coreModel = null;
-	private Model causesModel = null;
-	private Model entailmentModel = null;
-	private Model hyponymModel = null;
-	private Model meronymMemberModel = null;
-	private Model meronymSubstanceModel = null;
-	private Model meronymPartModel = null;
-	
 	private Model unifiedModel = null;
 	
 	/**
@@ -85,7 +80,6 @@ public class MyWordnetReasoner {
 		
 		List<String> wordGroup1 = Arrays.asList(args[0].split("\\s*,\\s*"));
 		List<String> wordGroup2 = Arrays.asList(args[1].split("\\s*,\\s*"));
-		
 		MyWordnetReasoner myReasoner = new MyWordnetReasoner();
 		List<Resource> synsets1, synsets2 = null;
 		synsets1 = myReasoner.getSynsets(wordGroup1);
@@ -110,42 +104,16 @@ public class MyWordnetReasoner {
 
 	@SuppressWarnings("serial")
 	public MyWordnetReasoner() {
-		// create an empty model and read from file
 		coreModel = FileManager.get().loadModel(WORDNET_CORE);
-		entailmentModel = FileManager.get().loadModel(WORDNET_ENTAILMENT);
-		causesModel = FileManager.get().loadModel(WORDNET_CAUSES);
-		hyponymModel = FileManager.get().loadModel(WORDNET_HYPONYM);
-		meronymMemberModel = FileManager.get().loadModel( WORDNET_MERONYM_MEMBER);	
-		meronymSubstanceModel = FileManager.get().loadModel(WORDNET_MERONYM_SUBSTANCE);	
-		meronymPartModel = FileManager.get().loadModel(WORDNET_MERONYM_PART);	
-
-		this.modelRelationMap = new HashMap<ModelType, Relation>() {{
-	    	put(ModelType.CAUSES, Relation.CAUSE);
-	    	put(ModelType.ENTAILMENT, Relation.ENTAILMENT);
-	    	put(ModelType.HYPONYM, Relation.HYPONYMY);
-	    	put(ModelType.MERONYM_MEMBER, Relation.MERONYMY);
-	    	put(ModelType.MERONYM_SUBSTANCE, Relation.MERONYMY);
-	    	put(ModelType.MERONYM_PART, Relation.MERONYMY);
-	    }};
-		
-		this.modelRelationPropertyMap = new HashMap<ModelType, Property>() {{
-	    	put(ModelType.CAUSES, causesModel.getProperty(WN20SCHEMA + "causes"));
-	    	put(ModelType.ENTAILMENT, entailmentModel.getProperty(WN20SCHEMA + "entails"));
-	    	put(ModelType.HYPONYM, hyponymModel.getProperty(WN20SCHEMA + "hyponymOf"));
-	    	put(ModelType.MERONYM_MEMBER, meronymMemberModel.getProperty(WN20SCHEMA + "memberMeronymOf"));
-	    	put(ModelType.MERONYM_SUBSTANCE, meronymSubstanceModel.getProperty(WN20SCHEMA + "substanceMeronymOf"));
-	    	put(ModelType.MERONYM_PART, meronymPartModel.getProperty(WN20SCHEMA + "partMeronymOf"));
-	    }};
-	    
-		this.unifiedModel = ModelFactory.createOntologyModel(OntModelSpec.RDFS_MEM_RDFS_INF );
+		Model ontologyModel = FileManager.get().loadModel( WNBASIC_OWL );
+		this.unifiedModel = ModelFactory.createOntologyModel(OntModelSpec.RDFS_MEM_RDFS_INF, ontologyModel);
 		this.unifiedModel.add(coreModel, Boolean.TRUE); // include reified statements
-		this.unifiedModel.add(entailmentModel, Boolean.TRUE); // include reified statements
-		this.unifiedModel.add(causesModel, Boolean.TRUE); // include reified statements
-		this.unifiedModel.add(hyponymModel, Boolean.TRUE); // include reified statements
-		this.unifiedModel.add(meronymMemberModel, Boolean.TRUE); // include reified statements
-		this.unifiedModel.add(meronymPartModel, Boolean.TRUE); // include reified statements
-		this.unifiedModel.add(meronymSubstanceModel, Boolean.TRUE); // include reified statements
-	    
+		this.unifiedModel.add(FileManager.get().loadModel(WORDNET_ENTAILMENT), Boolean.TRUE); // include reified statements
+		this.unifiedModel.add(FileManager.get().loadModel(WORDNET_CAUSES), Boolean.TRUE); // include reified statements
+		this.unifiedModel.add(FileManager.get().loadModel(WORDNET_HYPONYM), Boolean.TRUE); // include reified statements
+		this.unifiedModel.add(FileManager.get().loadModel( WORDNET_MERONYM_MEMBER), Boolean.TRUE); // include reified statements
+		this.unifiedModel.add(FileManager.get().loadModel(WORDNET_MERONYM_SUBSTANCE), Boolean.TRUE); // include reified statements
+		this.unifiedModel.add(FileManager.get().loadModel(WORDNET_MERONYM_PART), Boolean.TRUE); // include reified statements
 	}
 	
 	/**
@@ -223,7 +191,7 @@ public class MyWordnetReasoner {
 		while(results.hasNext()) {
 			Resource next = results.next().getResource("relation");
 			if(next != null) {
-				//System.out.println(next);
+//				System.out.println(next);
 				Relation relation = resourceStringToRelationMap.get(next.getLocalName()).getInverse();
 				//System.out.println(relation);
 				relations.add(relation);
@@ -254,18 +222,8 @@ public class MyWordnetReasoner {
 		switch(modelType) {
 			case CORE:
 				return this.coreModel;
-			case CAUSES:
-				return this.causesModel;
-			case ENTAILMENT:
-				return this.entailmentModel;
-			case HYPONYM:
-				return this.hyponymModel;
-			case MERONYM_MEMBER:
-				return this.meronymMemberModel;
-			case MERONYM_SUBSTANCE:
-				return this.meronymSubstanceModel;
-			case MERONYM_PART:
-				return this.meronymPartModel;
+			case UNIFIED:
+				return this.unifiedModel;
 			default:
 				return null;		
 		}

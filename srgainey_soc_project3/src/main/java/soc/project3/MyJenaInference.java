@@ -186,7 +186,7 @@ public class MyJenaInference {
 				+ "SELECT ?synset1 ?synset2 "
 						+ "WHERE { "
 						+ " ?synset1 wn20schema:hyponymOf ?synset2 . "
-						+ " ?synset2 wn20schema:entails ?synset1"  
+						//+ " ?synset2 wn20schema:entails ?synset1"  
 						+ "} "
 						+ "LIMIT 10";
 
@@ -217,27 +217,6 @@ public class MyJenaInference {
 				+ "?synset2 wn20schema:senseLabel \"take a breath\"@en-US . "
 				+ "?synset2 ?irelation ?synset1"
 				+ "}	 ";
-
-		
-		String testWordsToRelationship2 = 
-				"PREFIX  wn20schema: <http://www.w3.org/2006/03/wn/wn20/schema/> "
-				+ "	SELECT  ?synset1 ?relation ?synset2 "
-				+ "	WHERE   {  "
-				+ "?synset1 wn20schema:senseLabel \"do\"@en-US . "
-				+ "?synset2 wn20schema:senseLabel \"make\"@en-US . "
-				+ "?synset1 ?relation ?synset2 "
-				+ "}	 ";
-		
-		String testWordsToInverseRelationship2 = 
-				"PREFIX  wn20schema: <http://www.w3.org/2006/03/wn/wn20/schema/> "
-				+ "	SELECT  ?synset1 ?relation ?irelation ?synset2 "
-				+ "	WHERE   {  "
-				+ "?synset1 wn20schema:senseLabel \"do\"@en-US . "
-				+ "?synset1 wn20schema:senseLabel \"make\"@en-US . "
-				+ "?synset1 ?relation ?synset2 "
-				+ "?synset2 ?irelation ?synset1 "
-				+ "}	 ";
-
 		
 		String partTwoTest1 = 
 				"PREFIX  wn20schema: <http://www.w3.org/2006/03/wn/wn20/schema/> "
@@ -248,7 +227,7 @@ public class MyJenaInference {
 				+ "?synset1 ?relation+ ?synset2"
 				+ "}	 ";
 
-		Query query = QueryFactory.create(testWordsToInverseRelationship2);
+		Query query = QueryFactory.create(showMultipleRelations);
 		QueryExecution qe = QueryExecutionFactory.create(query, unifiedModel);
 		ResultSet results = qe.execSelect();
 //		while(results.hasNext()) {
