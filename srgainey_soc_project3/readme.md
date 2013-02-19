@@ -3,6 +3,15 @@ SPARQL Query Interface to WordNet:
 http://wordnet.rkbexplorer.com/sparql/
 
 
+    'entails': 'Entails',
+    'hyponymOf': 'IsA',
+    'instanceOf': 'InstanceOf',
+    'memberMeronymOf': 'MemberOf',
+    'partMeronymOf': 'PartOf',
+    'sameVerbGroupAs': 'SimilarTo',
+    'similarTo': 'SimilarTo',
+    'substanceMeronymOf': '~MadeOf',
+
 
 ## WordNet files
 Core:

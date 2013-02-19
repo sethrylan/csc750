@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +19,7 @@ import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.ResultSet;
+import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
@@ -36,9 +38,9 @@ public class MyWordnetReasoner {
     	put("entails", Relation.ENTAILMENT);
     	put("hyponymOf", Relation.HYPONYMY);
     	put("meronymOf", Relation.MERONYMY);
-    	put("memberMeronymOf", Relation.MERONYMY);
-    	put("partMeronymOf", Relation.MERONYMY);
-    	put("substanceMeronymOf", Relation.MERONYMY);
+//    	put("memberMeronymOf", Relation.MERONYMY);
+//    	put("partMeronymOf", Relation.MERONYMY);
+//    	put("substanceMeronymOf", Relation.MERONYMY);
     }};
     
 	private static final String WORDNET_CORE = "wordnet-senselabels.rdf";
@@ -51,7 +53,7 @@ public class MyWordnetReasoner {
 	
 	public static String WNBASIC_OWL = "wnbasic.owl";
 	
-	private static final String WN20SCHEMA = "http://www.w3.org/2006/03/wn/wn20/schema/";
+	protected static final String WN20SCHEMA = "http://www.w3.org/2006/03/wn/wn20/schema/";
 	
 	private Model coreModel = null;
 	private Model unifiedModel = null;
@@ -146,7 +148,22 @@ public class MyWordnetReasoner {
 			return synsets;			
 		}
 	}
+	
+	
+	/* see http://www.w3.org/TR/sparql11-query/#propertypath-arbitrary-length
+	 * see http://jena.sourceforge.net/ARQ/property_paths.html
+SELECT ?relation
+WHERE
+  { ?synset1 wn20schema:senseLabel "learn"@en-US .
+    ?synset1 wn20schema:senseLabel "acquire"@en-US .
+    ?synset2 wn20schema:senseLabel "teach"@en-US .
+    ?synset2 wn20schema:senseLabel "instruct"@en-US .
+    ?synset1 ?relation ?synset2
+  }
 
+	 * 
+	 * 
+	 */
 	public List<Relation> getRelations(final List<String> wordGroup1, final List<String> wordGroup2) {
 		if(wordGroup1 == null || wordGroup2.size() == 0 || wordGroup2 == null || wordGroup2.size() == 0) {
 			throw new IllegalArgumentException("WordGroups must have 1 or more elements.");
@@ -177,7 +194,7 @@ public class MyWordnetReasoner {
 		while(results.hasNext()) {
 			Resource next = results.next().getResource("relation");
 			if(next != null) {
-				//System.out.println(next);
+				System.out.println(next);
 				Relation relation = resourceStringToRelationMap.get(next.getLocalName());
 				//System.out.println(relation);
 				relations.add(relation);
@@ -191,7 +208,7 @@ public class MyWordnetReasoner {
 		while(results.hasNext()) {
 			Resource next = results.next().getResource("relation");
 			if(next != null) {
-//				System.out.println(next);
+				System.out.println(next);
 				Relation relation = resourceStringToRelationMap.get(next.getLocalName()).getInverse();
 				//System.out.println(relation);
 				relations.add(relation);
@@ -204,16 +221,48 @@ public class MyWordnetReasoner {
 		} else {
 			return Collections.singletonList(Relation.NONE);
 		}
+		
+	/*
+		queryBaseSb.append("PREFIX  wn20instances:<http://www.w3.org/2006/03/wn/wn20/instances/> ");
+		queryBaseSb.append("SELECT ?relation ");
+		queryBaseSb.append("WHERE { ");
+		StringBuilder relationQuerySb = new StringBuilder(queryBaseSb);
+		StringBuilder inverseRelationQuerySb = new StringBuilder(queryBaseSb);
+		relationQuerySb.append("	?synset1 ?relation ?synset2");
+		inverseRelationQuerySb.append("	?synset2 ?relation ?synset1");
+		StringBuilder filterSb = new StringBuilder();
+		filterSb.append("	FILTER(?synset1 = ");
+		String delimiter = "";
+		for(Resource synset : synsets1) {
+			filterSb.append(delimiter);
+			filterSb.append("wn20instances:" + synset.getLocalName());			
+			delimiter = " || ";
+		}
+		filterSb.append("  && ?synset2 = ");
+		delimiter = "";
+		for(Resource synset : synsets2) {
+			filterSb.append(delimiter);
+			filterSb.append("wn20instances:" + synset.getLocalName());			
+			delimiter = " || ";
+		}
 
+		relationQuerySb.append(filterSb).append(") }");
+		inverseRelationQuerySb.append(filterSb).append(") }");
+*/
 	}
 		
 	protected static String asCommaList(final Collection collection) {
 		StringBuilder sb = new StringBuilder();
 		String delimiter = "";
 		for(Object o : collection) {
-			sb.append(delimiter)
-			.append(o.toString());
-			delimiter = ",";
+			if(o == null) {
+				sb.append(delimiter)
+				.append("NULL");
+			} else {
+				sb.append(delimiter)
+				.append(o.toString());
+				delimiter = ",";
+			}
 		}
 		return sb.toString();
 	}
@@ -228,4 +277,27 @@ public class MyWordnetReasoner {
 				return null;		
 		}
 	}
+	
+	
+	public long getTriplesCount() {
+		// see http://code.google.com/p/void-impl/wiki/SPARQLQueriesForStatistics
+		String queryString = "SELECT (COUNT(*) AS ?numberTriples) { ?s ?p ?o  }";
+		Query query = QueryFactory.create(queryString);
+		QueryExecution qe = QueryExecutionFactory.create(query, unifiedModel);
+		ResultSet results = qe.execSelect(); // ( ?numberTriples = 782810 )
+		long n = results.next().getLiteral("numberTriples").getLong();
+		qe.close();	
+		return n;
+	}
+	
+	public long getEntitesCount() {
+		String queryString = "SELECT COUNT(distinct ?s) AS ?numberEntities { ?s a []  }";
+		Query query = QueryFactory.create(queryString);
+		QueryExecution qe = QueryExecutionFactory.create(query, unifiedModel);
+		ResultSet results = qe.execSelect();
+		long n = results.next().getLiteral("numberEntities").getLong();
+		qe.close();	
+		return n;
+	}
+	
 }

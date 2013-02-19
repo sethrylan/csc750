@@ -76,23 +76,35 @@ public class MyJenaInference {
 
 	
 	public void infer() {
-
+		
 		// returns every synset
 		String queryString =
                 "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
                 + "PREFIX wn:<http://www.webkb.org/theKB_terms.rdf/wn#> "
-                + "SELECT ?s "
+                + "SELECT ?s ?o "
                 + "WHERE {"
                 + "  ?s    rdf:type   ?o  . "
-                + "      }";
-
-		// returns synset with these two lexemes
-		String query2 = 
-				"PREFIX  wn20schema: <http://www.w3.org/2006/03/wn/wn20/schema/> "
-				+ "	SELECT  ?synset "
-				+ "	WHERE   { ?synset wn20schema:senseLabel \"bank\"@en-US . "
-				+ "			  ?synset wn20schema:senseLabel  \"bank building\"@en-US . "
-				+ "}	 ";
+                + "      } LIMIT 1000";
+				
+		String queryString2 =
+                "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
+                + "PREFIX wn:<http://www.webkb.org/theKB_terms.rdf/wn#> "
+                + "SELECT ?s ?p ?o "
+                + "WHERE {"
+                + "  ?s    ?p   ?o  . "
+                + "      } LIMIT 1000";
+		
+		
+		String synsetByName =
+                "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
+				+ "PREFIX  wn20schema: <http://www.w3.org/2006/03/wn/wn20/schema/> "
+				+ "PREFIX  wn20instances: <http://www.w3.org/2006/03/wn/wn20/instances/>"
+				+ "PREFIX  rdfs: <http://www.w3.org/2000/01/rdf-schema#> " 
+                + "SELECT  DISTINCT ?synset "
+                + "WHERE {"
+                + "   ?synset ?p ?o    .  " 
+				+ "   FILTER ( ?synset = wn20instances:synset-tank-noun-1) "
+                + "      } LIMIT 1000";
 
 		/**
 		 * Shows properties
@@ -167,7 +179,6 @@ public class MyJenaInference {
 						+ "?hypo wn20schema:hyponymOf+ wn20instances:synset-social_relation-noun-1 "
 						+ "}"
 						+ "LIMIT 10";
-//		+ "UNION {?hyponym wn20schema:hyponymOf+ wn20instances:synset-remember-verb-1 } "
 
 		// all the relationships between two synsets
 		String showRelationships = 
@@ -175,59 +186,70 @@ public class MyJenaInference {
 				+ "PREFIX  wn20instances: <http://www.w3.org/2006/03/wn/wn20/instances/>"
 				+ "SELECT ?relation "
 						+ "WHERE { "
-						+ "wn20instances:synset-remind-verb-1 ?relation wn20instances:synset-remember-verb-1 . "
+						+ "?synset1 ?relation ?synset2 . "
+						+ "FILTER(?synset1 = wn20instances:synset-call-verb-2 && " +
+						"		?synset2 = wn20instances:synset-dial-verb-1 || wn20instances:synset-dial-verb-2 || wn20instances:synset-dial-noun-2 || wn20instances:synset-dial-noun-3 || wn20instances:synset-dial-noun-4 || wn20instances:synset-dial-noun-1)"
 						+ "}"
 						+ "LIMIT 10";
 
-
+		// not working
 		String showMultipleRelations =
 				"PREFIX  wn20schema: <http://www.w3.org/2006/03/wn/wn20/schema/> "
 				+ "PREFIX  wn20instances: <http://www.w3.org/2006/03/wn/wn20/instances/>"
-				+ "SELECT ?synset1 ?synset2 "
+				+ "SELECT ?synset1 ?relation1 ?relation2 ?synset2 "
 						+ "WHERE { "
-						+ " ?synset1 wn20schema:hyponymOf ?synset2 . "
-						//+ " ?synset2 wn20schema:entails ?synset1"  
+						+ " ?synset1 ?relation1 ?synset2 . "  
+						+ " ?synset1 ?relation2 ?synset2 . "
+						+ " FILTER ( ?relation1 = wn20schema:causes || wn20schema:entails  "
+						+ "       && ?relation2 =                                            wn20schema:hyponymOf  || wn20schema:meronymOf  || wn20schema:memberMeronymOf  || wn20schema:partMeronymOf  ||  wn20schema:substanceMeronymOf "
+						//+ "       && ?relation1 != ?relation2"
+						+ ") "
 						+ "} "
 						+ "LIMIT 10";
-
-		String testWordsToRelationship = 
-				"PREFIX  wn20schema: <http://www.w3.org/2006/03/wn/wn20/schema/> "
-				+ "	SELECT  ?synset1 ?relation ?synset2 "
-				+ "	WHERE   {  "
-				+ "?synset1 wn20schema:senseLabel \"breathe in\"@en-US . "
-				+ "?synset1 wn20schema:senseLabel \"inhale\"@en-US . "
-				+ "?synset1 wn20schema:senseLabel \"inspire\"@en-US . "
-				+ "?synset2 wn20schema:senseLabel \"breathe\"@en-US . "
-				+ "?synset2 wn20schema:senseLabel \"respire\"@en-US . "
-				+ "?synset2 wn20schema:senseLabel \"suspire\"@en-US . "
-				+ "?synset2 wn20schema:senseLabel \"take a breath\"@en-US . "
-				+ "?synset1 ?relation ?synset2 "
-				+ "}	 ";
-		
-		String testWordsToInverseRelationship = 
-				"PREFIX  wn20schema: <http://www.w3.org/2006/03/wn/wn20/schema/> "
-				+ "	SELECT  ?synset1 ?irelation ?synset2 "
-				+ "	WHERE   {  "
-				+ "?synset1 wn20schema:senseLabel \"breathe in\"@en-US . "
-				+ "?synset1 wn20schema:senseLabel \"inhale\"@en-US . "
-				+ "?synset1 wn20schema:senseLabel \"inspire\"@en-US . "
-				+ "?synset2 wn20schema:senseLabel \"breathe\"@en-US . "
-				+ "?synset2 wn20schema:senseLabel \"respire\"@en-US . "
-				+ "?synset2 wn20schema:senseLabel \"suspire\"@en-US . "
-				+ "?synset2 wn20schema:senseLabel \"take a breath\"@en-US . "
-				+ "?synset2 ?irelation ?synset1"
-				+ "}	 ";
 		
 		String partTwoTest1 = 
 				"PREFIX  wn20schema: <http://www.w3.org/2006/03/wn/wn20/schema/> "
 				+ "	SELECT  ?synset1 ?relation ?synset2 "
 				+ "	WHERE   {  "
 				+ "?synset1 wn20schema:senseLabel \"social relation\"@en-US . "
-				+ "?synset1 wn20schema:senseLabel \"abstraction\"@en-US . "
-				+ "?synset1 ?relation+ ?synset2"
+				+ "?synset2 wn20schema:senseLabel \"abstraction\"@en-US . "
+				+ "   VALUES ?relation { ^wn20schema:causes wn20schema:entails } . "
+				+ "?synset1 ?relation ?synset2 . "
+				// + "?synset1 ^wn20schema:hyponymOf+ ?synset2 . "
+				//+ gives inverse relations "?synset1 ^wn20schema:hyponymOf+ ?synset2 . "
+				//works + "?synset1 wn20schema:hyponymOf+ ?synset2"
+				//works sort of + "?synset1 ( wn20schema:causes | wn20schema:entails  | wn20schema:hyponymOf  | wn20schema:meronymOf  | wn20schema:memberMeronymOf  | wn20schema:partMeronymOf  |  wn20schema:substanceMeronymOf)+ ?synset2 "
+				//+ " FILTER ( ?relation IN (wn20schema:causes,  wn20schema:entails,  wn20schema:hyponymOf, wn20schema:meronymOf, wn20schema:memberMeronymOf, wn20schema:partMeronymOf , wn20schema:substanceMeronymOf ) "
+				//+ " ) "
 				+ "}	 ";
+		
+		String showLabels = 
+				"PREFIX  rdfs: <http://www.w3.org/2000/01/rdf-schema#> " 
+				+ "	SELECT  ?thing ?label "
+				+ "	WHERE   {  "
+				+ "?thing rdfs:label \" \" . "
+				+ "}	LIMIT 100 ";
 
-		Query query = QueryFactory.create(showMultipleRelations);
+		String partTwoTest2 = 
+				"PREFIX  wn20schema: <http://www.w3.org/2006/03/wn/wn20/schema/> "
+				+ "	PREFIX ff: <http://factforge.net/> "
+				+ "		SELECT ?synset "
+				+ "		WHERE { "
+				+ "		    ?synset wn20schema:hypernymOf [ wn20schema:senseLabel ?genLex ] . "
+				+ "		    FILTER (regex(STR(?genLex),\"^banana\",\"i\")) . "
+				+ "		} LIMIT 20 ";
+		
+		String partTwoTestMeronymRelations = 
+				"PREFIX  wn20schema: <http://www.w3.org/2006/03/wn/wn20/schema/> "
+				+ "	SELECT  ?synset1 ?relation ?synset2 "
+				+ "	WHERE   {  "
+				+ "?synset1 wn20schema:senseLabel \"warp\"@en-US . "
+				+ "?synset2 wn20schema:senseLabel \"fabric\"@en-US . "
+				+ "?synset2 wn20schema:senseLabel \"textile\"@en-US . "
+				+ "?synset1 ?relation ?synset2 . "
+				+ "}";
+				
+		Query query = QueryFactory.create(partTwoTestMeronymRelations);
 		QueryExecution qe = QueryExecutionFactory.create(query, unifiedModel);
 		ResultSet results = qe.execSelect();
 //		while(results.hasNext()) {
@@ -249,56 +271,5 @@ public class MyJenaInference {
 		
 	}
     
-    
-	// TODO: doesn't get inverse relations
-	public List<Relation> getRelationsSparql(final List<Resource> synsetList1, final List<Resource> synsetList2) {
-		if(synsetList1 == null || synsetList2 == null ) {
-			throw new IllegalArgumentException("Synsets must not be null.");
-		}
-		List<Relation> relations = new ArrayList<Relation>();
 
-//		System.out.println("s1= " + asCommaList(synsetList1));
-//		System.out.println("s2= " + asCommaList(synsetList2));
-
-		StringBuilder querySb = new StringBuilder();
-		querySb.append("PREFIX  wn20schema: <http://www.w3.org/2006/03/wn/wn20/schema/> ");
-		querySb.append("PREFIX  wn20instances: <http://www.w3.org/2006/03/wn/wn20/instances/>" );
-		querySb.append("	SELECT  ?relation ");
-		querySb.append("	WHERE   { ");
-		
-		boolean firstInWhereClause = true;
-		for(Resource synset1 : synsetList1) {
-			for(Resource synset2 : synsetList2) {
-				querySb.append("		");
-				if(!firstInWhereClause) {
-					querySb.append("UNION");
-				}
-				querySb.append(" { wn20instances:" + synset1.getLocalName() + " ?relation wn20instances:" + synset2.getLocalName() + " } ");
-				firstInWhereClause = false;
-			}
-		}
-		querySb.append("	}");
-
-		System.out.println(querySb.toString());
-		Query query = QueryFactory.create(querySb.toString());
-		QueryExecution qe = QueryExecutionFactory.create(query, unifiedModel);
-		ResultSet results = qe.execSelect();
-//		ResultSetFormatter.out(System.out, results, query);
-		while(results.hasNext()) {
-			QuerySolution next = results.next();
-			System.out.println(next);
-			System.out.println("  " + next.getResource("relation").getLocalName());
-//			for(Entry<String, Relation> resourceStringRelation : resourceStringToRelationMap.entrySet()) {
-//				System.out.println("  " + next.getResource(resourceStringRelation.getKey()));
-//				if(next.getResource(resourceStringRelation.getKey()) != null ) {
-//					relations.add(resourceStringRelation.getValue());
-//				}
-//			}
-		}
-		qe.close();							
-		return relations;
-	}
-
-	
-	
 }
