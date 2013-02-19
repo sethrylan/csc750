@@ -27,7 +27,7 @@ javac -cp . MyWordnetReasoner.java
 java MyWordnetReasoner <wordGroup1> <wordGroup2>
 ```
 
-### Run Examples ###
+### Usage Examples ###
 
 ```
 java MyWordnetReasoner "call, ring" "dial"
@@ -90,7 +90,7 @@ Relationships are only derived from the first group to the second; however, the 
   </tr>
 </table>
 
-[2]: http://wordnet.princeton.edu/      	 "WordNet"
+[1]: http://wordnet.princeton.edu   "WordNet"
 [2]: http://en.wikipedia.org/wiki/Synonym_ring       "synset"
 
 
