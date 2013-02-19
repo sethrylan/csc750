@@ -4,36 +4,24 @@
 This application loads [WordNet] [1] RDF files and an OWL ontology to derive single-step and multiple-step (positive closure) relationships from one group of words to another, where each group represents a [synset] [2].
 
 ### Build instructions ###
-Verify that the following files are included in root project directory
-
- Core File:
-* wordnet-senselabels.rdf
-
-Relationship Files:
-* wordnet-causes.rdf
-* wordnet-entailment.rdf
-* wordnet-hyponym.rdf
-* wordnet-membermeronym.rdf
-* wordnet-partmeronym.rdf
-* wordnet-substancemeronym.rdf
-
-Ontology Files:
-* wnbasic.owl
+Verify that the following files are included in the root project directory:
+ * Core File: wordnet-senselabels.rdf
+ * Relationship Files: wordnet-causes.rdf, wordnet-entailment.rdf, wordnet-hyponym.rdf, wordnet-membermeronym.rdf, wordnet-partmeronym.rdf, wordnet-substancemeronym.rdf
+ * Ontology Files: wnbasic.owl
 
 Verify that the classpath includes the [Jena] [3] 2.7.4 libraries.
 
 Build using javac:
 
 ```
-javac -cp . MyWordnetReasoner.java
-java MyWordnetReasoner <wordGroup1> <wordGroup2>
+> javac -cp . MyWordnetReasoner.java
+> java MyWordnetReasoner <wordGroup1> <wordGroup2>
 ```
 
 ### Usage Examples ###
 
 ```
-java MyWordnetReasoner "call, ring" "dial"
-
+> java MyWordnetReasoner "call, ring" "dial"
 Calculating single-step relations...   	done
 	Entails
 Calculating positive-closure relations... 	done.
@@ -41,8 +29,7 @@ Calculating positive-closure relations... 	done.
 ```
 
 ```
-java MyWordnetReasoner "social relation" "abstraction"
-
+> java MyWordnetReasoner "social relation" "abstraction"
 Calculating single-step relations...   	done
 	Relationship unknown
 Calculating positive-closure relations... 	done.
@@ -50,8 +37,7 @@ Calculating positive-closure relations... 	done.
 ```
 
 ```
-java MyWordnetReasoner "teach, instruct" "learn, acquire"
-
+> java MyWordnetReasoner "teach, instruct" "learn, acquire"
 Calculating single-step relations...   	done
 	Causes
 Calculating positive-closure relations... 	done.
@@ -59,8 +45,7 @@ Calculating positive-closure relations... 	done.
 ```
 
 ```
-java MyWordnetReasoner "learn, acquire" "teach, instruct" 
-
+> java MyWordnetReasoner "learn, acquire" "teach, instruct" 
 Calculating single-step relations...   	done
 	Caused By
 Calculating positive-closure relations... 	done.
@@ -68,8 +53,11 @@ Calculating positive-closure relations... 	done.
 ```
 
 ### Fine Print ###
-Each group of words should represent a [synset] [2]; if it does not, then an error message will be displayed.
-
+Each group of words must represent a [synset] [2]; if it does not, then an error message will be displayed.
+E.g.,
+```
+Validating synsets... Invalid word-group: perspicacity,banana,skeuomorph
+```
 Relationships are only derived from the first group to the second; however, the reflective relationships (e.g., 'caused by' to 'causes') from group 1 to group 2 are also found.
 
 If more than one of the same relationship is found from wordgroup 1 to wordgroup 2 (e.g., "do" "make" has several hyponymOf and hypernymOf relationships), then only one of each type is displayed.
