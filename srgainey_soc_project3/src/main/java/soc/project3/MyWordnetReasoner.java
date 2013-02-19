@@ -86,11 +86,11 @@ public class MyWordnetReasoner {
 		List<String> wordGroup1 = Arrays.asList(args[0].toLowerCase().split("\\s*,\\s*"));
 		List<String> wordGroup2 = Arrays.asList(args[1].toLowerCase().split("\\s*,\\s*"));
 		
-		System.out.print("Loading WordNet files... ");
+		uiPrint("Loading WordNet files... ");
 		MyWordnetReasoner myReasoner = new MyWordnetReasoner();
-		System.out.println("\t\t\tdone");
+		uiPrint("\t\t\tdone\n");
 
-		System.out.print("Validating synsets... ");
+		uiPrint("Validating synsets... ");
 		Set<Resource> synsets1, synsets2 = null;
 		synsets1 = myReasoner.getSynsets(wordGroup1);
 		synsets2 = myReasoner.getSynsets(wordGroup2);
@@ -107,18 +107,26 @@ public class MyWordnetReasoner {
 		if(!validWordGroups) {
 			System.exit(1);
 		}
-		System.out.println("\t\t\t\tdone");
+		uiPrint("\t\t\t\tdone\n");
 
-		System.out.print("Calculating single-step relations... ");
-		Set<Relation> relations = myReasoner.getRelations(synsets1, synsets2, false);
-		System.out.println("\t\tdone");
-		System.out.println("\t" + asCommaList(relations));
+		uiPrint("Calculating single-step relations... ");
+		//Set<Relation> relations = myReasoner.getRelations(synsets1, synsets2, false);
+		uiPrint("\t\tdone\n");
+		//System.out.println(asCommaList(relations));
 		
-		System.out.print("Calculating positive-closure relations... ");
-		Set<Relation> positiveClosureelations = myReasoner.getRelations(synsets1, synsets2, true);
-		System.out.println("\tdone.");
-		System.out.println("\t" + asCommaList(positiveClosureelations));
+		uiPrint("Calculating positive-closure relations... ");
+		Set<Relation> positiveClosurelations = myReasoner.getRelations(synsets1, synsets2, true);
+		uiPrint("\tdone\n");
+		System.out.println(asCommaList(positiveClosurelations));
 
+	}
+	
+	private static void uiPrint(String string) {
+		boolean print = false;
+		if(print)  {
+			System.out.println(string);
+		}
+		
 	}
 
 	/**
@@ -127,12 +135,16 @@ public class MyWordnetReasoner {
 	public MyWordnetReasoner() {
 		coreModel = FileManager.get().loadModel(WORDNET_CORE);
 		Model ontologyModel = FileManager.get().loadModel( WNBASIC_OWL );
+		/**
+		 *  NOTE: While the transitive inference reasoners (RDFS_MEM_TRANS_INF) are faster, they do not handle single-step relations.
+		 */
 		this.unifiedModel = ModelFactory.createOntologyModel(OntModelSpec.RDFS_MEM_RDFS_INF, ontologyModel);
-		this.unifiedModel.add(coreModel, Boolean.TRUE); // includes reified statements
+	 	// includes reified statements
+		this.unifiedModel.add(coreModel, Boolean.TRUE);
 		this.unifiedModel.add(FileManager.get().loadModel(WORDNET_ENTAILMENT), Boolean.TRUE);
 		this.unifiedModel.add(FileManager.get().loadModel(WORDNET_CAUSES), Boolean.TRUE); 
 		this.unifiedModel.add(FileManager.get().loadModel(WORDNET_HYPONYM), Boolean.TRUE);
-		this.unifiedModel.add(FileManager.get().loadModel( WORDNET_MERONYM_MEMBER), Boolean.TRUE);
+		this.unifiedModel.add(FileManager.get().loadModel(WORDNET_MERONYM_MEMBER), Boolean.TRUE);
 		this.unifiedModel.add(FileManager.get().loadModel(WORDNET_MERONYM_SUBSTANCE), Boolean.TRUE); 
 		this.unifiedModel.add(FileManager.get().loadModel(WORDNET_MERONYM_PART), Boolean.TRUE); 
 	}

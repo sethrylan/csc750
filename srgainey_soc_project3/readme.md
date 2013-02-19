@@ -22,42 +22,39 @@ Build using javac:
 
 ```
 > java MyWordnetReasoner "call, ring" "dial"
-Calculating single-step relations...   	done
-	Entails
-Calculating positive-closure relations... 	done.
 	Entails
 ```
-
+```
+> java MyWordnetReasoner "do" "make"
+	Hypernym Of,Hyponym
+```
 ```
 > java MyWordnetReasoner "social relation" "abstraction"
-Calculating single-step relations...   	done
-	Relationship unknown
-Calculating positive-closure relations... 	done.
 	Hyponym
 ```
 
 ```
 > java MyWordnetReasoner "teach, instruct" "learn, acquire"
-Calculating single-step relations...   	done
-	Causes
-Calculating positive-closure relations... 	done.
 	Causes
 ```
 
 ```
 > java MyWordnetReasoner "learn, acquire" "teach, instruct" 
-Calculating single-step relations...   	done
 	Caused By
-Calculating positive-closure relations... 	done.
-	Caused By
+```
+
+```
+> java MyWordnetReasoner "perspicacity" "skeuomorph" 
+	Relationship unknown
 ```
 
 ### Fine Print ###
 Each group of words must represent a [synset] [2]; if it does not, then an error message will be displayed.
-E.g.,
 ```
-Validating synsets... Invalid word-group: perspicacity,banana,skeuomorph
+> java MyWordnetReasoner "salacious,banana" "cheese" 
+	Invalid word-group: salacious,banana
 ```
+
 Relationships are only derived from the first group to the second; however, the reflective relationships (e.g., 'caused by' to 'causes') from group 1 to group 2 are also found.
 
 If more than one of the same relationship is found from wordgroup 1 to wordgroup 2 (e.g., "do" "make" has several hyponymOf and hypernymOf relationships), then only one of each type is displayed.
@@ -84,7 +81,6 @@ If more than one of the same relationship is found from wordgroup 1 to wordgroup
 
 [1]: http://wordnet.princeton.edu   "WordNet"
 [2]: http://en.wikipedia.org/wiki/Synonym_ring       "synset"
-
 [3]: http://jena.apache.org/download/index.html       "Jena"
 
 
