@@ -24,13 +24,21 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.util.FileManager;
 
+/**
+ * A class detecting synsets (en.wikipedia.org/wiki/Synonym_ring) inferring relationships in the WordNet dataset using the 
+ * properties senseLabel, hyponymOf, meronymOf, causes, entails and their reflections (i.e., 'caused 
+ * by' to 'causes', 'holonym of' to 'hyponymOf').
+ * 
+ * @author srgainey
+ */
 public class MyWordnetReasoner {
 	
     private static Logger logger = LoggerFactory.getLogger(MyWordnetReasoner.class);
         
     public enum ModelType {CORE, UNIFIED};
     
-    protected static final Map<String, Relation> resourceStringToRelationMap = new HashMap<String, Relation>() {{
+    @SuppressWarnings("serial")
+	protected static final Map<String, Relation> resourceStringToRelationMap = new HashMap<String, Relation>() {{
     	put("causes", Relation.CAUSE);
     	put("entails", Relation.ENTAILMENT);
     	put("hyponymOf", Relation.HYPONYMY);
@@ -56,8 +64,7 @@ public class MyWordnetReasoner {
 	private Model unifiedModel = null;
 	
 	/**
-	 * Given two comma-delimted lists of words, if both lists represent
-	 * synsets (set of synonyms in WordNet), then the program displays 
+	 * Given two comma-delimted lists of words, if both lists represent synsets, then the program displays 
 	 * all of potential relationships from the first synset to the 
 	 * second synset
 	 * 
@@ -68,7 +75,7 @@ public class MyWordnetReasoner {
 	 * <i>Cause</i>: java MyWordnetReasoner "teach, instruct", "learn, acquire" -> "Causes"
 	 * If no relationship exists between the two synsets, then the program prints "Relationship unknown".
 	 *
-	 * @param args commandline arguments of two comma-delimited strings representing word groups
+	 * @param args commandline arguments of two quoted, comma-delimited strings representing word groups
 	 */
 	public static void main(String args[]) {
 		if (args.length != 2) {
@@ -79,7 +86,12 @@ public class MyWordnetReasoner {
 		
 		List<String> wordGroup1 = Arrays.asList(args[0].toLowerCase().split("\\s*,\\s*"));
 		List<String> wordGroup2 = Arrays.asList(args[1].toLowerCase().split("\\s*,\\s*"));
+		
+		System.out.print("Loading WordNet files... ");
 		MyWordnetReasoner myReasoner = new MyWordnetReasoner();
+		System.out.println("\t\t\tdone");
+
+		System.out.print("Validating synsets... ");
 		Set<Resource> synsets1, synsets2 = null;
 		synsets1 = myReasoner.getSynsets(wordGroup1);
 		synsets2 = myReasoner.getSynsets(wordGroup2);
@@ -96,45 +108,69 @@ public class MyWordnetReasoner {
 		if(!validWordGroups) {
 			System.exit(1);
 		}
+		System.out.println("\t\t\t\tdone");
 
+		System.out.print("Calculating single-step relations... ");
 		Set<Relation> relations = myReasoner.getRelations(synsets1, synsets2, false);
+		System.out.println("\t\tdone");
+		System.out.println("\t" + asCommaList(relations));
+		
+		System.out.print("Calculating positive-closure relations... ");
 		Set<Relation> positiveClosureelations = myReasoner.getRelations(synsets1, synsets2, true);
-		System.out.println(asCommaList(new HashSet<Relation>(relations)));
+		System.out.println("\tdone.");
+		System.out.println("\t" + asCommaList(positiveClosureelations));
+
 	}
 
+	/**
+	 * Creates an instance of the MyWordnetReasoner. This may take some time, depending on the size of the RDF files.
+	 */
 	public MyWordnetReasoner() {
 		coreModel = FileManager.get().loadModel(WORDNET_CORE);
 		Model ontologyModel = FileManager.get().loadModel( WNBASIC_OWL );
 		this.unifiedModel = ModelFactory.createOntologyModel(OntModelSpec.RDFS_MEM_RDFS_INF, ontologyModel);
 		this.unifiedModel.add(coreModel, Boolean.TRUE); // includes reified statements
-		this.unifiedModel.add(FileManager.get().loadModel(WORDNET_ENTAILMENT), Boolean.TRUE); // include reified statements
-		this.unifiedModel.add(FileManager.get().loadModel(WORDNET_CAUSES), Boolean.TRUE); // include reified statements
-		this.unifiedModel.add(FileManager.get().loadModel(WORDNET_HYPONYM), Boolean.TRUE); // include reified statements
-		this.unifiedModel.add(FileManager.get().loadModel( WORDNET_MERONYM_MEMBER), Boolean.TRUE); // include reified statements
-		this.unifiedModel.add(FileManager.get().loadModel(WORDNET_MERONYM_SUBSTANCE), Boolean.TRUE); // include reified statements
-		this.unifiedModel.add(FileManager.get().loadModel(WORDNET_MERONYM_PART), Boolean.TRUE); // include reified statements
+		this.unifiedModel.add(FileManager.get().loadModel(WORDNET_ENTAILMENT), Boolean.TRUE);
+		this.unifiedModel.add(FileManager.get().loadModel(WORDNET_CAUSES), Boolean.TRUE); 
+		this.unifiedModel.add(FileManager.get().loadModel(WORDNET_HYPONYM), Boolean.TRUE);
+		this.unifiedModel.add(FileManager.get().loadModel( WORDNET_MERONYM_MEMBER), Boolean.TRUE);
+		this.unifiedModel.add(FileManager.get().loadModel(WORDNET_MERONYM_SUBSTANCE), Boolean.TRUE); 
+		this.unifiedModel.add(FileManager.get().loadModel(WORDNET_MERONYM_PART), Boolean.TRUE); 
 	}
 	
-	
+	/**
+	 * Returns the set of relations from the synsets identified by all of the words in the first group to the synsets identified by all the word in the second group.
+	 * @param wordGroup1	the word group representing the synset from which to return relationships
+	 * @param wordGroup2	the word group to which to return relationships
+	 * @param positiveClosure	is true, the positive closure relationships (one or more steps) are returned; if false, only single-step relationships are returned
+	 * @see MyWordnetReasoner#getRelations(Set, Set, boolean)
+	 * @return	the set of relations from wordGroup1 to wordGroup2
+	 */
 	public Set<Relation> getRelations(final List<String> wordGroup1, final List<String> wordGroup2, boolean positiveClosure) {
 		return this.getRelations(this.getSynsets(wordGroup1), this.getSynsets(wordGroup2), positiveClosure);
 	}
+	
 	/**
-	 * 
-	 * 				"PREFIX  wn20schema: <http://www.w3.org/2006/03/wn/wn20/schema/> "
-				+ "PREFIX  wn20instances: <http://www.w3.org/2006/03/wn/wn20/instances/>"
-				+ "ASK  "
-						+ " { "
-						+ "?synset1 wn20schema:entails+ ?synset2 . "
-						+ "FILTER(?synset1 IN (wn20instances:synset-call-verb-2) && " +
-						"		?synset2 IN (wn20instances:synset-dial-verb-1, wn20instances:synset-dial-verb-2, wn20instances:synset-dial-noun-2, wn20instances:synset-dial-noun-3, wn20instances:synset-dial-noun-4, wn20instances:synset-dial-noun-1))"
-						+ "}"
-
-	 * @param synsets1
-	 * @param synsets2
+	 * Returns the set of relations from the first synset to the second.
+	 * @see <a href="http://www.w3.org/TR/sparql11-query/#propertypath-arbitrary-length">W3 SPARQL documentation on positive closure</a>
+	 * @see <a href="http://jena.sourceforge.net/ARQ/property_paths.html">Jena documentation on positive closure</a>
+	 * @param synsetSet1	the synset group representing the synset from which to return relationships
+	 * @param synsetSet2	the synset group to which to return relationships
+	 * @param positiveClosure	is true, the positive closure relationships (one or more steps) are returned; if false, only single-step relationships are returned
 	 * @return
 	 */
 	public Set<Relation> getRelations(final Set<Resource> synsetSet1, final Set<Resource> synsetSet2, boolean positiveClosure) {
+		/*
+		 * Creates a SPARQL query in the form:
+		 * 
+		 * PREFIX  wn20schema: <http://www.w3.org/2006/03/wn/wn20/schema/>
+		 * PREFIX  wn20instances: <http://www.w3.org/2006/03/wn/wn20/instances/>
+		 * ASK  { 
+		 * 		?synset1 wn20schema:entails+ ?synset2 . 
+		 * 		FILTER(?synset1 IN (wn20instances:synset-call-verb-2) && 
+		 * 		?synset2 IN (wn20instances:synset-dial-verb-1, wn20instances:synset-dial-verb-2, wn20instances:synset-dial-noun-2, wn20instances:synset-dial-noun-3, wn20instances:synset-dial-noun-4, wn20instances:synset-dial-noun-1))
+		 * }
+		 */
 		if(synsetSet1 == null || synsetSet1.size() == 0 || synsetSet2 == null || synsetSet2.size() == 0) {
 			return Collections.singleton(Relation.NONE);
 		}
@@ -176,8 +212,8 @@ public class MyWordnetReasoner {
 			querySb.append(queryEndSb);
 			reflectedQuerySb.append(queryEndSb);
 			
-			//System.out.println(querySb.toString());
-			//System.out.println(reflectedQuerySb.toString());
+			logger.debug(querySb.toString());
+			logger.debug(reflectedQuerySb.toString());
 			Query query = QueryFactory.create(querySb.toString());
 			QueryExecution qe = QueryExecutionFactory.create(query, unifiedModel);
 			boolean relationshipExists = qe.execAsk();
@@ -230,14 +266,13 @@ public class MyWordnetReasoner {
 			return synsets;			
 		}
 	}
-	
-	
-	/* see http://www.w3.org/TR/sparql11-query/#propertypath-arbitrary-length
-	 * see http://jena.sourceforge.net/ARQ/property_paths.html
-	 * 
-	 */
-	
 		
+	/**
+	 * Returns a string of comma-delimited elements.
+	 * @param collection	the collection of elements to convert to a CDL
+	 * @return	a comma-delimted list of elements
+	 */
+	@SuppressWarnings("rawtypes")
 	protected static String asCommaList(final Collection collection) {
 		StringBuilder sb = new StringBuilder();
 		String delimiter = "";
@@ -254,6 +289,11 @@ public class MyWordnetReasoner {
 		return sb.toString();
 	}
 
+	/**
+	 * Returns an RDF model used by this instance
+	 * @param modelType		the type of model
+	 * @return	RDF model used by this instance
+	 */
 	protected Model getModel(ModelType modelType) {
 		switch(modelType) {
 			case CORE:
@@ -265,9 +305,12 @@ public class MyWordnetReasoner {
 		}
 	}
 	
-	
+	/**
+	 * Returns total number of triples known in the models of this instance.
+	 * @see Other useful <a href="http://code.google.com/p/void-impl/wiki/SPARQLQueriesForStatistics">SPARQL utility queries</a>
+	 * @return		number of known triples
+	 */
 	public long getTriplesCount() {
-		// see http://code.google.com/p/void-impl/wiki/SPARQLQueriesForStatistics
 		String queryString = "SELECT (COUNT(*) AS ?numberTriples) { ?s ?p ?o  }";
 		Query query = QueryFactory.create(queryString);
 		QueryExecution qe = QueryExecutionFactory.create(query, unifiedModel);
@@ -277,6 +320,10 @@ public class MyWordnetReasoner {
 		return n;
 	}
 	
+	/**
+	 * Returns the total number of entities known in the models of this instance.
+	 * @return		number of known entities
+	 */
 	public long getEntitesCount() {
 		String queryString = "SELECT COUNT(distinct ?s) AS ?numberEntities { ?s a []  }";
 		Query query = QueryFactory.create(queryString);

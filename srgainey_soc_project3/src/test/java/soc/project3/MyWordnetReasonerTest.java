@@ -186,10 +186,72 @@ public class MyWordnetReasonerTest extends TestCase {
 	private static final Pair<List<String>,List<String>> wordGroupPairAA_I = new Pair<List<String>,List<String>>(wordGroupAA2, wordGroupAA1);
     
 	private static final Map<Pair<List<String>, List<String>>, Set<Relation>> positiveClosureWordGroupsToRelationsMap = new HashMap<Pair<List<String>, List<String>>, Set<Relation>>() {{
-//    	put(wordGroupPairAA, Collections.singleton(o))
-    	
+    	put(wordGroupPairAA, Collections.singleton(Relation.HYPONYMY));
+    	put(wordGroupPairAA_I, Collections.singleton(Relation.HYPONYMY_I));
     }};
     
+    
+	String showMultipleRelations =
+			"PREFIX  wn20schema: <http://www.w3.org/2006/03/wn/wn20/schema/> "
+			+ "PREFIX  wn20instances: <http://www.w3.org/2006/03/wn/wn20/instances/>"
+			+ "SELECT ?synset1 ?relation1 ?relation2 ?synset2 "
+					+ "WHERE { "
+					+ "      ?synset1 ?relation1 ?synset2 .  "  
+					+ "      ?synset2 ?relation2 ?synset1 . "  
+					+ " FILTER ( ?relation1 IN ( wn20schema:causes, wn20schema:hyponymOf, wn20schema:entails, wn20schema:meronymOf)  "
+					+ "       && ?relation2 IN ( wn20schema:causes, wn20schema:hyponymOf, wn20schema:entails, wn20schema:meronymOf) "
+					+ "       && ?relation1 != ?relation2"
+					+ ") "
+					+ "} ";
+
+    
+	/**
+	 * Shows properties
+		| <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>    |
+		| <http://www.w3.org/2000/01/rdf-schema#domain>        |
+		| <http://www.w3.org/2000/01/rdf-schema#range>         |
+		| <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> |
+		| <http://www.w3.org/2000/01/rdf-schema#subClassOf>    |
+	 */
+	String showPropertiesQuery = 
+			"SELECT DISTINCT ?property "
+			+ "			WHERE { "
+			+ "			  ?s ?property ?o . "
+			+ "			} "
+			+ "			LIMIT 5 ";
+
+	String synsetByName =
+            "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
+			+ "PREFIX  wn20schema: <http://www.w3.org/2006/03/wn/wn20/schema/> "
+			+ "PREFIX  wn20instances: <http://www.w3.org/2006/03/wn/wn20/instances/>"
+			+ "PREFIX  rdfs: <http://www.w3.org/2000/01/rdf-schema#> " 
+            + "SELECT  DISTINCT ?synset "
+            + "WHERE {"
+            + "   ?synset ?p ?o    .  " 
+			+ "   FILTER ( ?synset = wn20instances:synset-tank-noun-1) "
+            + "      } LIMIT 1000";
+
+	// returns every synset
+	String queryString =
+            "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
+            + "PREFIX wn:<http://www.webkb.org/theKB_terms.rdf/wn#> "
+            + "SELECT ?s ?o "
+            + "WHERE {"
+            + "  ?s    rdf:type   ?o  . "
+            + "      } LIMIT 1000";
+
+	// see http://stackoverflow.com/questions/2930246/exploratory-sparql-queries
+	String showClasses = 
+			"SELECT DISTINCT ?class " +
+			"WHERE { ?s a ?class . } " +
+			"LIMIT 25 " +
+			"OFFSET 0";	
+	
+	String showProperties = 
+			"SELECT DISTINCT ?property " +
+			"WHERE { ?s ?property ?o .} " +
+			"LIMIT 5";
+	
     private static MyWordnetReasoner testReasoner = new MyWordnetReasoner();
     
     @BeforeClass
@@ -233,18 +295,18 @@ public class MyWordnetReasonerTest extends TestCase {
     	for(Entry<Pair<List<String>, List<String>>, Set<Relation>> entry : wordGroupsToRelationsMap.entrySet()) {
     		Set<Relation> expectedRelations = entry.getValue();
     		Set<Relation> actualRelations = testReasoner.getRelations( entry.getKey().getfirst(), entry.getKey().getsecond(), false);
-    		String message = asCommaList(entry.getKey().getfirst()) + " should " + asCommaList(expectedRelations) + " " + asCommaList(entry.getKey().getsecond()) + "; not " + asCommaList(actualRelations);
-    		Assert.assertEquals(message, expectedRelations, actualRelations);
+    		String message = asCommaList(entry.getKey().getfirst()) + " should be " + asCommaList(expectedRelations) + " " + asCommaList(entry.getKey().getsecond()) + "; not " + asCommaList(actualRelations);
+    		Assert.assertEquals(expectedRelations, actualRelations);
     	}
     }
     
     @Test
     public void testGetRelationsPositiveClosure() {
-    	for(Entry<Pair<List<String>, List<String>>, Set<Relation>> entry : wordGroupsToRelationsMap.entrySet()) {
+    	for(Entry<Pair<List<String>, List<String>>, Set<Relation>> entry : positiveClosureWordGroupsToRelationsMap.entrySet()) {
     		Set<Relation> expectedRelations = entry.getValue();
-    		Set<Relation> actualRelations = testReasoner.getRelations( entry.getKey().getfirst(), entry.getKey().getsecond(), false);
-    		String message = asCommaList(entry.getKey().getfirst()) + " should " + asCommaList(expectedRelations) + " " + asCommaList(entry.getKey().getsecond()) + "; not " + asCommaList(actualRelations);
-    		Assert.assertEquals(message, expectedRelations, actualRelations);
+    		Set<Relation> actualRelations = testReasoner.getRelations( entry.getKey().getfirst(), entry.getKey().getsecond(), true);
+    		String message = asCommaList(entry.getKey().getfirst()) + " should be " + asCommaList(expectedRelations) + " " + asCommaList(entry.getKey().getsecond()) + "; not " + asCommaList(actualRelations);
+    		Assert.assertEquals(expectedRelations, actualRelations);
     	}
     }
 
