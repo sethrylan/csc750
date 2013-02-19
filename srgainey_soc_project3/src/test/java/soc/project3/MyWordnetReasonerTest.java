@@ -335,9 +335,7 @@ public class MyWordnetReasonerTest extends TestCase {
 
     		String message = MyWordnetReasoner.asCommaList(oldRelations) + " is not " + MyWordnetReasoner.asCommaList(newRelations);
     		assertEquals(oldRelations, newRelations);
-    	}
-
-    	
+    	}    	
     }
         
     /**

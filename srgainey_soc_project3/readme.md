@@ -1,7 +1,7 @@
 # CSC750 Project #3 #
 ====================
 
-This application loads [WordNet] [1] RDF files and an OWL ontology to derive single-step and multiple-step (positive closure) relationships from one group of words to another.
+This application loads [WordNet] [1] RDF files and an OWL ontology to derive single-step and multiple-step (positive closure) relationships from one group of words to another, where each group represents a [synset] [2].
 
 ### Build instructions ###
 Verify that the following files are included in root project directory
@@ -19,6 +19,8 @@ Relationship Files:
 
 Ontology Files:
 * wnbasic.owl
+
+Verify that the classpath includes the [Jena] [3] 2.7.4 libraries.
 
 Build using javac:
 
@@ -70,6 +72,8 @@ Each group of words should represent a [synset] [2]; if it does not, then an err
 
 Relationships are only derived from the first group to the second; however, the reflective relationships (e.g., 'caused by' to 'causes') from group 1 to group 2 are also found.
 
+If more than one of the same relationship is found from wordgroup 1 to wordgroup 2 (e.g., "do" "make" has several hyponymOf and hypernymOf relationships), then only one of each type is displayed.
+
 ### WordNet Relationships Used ###
 
 <table>
@@ -93,6 +97,7 @@ Relationships are only derived from the first group to the second; however, the 
 [1]: http://wordnet.princeton.edu   "WordNet"
 [2]: http://en.wikipedia.org/wiki/Synonym_ring       "synset"
 
+[3]: http://jena.apache.org/download/index.html       "Jena"
 
 
 

@@ -25,9 +25,9 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.util.FileManager;
 
 /**
- * A class detecting synsets (en.wikipedia.org/wiki/Synonym_ring) inferring relationships in the WordNet dataset using the 
- * properties senseLabel, hyponymOf, meronymOf, causes, entails and their reflections (i.e., 'caused 
- * by' to 'causes', 'holonym of' to 'hyponymOf').
+ * A class for detecting synsets (en.wikipedia.org/wiki/Synonym_ring) and inferring relationships in the WordNet dataset using the 
+ * properties senseLabel, hyponymOf, meronymOf, causes, entails and their reflections (i.e., 'caused by' to 'causes', 'holonym of'
+ *  to 'hyponymOf').
  * 
  * @author srgainey
  */
@@ -52,8 +52,7 @@ public class MyWordnetReasoner {
 	private static final String WORDNET_MERONYM_MEMBER = "wordnet-membermeronym.rdf";
 	private static final String WORDNET_MERONYM_SUBSTANCE = "wordnet-substancemeronym.rdf";
 	private static final String WORDNET_MERONYM_PART = "wordnet-partmeronym.rdf";
-	
-	public static String WNBASIC_OWL = "wnbasic.owl";
+	private static final String WNBASIC_OWL = "wnbasic.owl";
 	
 	protected static final String WN20SCHEMA_URI = "http://www.w3.org/2006/03/wn/wn20/schema/";
 	protected static final String WN20SCHEMA = "wn20schema";
@@ -139,8 +138,9 @@ public class MyWordnetReasoner {
 	}
 	
 	/**
-	 * Returns the set of relations from the synsets identified by all of the words in the first group to the synsets identified by all the word in the second group.
-	 * @param wordGroup1	the word group representing the synset from which to return relationships
+	 * Returns the set of relations from the synsets identified by all of the words in the first group to 
+	 * the synsets identified by all the word in the second group.
+	 * @param wordGroup1	the word group representing the synsets from which to return relationships
 	 * @param wordGroup2	the word group to which to return relationships
 	 * @param positiveClosure	is true, the positive closure relationships (one or more steps) are returned; if false, only single-step relationships are returned
 	 * @see MyWordnetReasoner#getRelations(Set, Set, boolean)
@@ -161,15 +161,22 @@ public class MyWordnetReasoner {
 	 */
 	public Set<Relation> getRelations(final Set<Resource> synsetSet1, final Set<Resource> synsetSet2, boolean positiveClosure) {
 		/*
-		 * Creates a SPARQL query in the form:
+		 * For each relation, this method creates and executes a SPARQL ASK query in the form:
 		 * 
 		 * PREFIX  wn20schema: <http://www.w3.org/2006/03/wn/wn20/schema/>
 		 * PREFIX  wn20instances: <http://www.w3.org/2006/03/wn/wn20/instances/>
 		 * ASK  { 
-		 * 		?synset1 wn20schema:entails+ ?synset2 . 
+		 * 		?synset1 ^wn20schema:entails+ ?synset2 . 
 		 * 		FILTER(?synset1 IN (wn20instances:synset-call-verb-2) && 
-		 * 		?synset2 IN (wn20instances:synset-dial-verb-1, wn20instances:synset-dial-verb-2, wn20instances:synset-dial-noun-2, wn20instances:synset-dial-noun-3, wn20instances:synset-dial-noun-4, wn20instances:synset-dial-noun-1))
+		 * 		?synset2 IN (wn20instances:synset-dial-verb-1, 
+		 * 					 wn20instances:synset-dial-verb-2, 
+		 * 					 wn20instances:synset-dial-noun-2, 
+		 * 					 wn20instances:synset-dial-noun-3, 
+		 * 					 wn20instances:synset-dial-noun-4, 
+		 * 					 wn20instances:synset-dial-noun-1)
+		 * 	    )
 		 * }
+		 * 
 		 */
 		if(synsetSet1 == null || synsetSet1.size() == 0 || synsetSet2 == null || synsetSet2.size() == 0) {
 			return Collections.singleton(Relation.NONE);
@@ -237,10 +244,10 @@ public class MyWordnetReasoner {
 	}
 	
 	/**
-	 * Returns a List of the synsets containing all words in the word group.
+	 * Returns a set of the synsets containing all words in the word group.
 	 * From wordnet.princeton.edu: "Synonyms--words that denote the same concept and are interchangeable in many contexts--are grouped into unordered sets (synsets)." 
 	 * @param wordGroup	list of words
-	 * @return list of synsets containing all words in the word-group; list of size 0 if no such synset exists
+	 * @return set of synsets containing all words in the word-group; set of size 0 if no such synsets exist
 	 */
 	public Set<Resource> getSynsets(final List<String> wordGroup) {
 		if(wordGroup == null || wordGroup.size() == 0) {
@@ -322,6 +329,7 @@ public class MyWordnetReasoner {
 	
 	/**
 	 * Returns the total number of entities known in the models of this instance.
+	 * @see Other useful <a href="http://code.google.com/p/void-impl/wiki/SPARQLQueriesForStatistics">SPARQL utility queries</a>
 	 * @return		number of known entities
 	 */
 	public long getEntitesCount() {
