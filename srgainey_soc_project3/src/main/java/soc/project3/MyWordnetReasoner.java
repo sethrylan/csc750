@@ -1,6 +1,5 @@
 package soc.project3;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -8,6 +7,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -19,7 +19,6 @@ import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
@@ -31,16 +30,11 @@ public class MyWordnetReasoner {
         
     public enum ModelType {CORE, UNIFIED};
     
-//    private Map<ModelType, Relation> modelRelationMap = null;
-//    private Map<ModelType, Property> modelRelationPropertyMap = null;
-    private static final Map<String, Relation> resourceStringToRelationMap = new HashMap<String, Relation>() {{
+    protected static final Map<String, Relation> resourceStringToRelationMap = new HashMap<String, Relation>() {{
     	put("causes", Relation.CAUSE);
     	put("entails", Relation.ENTAILMENT);
     	put("hyponymOf", Relation.HYPONYMY);
-    	put("meronymOf", Relation.MERONYMY);
-//    	put("memberMeronymOf", Relation.MERONYMY);
-//    	put("partMeronymOf", Relation.MERONYMY);
-//    	put("substanceMeronymOf", Relation.MERONYMY);
+    	put("meronymOf", Relation.MERONYMY);  // from wnbasic ontology, includes  memberMeronymOf, partMeronymOf and substanceMeronymOf
     }};
     
 	private static final String WORDNET_CORE = "wordnet-senselabels.rdf";
@@ -53,8 +47,11 @@ public class MyWordnetReasoner {
 	
 	public static String WNBASIC_OWL = "wnbasic.owl";
 	
-	protected static final String WN20SCHEMA = "http://www.w3.org/2006/03/wn/wn20/schema/";
-	
+	protected static final String WN20SCHEMA_URI = "http://www.w3.org/2006/03/wn/wn20/schema/";
+	protected static final String WN20SCHEMA = "wn20schema";
+	protected static final String WN20INSTANCES_URI = "http://www.w3.org/2006/03/wn/wn20/instances/";
+	protected static final String WN20INSTANCES = "wn20instances";
+
 	private Model coreModel = null;
 	private Model unifiedModel = null;
 	
@@ -80,10 +77,10 @@ public class MyWordnetReasoner {
 			System.exit(1);
 		}
 		
-		List<String> wordGroup1 = Arrays.asList(args[0].split("\\s*,\\s*"));
-		List<String> wordGroup2 = Arrays.asList(args[1].split("\\s*,\\s*"));
+		List<String> wordGroup1 = Arrays.asList(args[0].toLowerCase().split("\\s*,\\s*"));
+		List<String> wordGroup2 = Arrays.asList(args[1].toLowerCase().split("\\s*,\\s*"));
 		MyWordnetReasoner myReasoner = new MyWordnetReasoner();
-		List<Resource> synsets1, synsets2 = null;
+		Set<Resource> synsets1, synsets2 = null;
 		synsets1 = myReasoner.getSynsets(wordGroup1);
 		synsets2 = myReasoner.getSynsets(wordGroup2);
 		
@@ -100,16 +97,16 @@ public class MyWordnetReasoner {
 			System.exit(1);
 		}
 
-		List<Relation> relations = myReasoner.getRelations(wordGroup1, wordGroup2);
+		Set<Relation> relations = myReasoner.getRelations(synsets1, synsets2, false);
+		Set<Relation> positiveClosureelations = myReasoner.getRelations(synsets1, synsets2, true);
 		System.out.println(asCommaList(new HashSet<Relation>(relations)));
 	}
 
-	@SuppressWarnings("serial")
 	public MyWordnetReasoner() {
 		coreModel = FileManager.get().loadModel(WORDNET_CORE);
 		Model ontologyModel = FileManager.get().loadModel( WNBASIC_OWL );
 		this.unifiedModel = ModelFactory.createOntologyModel(OntModelSpec.RDFS_MEM_RDFS_INF, ontologyModel);
-		this.unifiedModel.add(coreModel, Boolean.TRUE); // include reified statements
+		this.unifiedModel.add(coreModel, Boolean.TRUE); // includes reified statements
 		this.unifiedModel.add(FileManager.get().loadModel(WORDNET_ENTAILMENT), Boolean.TRUE); // include reified statements
 		this.unifiedModel.add(FileManager.get().loadModel(WORDNET_CAUSES), Boolean.TRUE); // include reified statements
 		this.unifiedModel.add(FileManager.get().loadModel(WORDNET_HYPONYM), Boolean.TRUE); // include reified statements
@@ -118,17 +115,102 @@ public class MyWordnetReasoner {
 		this.unifiedModel.add(FileManager.get().loadModel(WORDNET_MERONYM_PART), Boolean.TRUE); // include reified statements
 	}
 	
+	
+	public Set<Relation> getRelations(final List<String> wordGroup1, final List<String> wordGroup2, boolean positiveClosure) {
+		return this.getRelations(this.getSynsets(wordGroup1), this.getSynsets(wordGroup2), positiveClosure);
+	}
+	/**
+	 * 
+	 * 				"PREFIX  wn20schema: <http://www.w3.org/2006/03/wn/wn20/schema/> "
+				+ "PREFIX  wn20instances: <http://www.w3.org/2006/03/wn/wn20/instances/>"
+				+ "ASK  "
+						+ " { "
+						+ "?synset1 wn20schema:entails+ ?synset2 . "
+						+ "FILTER(?synset1 IN (wn20instances:synset-call-verb-2) && " +
+						"		?synset2 IN (wn20instances:synset-dial-verb-1, wn20instances:synset-dial-verb-2, wn20instances:synset-dial-noun-2, wn20instances:synset-dial-noun-3, wn20instances:synset-dial-noun-4, wn20instances:synset-dial-noun-1))"
+						+ "}"
+
+	 * @param synsets1
+	 * @param synsets2
+	 * @return
+	 */
+	public Set<Relation> getRelations(final Set<Resource> synsetSet1, final Set<Resource> synsetSet2, boolean positiveClosure) {
+		if(synsetSet1 == null || synsetSet1.size() == 0 || synsetSet2 == null || synsetSet2.size() == 0) {
+			return Collections.singleton(Relation.NONE);
+		}
+		Set<Relation> relations = new HashSet<Relation>();
+		
+		StringBuilder queryBeginSb = new StringBuilder();
+		queryBeginSb.append("PREFIX " + WN20SCHEMA + ": <" + WN20SCHEMA_URI + "> ");
+		queryBeginSb.append("PREFIX " + WN20INSTANCES + ": <" + WN20INSTANCES_URI + "> ");
+		queryBeginSb.append("ASK { ");
+		queryBeginSb.append("?synset1 ");
+				
+		StringBuilder queryEndSb = new StringBuilder();
+		queryEndSb.append(" ?synset2 . ");
+		queryEndSb.append("FILTER(?synset1 IN (");
+		String delimiter = "";
+		for(Resource synset : synsetSet1) {
+			queryEndSb.append(delimiter + " wn20instances:" + synset.getLocalName());
+			delimiter = ",";
+		}
+		queryEndSb.append(") && ?synset2 IN (");
+		delimiter = "";
+		for(Resource synset : synsetSet2) {
+			queryEndSb.append(delimiter + " wn20instances:" + synset.getLocalName());
+			delimiter = ",";
+		}
+		queryEndSb.append("))}");
+		
+		for(Entry<String, Relation> entry : resourceStringToRelationMap.entrySet()) {
+			String relationResourceString = entry.getKey();
+			Relation relation = entry.getValue();
+			StringBuilder querySb = new StringBuilder(queryBeginSb);
+			StringBuilder reflectedQuerySb = new StringBuilder(queryBeginSb);
+			querySb.append(WN20SCHEMA + ":" + relationResourceString );
+			reflectedQuerySb.append("^" + WN20SCHEMA + ":" + relationResourceString );
+			if(positiveClosure) {
+				querySb.append("+");
+				reflectedQuerySb.append("+");
+			}
+			querySb.append(queryEndSb);
+			reflectedQuerySb.append(queryEndSb);
+			
+			//System.out.println(querySb.toString());
+			//System.out.println(reflectedQuerySb.toString());
+			Query query = QueryFactory.create(querySb.toString());
+			QueryExecution qe = QueryExecutionFactory.create(query, unifiedModel);
+			boolean relationshipExists = qe.execAsk();
+			if(relationshipExists) {
+				relations.add(relation);
+			}
+			query = QueryFactory.create(reflectedQuerySb.toString());
+			qe = QueryExecutionFactory.create(query, unifiedModel);
+			relationshipExists = qe.execAsk();
+			if(relationshipExists) {
+				relations.add(relation.getInverse());
+			}
+		}
+						
+		if(relations.size() > 0) {
+			return relations;
+		} else {
+			return Collections.singleton(Relation.NONE);
+		}
+	
+	}
+	
 	/**
 	 * Returns a List of the synsets containing all words in the word group.
 	 * From wordnet.princeton.edu: "Synonyms--words that denote the same concept and are interchangeable in many contexts--are grouped into unordered sets (synsets)." 
 	 * @param wordGroup	list of words
 	 * @return list of synsets containing all words in the word-group; list of size 0 if no such synset exists
 	 */
-	protected List<Resource> getSynsets(final List<String> wordGroup) {
+	public Set<Resource> getSynsets(final List<String> wordGroup) {
 		if(wordGroup == null || wordGroup.size() == 0) {
 			throw new IllegalArgumentException("WordGroup must have 1 or more elements.");
 		} else {			
-			List<Resource> synsets = new ArrayList<Resource>();
+			Set<Resource> synsets = new HashSet<Resource>();
 			StringBuilder querySb = new StringBuilder();
 			querySb.append("PREFIX  wn20schema: <http://www.w3.org/2006/03/wn/wn20/schema/> ");
 			querySb.append("	SELECT  ?synset ");
@@ -152,104 +234,9 @@ public class MyWordnetReasoner {
 	
 	/* see http://www.w3.org/TR/sparql11-query/#propertypath-arbitrary-length
 	 * see http://jena.sourceforge.net/ARQ/property_paths.html
-SELECT ?relation
-WHERE
-  { ?synset1 wn20schema:senseLabel "learn"@en-US .
-    ?synset1 wn20schema:senseLabel "acquire"@en-US .
-    ?synset2 wn20schema:senseLabel "teach"@en-US .
-    ?synset2 wn20schema:senseLabel "instruct"@en-US .
-    ?synset1 ?relation ?synset2
-  }
-
-	 * 
 	 * 
 	 */
-	public List<Relation> getRelations(final List<String> wordGroup1, final List<String> wordGroup2) {
-		if(wordGroup1 == null || wordGroup2.size() == 0 || wordGroup2 == null || wordGroup2.size() == 0) {
-			throw new IllegalArgumentException("WordGroups must have 1 or more elements.");
-		}
-		List<Relation> relations = new ArrayList<Relation>();
-		
-		StringBuilder queryBaseSb = new StringBuilder();
-		queryBaseSb.append("PREFIX wn20schema: <http://www.w3.org/2006/03/wn/wn20/schema/> ");
-		queryBaseSb.append("SELECT ?relation ");
-		queryBaseSb.append("WHERE { ");
-		for(String word : wordGroup1) {
-			queryBaseSb.append("	?synset1 wn20schema:senseLabel \"" + word +"\"@en-US . ");
-		}
-		for(String word : wordGroup2) {
-			queryBaseSb.append("	?synset2 wn20schema:senseLabel \"" + word +"\"@en-US . ");
-		}
-		StringBuilder relationQuerySb = new StringBuilder(queryBaseSb);
-		relationQuerySb.append("	?synset1 ?relation ?synset2");
-		relationQuerySb.append("}");
-		StringBuilder inverseRelationQuerySb = new StringBuilder(queryBaseSb);
-		inverseRelationQuerySb.append("	?synset2 ?relation ?synset1");
-		inverseRelationQuerySb.append("}");	
-		
-		Query query = QueryFactory.create(relationQuerySb.toString());
-		//System.out.println(query);
-		QueryExecution qe = QueryExecutionFactory.create(query, unifiedModel);
-		ResultSet results = qe.execSelect();
-		while(results.hasNext()) {
-			Resource next = results.next().getResource("relation");
-			if(next != null) {
-				System.out.println(next);
-				Relation relation = resourceStringToRelationMap.get(next.getLocalName());
-				//System.out.println(relation);
-				relations.add(relation);
-			}
-		}
-		
-		query = QueryFactory.create(inverseRelationQuerySb.toString());
-		//System.out.println(query);
-		qe = QueryExecutionFactory.create(query, unifiedModel);
-		results = qe.execSelect();
-		while(results.hasNext()) {
-			Resource next = results.next().getResource("relation");
-			if(next != null) {
-				System.out.println(next);
-				Relation relation = resourceStringToRelationMap.get(next.getLocalName()).getInverse();
-				//System.out.println(relation);
-				relations.add(relation);
-			}
-		}
-		qe.close();	
-		
-		if(relations.size() > 0) {
-			return relations;
-		} else {
-			return Collections.singletonList(Relation.NONE);
-		}
-		
-	/*
-		queryBaseSb.append("PREFIX  wn20instances:<http://www.w3.org/2006/03/wn/wn20/instances/> ");
-		queryBaseSb.append("SELECT ?relation ");
-		queryBaseSb.append("WHERE { ");
-		StringBuilder relationQuerySb = new StringBuilder(queryBaseSb);
-		StringBuilder inverseRelationQuerySb = new StringBuilder(queryBaseSb);
-		relationQuerySb.append("	?synset1 ?relation ?synset2");
-		inverseRelationQuerySb.append("	?synset2 ?relation ?synset1");
-		StringBuilder filterSb = new StringBuilder();
-		filterSb.append("	FILTER(?synset1 = ");
-		String delimiter = "";
-		for(Resource synset : synsets1) {
-			filterSb.append(delimiter);
-			filterSb.append("wn20instances:" + synset.getLocalName());			
-			delimiter = " || ";
-		}
-		filterSb.append("  && ?synset2 = ");
-		delimiter = "";
-		for(Resource synset : synsets2) {
-			filterSb.append(delimiter);
-			filterSb.append("wn20instances:" + synset.getLocalName());			
-			delimiter = " || ";
-		}
-
-		relationQuerySb.append(filterSb).append(") }");
-		inverseRelationQuerySb.append(filterSb).append(") }");
-*/
-	}
+	
 		
 	protected static String asCommaList(final Collection collection) {
 		StringBuilder sb = new StringBuilder();

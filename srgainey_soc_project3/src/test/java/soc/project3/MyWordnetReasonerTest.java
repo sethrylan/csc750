@@ -3,9 +3,11 @@ package soc.project3;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -21,6 +23,11 @@ import org.slf4j.LoggerFactory;
 
 import soc.project3.MyWordnetReasoner.ModelType;
 
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.RDFNode;
@@ -87,7 +94,6 @@ public class MyWordnetReasonerTest extends TestCase {
 	private static final Pair<List<String>,List<String>> wordGroupPairE = new Pair<List<String>,List<String>>(wordGroupE1, wordGroupE2);
 	private static final Pair<List<String>,List<String>> wordGroupPairE_I = new Pair<List<String>,List<String>>(wordGroupE2, wordGroupE1);
 
-	
     private static final List<String> wordGroupF1 = new ArrayList<String>() {{
 		add("breathe in");
 		add("inhale");
@@ -101,7 +107,6 @@ public class MyWordnetReasonerTest extends TestCase {
 	}};
 	private static final Pair<List<String>,List<String>> wordGroupPairF = new Pair<List<String>,List<String>>(wordGroupF1, wordGroupF2);
 	private static final Pair<List<String>,List<String>> wordGroupPairF_I = new Pair<List<String>,List<String>>(wordGroupF2, wordGroupF1);
-
 	
     private static final List<String> wordGroupZ1 = new ArrayList<String>() {{
 		add("fungible");
@@ -131,16 +136,16 @@ public class MyWordnetReasonerTest extends TestCase {
     	put(wordGroupZ2, Boolean.FALSE);
     }};
     
-    private static final Map<Pair<List<String>, List<String>>, List<Relation>> wordGroupsToRelationsMap = new HashMap<Pair<List<String>, List<String>>, List<Relation>>() {{
-    	put(wordGroupPairA, Collections.singletonList(Relation.ENTAILMENT));
-    	put(wordGroupPairA_I, Collections.singletonList(Relation.ENTAILMENT_I));
-    	put(wordGroupPairB, Collections.singletonList(Relation.MERONYMY));
-    	put(wordGroupPairB_I, Collections.singletonList(Relation.MERONYMY_I));
-    	put(wordGroupPairC, Collections.singletonList(Relation.HYPONYMY));
-    	put(wordGroupPairC_I, Collections.singletonList(Relation.HYPONYMY_I));
-    	put(wordGroupPairD, Collections.singletonList(Relation.CAUSE));
-    	put(wordGroupPairD_I, Collections.singletonList(Relation.CAUSE_I));
-    	put(wordGroupPairE, new ArrayList<Relation>() 
+    private static final Map<Pair<List<String>, List<String>>, Set<Relation>> wordGroupsToRelationsMap = new HashMap<Pair<List<String>, List<String>>, Set<Relation>>() {{
+    	put(wordGroupPairA, Collections.singleton(Relation.ENTAILMENT));
+    	put(wordGroupPairA_I, Collections.singleton(Relation.ENTAILMENT_I));
+    	put(wordGroupPairB, Collections.singleton(Relation.MERONYMY));
+    	put(wordGroupPairB_I, Collections.singleton(Relation.MERONYMY_I));
+    	put(wordGroupPairC, Collections.singleton(Relation.HYPONYMY));
+    	put(wordGroupPairC_I, Collections.singleton(Relation.HYPONYMY_I));
+    	put(wordGroupPairD, Collections.singleton(Relation.CAUSE));
+    	put(wordGroupPairD_I, Collections.singleton(Relation.CAUSE_I));
+    	put(wordGroupPairE, new HashSet<Relation>() 
     					{{  add(Relation.HYPONYMY);
     						add(Relation.HYPONYMY);
     						add(Relation.HYPONYMY_I);
@@ -148,7 +153,7 @@ public class MyWordnetReasonerTest extends TestCase {
     						add(Relation.HYPONYMY_I);
     						add(Relation.HYPONYMY_I);
     					}});
-    	put(wordGroupPairE_I, new ArrayList<Relation>() 
+    	put(wordGroupPairE_I, new HashSet<Relation>() 
 				{{  add(Relation.HYPONYMY);
 					add(Relation.HYPONYMY);
 					add(Relation.HYPONYMY);
@@ -157,20 +162,35 @@ public class MyWordnetReasonerTest extends TestCase {
 					add(Relation.HYPONYMY_I);
 				}});
     	
-    	put(wordGroupPairF, new ArrayList<Relation>() {{  
+    	put(wordGroupPairF, new HashSet<Relation>() {{  
     			add(Relation.HYPONYMY);
 				add(Relation.ENTAILMENT_I);
 			}});
-    	put(wordGroupPairF_I, new ArrayList<Relation>() {{
+    	put(wordGroupPairF_I, new HashSet<Relation>() {{
     			add(Relation.HYPONYMY_I);
 				add(Relation.ENTAILMENT);
 			}});
 
-    	put(wordGroupPairZ, Collections.singletonList(Relation.NONE));
-    	put(wordGroupPairZ_I, Collections.singletonList(Relation.NONE));    	
+    	put(wordGroupPairZ, Collections.singleton(Relation.NONE));
+    	put(wordGroupPairZ_I, Collections.singleton(Relation.NONE));    	
     }};
     
-    private static MyWordnetReasoner myReason = new MyWordnetReasoner();
+    
+    private static final List<String> wordGroupAA1 = new ArrayList<String>() {{
+		add("social relation");
+	}};
+	private static final List<String> wordGroupAA2 = new ArrayList<String>() {{
+		add("abstraction");
+	}};
+	private static final Pair<List<String>,List<String>> wordGroupPairAA = new Pair<List<String>,List<String>>(wordGroupAA1, wordGroupAA2);
+	private static final Pair<List<String>,List<String>> wordGroupPairAA_I = new Pair<List<String>,List<String>>(wordGroupAA2, wordGroupAA1);
+    
+	private static final Map<Pair<List<String>, List<String>>, Set<Relation>> positiveClosureWordGroupsToRelationsMap = new HashMap<Pair<List<String>, List<String>>, Set<Relation>>() {{
+//    	put(wordGroupPairAA, Collections.singleton(o))
+    	
+    }};
+    
+    private static MyWordnetReasoner testReasoner = new MyWordnetReasoner();
     
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -191,7 +211,7 @@ public class MyWordnetReasonerTest extends TestCase {
 	@Test
     public void testGetModel() {
 		for(ModelType modelType : ModelType.values()) {
-			Model model = myReason.getModel(modelType);
+			Model model = testReasoner.getModel(modelType);
 			Assert.assertNotNull(model);
 			if(modelType == ModelType.CORE) {
 				Assert.assertTrue("There should be over 9,000 triples.", model.size() > 9000L);
@@ -203,89 +223,87 @@ public class MyWordnetReasonerTest extends TestCase {
     public void testIsValidSynset() {
     	for(Entry<List<String>, Boolean> entry : wordGroupsToSynsetMap.entrySet()) {
     		Boolean expected = entry.getValue();
-    		Boolean synsetsExist = myReason.getSynsets(entry.getKey()).size() > 0;
+    		Boolean synsetsExist = testReasoner.getSynsets(entry.getKey()).size() > 0;
         	Assert.assertSame(asCommaList(entry.getKey()) + " should have at least one synset.", expected, synsetsExist);
     	}
     }
 
     @Test
-    public void testGetRelation() {
-    	for(Entry<Pair<List<String>, List<String>>, List<Relation>> entry : wordGroupsToRelationsMap.entrySet()) {
-    		List<Relation> expectedRelations = entry.getValue();
-    		List<Relation> actualRelations = myReason.getRelations( entry.getKey().getfirst(), entry.getKey().getsecond());
+    public void testGetRelations() {
+    	for(Entry<Pair<List<String>, List<String>>, Set<Relation>> entry : wordGroupsToRelationsMap.entrySet()) {
+    		Set<Relation> expectedRelations = entry.getValue();
+    		Set<Relation> actualRelations = testReasoner.getRelations( entry.getKey().getfirst(), entry.getKey().getsecond(), false);
     		String message = asCommaList(entry.getKey().getfirst()) + " should " + asCommaList(expectedRelations) + " " + asCommaList(entry.getKey().getsecond()) + "; not " + asCommaList(actualRelations);
-    		Assert.assertTrue(message, expectedRelations.containsAll(actualRelations) && actualRelations.containsAll(expectedRelations));
-    		System.out.println(message);
+    		Assert.assertEquals(message, expectedRelations, actualRelations);
+    	}
+    }
+    
+    @Test
+    public void testGetRelationsPositiveClosure() {
+    	for(Entry<Pair<List<String>, List<String>>, Set<Relation>> entry : wordGroupsToRelationsMap.entrySet()) {
+    		Set<Relation> expectedRelations = entry.getValue();
+    		Set<Relation> actualRelations = testReasoner.getRelations( entry.getKey().getfirst(), entry.getKey().getsecond(), false);
+    		String message = asCommaList(entry.getKey().getfirst()) + " should " + asCommaList(expectedRelations) + " " + asCommaList(entry.getKey().getsecond()) + "; not " + asCommaList(actualRelations);
+    		Assert.assertEquals(message, expectedRelations, actualRelations);
     	}
     }
 
-    @Test
-    public void testTotalTriples() {
-    	Assert.assertTrue("There should be over 9,000 triples.", myReason.getTriplesCount() > 9000);
-    }
 
     /**
-     * Older get synset for comparison purposes.
-     * 
+     * Test new implementation of getRelations against older implementation
      */
     @Test
-    public void testSynsetEquivalentsInSparql() {
-    	MyWordnetReasoner oldVersion = new MyWordnetReasoner() {
+    public void testGetRelationsEquivalent() {
+    	for(Entry<Pair<List<String>, List<String>>, Set<Relation>> entry : wordGroupsToRelationsMap.entrySet()) {
+    		List<String> wordGroup1 = entry.getKey().getfirst();
+    		List<String> wordGroup2 = entry.getKey().getsecond();
+    		Set<Resource> synsets1 = testReasoner.getSynsets(wordGroup1);
+    		Set<Resource> synsets2 = testReasoner.getSynsets(wordGroup2);
+    		Set<Relation> expectedRelations = entry.getValue();
     		
-    		protected List<Resource> getSynset(List<String> wordGroup) {
-    			if(wordGroup == null || wordGroup.size() == 0) {
-    				throw new IllegalArgumentException("WordGroup must have 1 or more elements.");
-    			} else {			
-    				List<Resource> synsets = new ArrayList<Resource>();
-    				final String firstWord = wordGroup.get(0);
-    				Property senseLabelProperty = getModel(ModelType.CORE).getProperty(WN20SCHEMA + "senseLabel");
-    				//Statements are formed [Subject, Predicate, Object]
-    				//e.g., [http://www.w3.org/2006/03/wn/wn20/instances/synset-teach-verb-1, http://www.w3.org/2006/03/wn/wn20/schema/senseLabel, "teach"@en-US]
-    		        StmtIterator statements = getModel(ModelType.CORE).listStatements(
-    		        	new  SimpleSelector(null, senseLabelProperty, (RDFNode)null) {
-    	                    @Override
-    	                    public boolean selects(Statement s) {
-    	                            return s.getString().equals(firstWord);
-    	                    }
-    		            }
-    	        	);
-    		        
-    	            while (statements.hasNext()) {
-    	            	Statement statement = statements.nextStatement();
-    	            	logger.debug("  " + statement.getObject().asLiteral().getString() + "  found in  " + statement.getSubject());
-    	            	StmtIterator subjectProperties = statement.getSubject().listProperties(senseLabelProperty);
-    	            	List<String> synsetWords = new ArrayList<String>();
-    	            	while (subjectProperties.hasNext()) {
-    	            		Statement propertyStatement = subjectProperties.nextStatement();
-    	                	logger.debug("  		" + propertyStatement.getObject().asLiteral().getString() + "  found in  " + propertyStatement.getSubject());
-    	            		synsetWords.add(propertyStatement.getObject().asLiteral().getString());
-    					}
-    	            	if(synsetWords.containsAll(wordGroup)) {
-    	            		synsets.add(statement.getSubject());
-    	            	}
-    	            }
-    				return synsets;			
-    			}
-    		}
-    	};
+    		long startTime = System.nanoTime();
+    		Set<Relation> oldRelations = getRelations(wordGroup1, wordGroup2);
+    		long endTime = System.nanoTime();
+    		//System.out.println("older version of getRelations took\t" + (endTime - startTime)/NS_TO_MS + "ms");
+
+    		startTime = System.nanoTime();
+    		Set<Relation> newRelations = testReasoner.getRelations(synsets1, synsets2, false);
+    		endTime = System.nanoTime();
+    		//System.out.println("newer version of getRelations took\t" + (endTime - startTime)/NS_TO_MS + "ms");
+
+    		String message = MyWordnetReasoner.asCommaList(oldRelations) + " is not " + MyWordnetReasoner.asCommaList(newRelations);
+    		assertEquals(oldRelations, newRelations);
+    	}
+
     	
+    }
+        
+    /**
+     * Test new implementation of getSynsets against older implementation
+     */
+    @Test
+    public void testSynsetEquivalent() {
     	for(List<String> wordGroup : wordGroupsToSynsetMap.keySet()) {
     		long startTime = System.nanoTime();
-    		List<Resource> synsets = myReason.getSynsets(wordGroup);
+    		Set<Resource> synsets = testReasoner.getSynsets(wordGroup);
     		long endTime = System.nanoTime();
     		//System.out.println("Current version of getSysnset took\t" + (endTime - startTime)/NS_TO_MS + "ms");
 
     		startTime = System.nanoTime();
-    		List<Resource> oldVersionSynsets = oldVersion.getSynsets(wordGroup);
+    		Set<Resource> oldVersionSynsets = getSynsets(wordGroup);
     		endTime = System.nanoTime();
     		//System.out.println("Older version of getSysnset took\t" + (endTime - startTime)/NS_TO_MS + "ms");
 
     		String message = MyWordnetReasoner.asCommaList(synsets) + " is not " + MyWordnetReasoner.asCommaList(oldVersionSynsets);
-    		assertTrue(message, synsets.containsAll(oldVersionSynsets));
-    		assertTrue(message, oldVersionSynsets.containsAll(synsets));
+    		assertEquals(message, oldVersionSynsets, synsets);
     	}
     }
     
+    @Test
+    public void testTotalTriples() {
+    	Assert.assertTrue("There should be over 9,000 triples.", testReasoner.getTriplesCount() > 9000);
+    }
+
     
     private static class Pair<K, V> {
 		private final K first;
@@ -302,5 +320,111 @@ public class MyWordnetReasonerTest extends TestCase {
 		}
     }
     
+    
+	/* Produces a query in the form:
+	 * SELECT ?relation
+	 * WHERE
+	 * { ?synset1 wn20schema:senseLabel "learn"@en-US .
+	 *   ?synset1 wn20schema:senseLabel "acquire"@en-US .
+	 *   ?synset2 wn20schema:senseLabel "teach"@en-US .
+	 *   ?synset2 wn20schema:senseLabel "instruct"@en-US .
+	 *   ?synset1 ?relation ?synset2
+	 * }
+	 */
+	private final Set<Relation> getRelations(final List<String> wordGroup1, final List<String> wordGroup2) {
+		if(wordGroup1 == null || wordGroup2.size() == 0 || wordGroup2 == null || wordGroup2.size() == 0) {
+			throw new IllegalArgumentException("WordGroups must have 1 or more elements.");
+		}
+		Set<Relation> relations = new HashSet<Relation>();
+		
+		StringBuilder queryBaseSb = new StringBuilder();
+		queryBaseSb.append("PREFIX wn20schema: <http://www.w3.org/2006/03/wn/wn20/schema/> ");
+		queryBaseSb.append("SELECT ?relation ");
+		queryBaseSb.append("WHERE { ");
+		queryBaseSb.append(" FILTER ( ?relation IN (wn20schema:causes,  wn20schema:entails,  wn20schema:hyponymOf, wn20schema:meronymOf)) . ");
+		for(String word : wordGroup1) {
+			queryBaseSb.append("	?synset1 wn20schema:senseLabel \"" + word +"\"@en-US . ");
+		}
+		for(String word : wordGroup2) {
+			queryBaseSb.append("	?synset2 wn20schema:senseLabel \"" + word +"\"@en-US . ");
+		}
+		StringBuilder relationQuerySb = new StringBuilder(queryBaseSb);
+		relationQuerySb.append("	?synset1 ?relation ?synset2");
+		relationQuerySb.append("}");
+		StringBuilder inverseRelationQuerySb = new StringBuilder(queryBaseSb);
+		inverseRelationQuerySb.append("	?synset2 ?relation ?synset1");
+		inverseRelationQuerySb.append("}");	
+		
+		Query query = QueryFactory.create(relationQuerySb.toString());
+		QueryExecution qe = QueryExecutionFactory.create(query, testReasoner.getModel(ModelType.UNIFIED));
+		ResultSet results = qe.execSelect();
+		while(results.hasNext()) {
+			Resource next = results.next().getResource("relation");
+			if(next != null) {
+				Relation relation = resourceStringToRelationMap.get(next.getLocalName());
+				relations.add(relation);
+			}
+		}
+		
+		query = QueryFactory.create(inverseRelationQuerySb.toString());
+		qe = QueryExecutionFactory.create(query, testReasoner.getModel(ModelType.UNIFIED));
+		results = qe.execSelect();
+		while(results.hasNext()) {
+			Resource next = results.next().getResource("relation");
+			if(next != null) {
+				Relation inverseRelation = resourceStringToRelationMap.get(next.getLocalName()).getInverse();
+				relations.add(inverseRelation);
+			}
+		}
+		qe.close();	
+		
+		if(relations.size() > 0) {
+			return relations;
+		} else {
+			return Collections.singleton(Relation.NONE);
+		}
+	}
+
+    /**
+     * Queries for synsets using a StatementIterator
+     * @param wordGroup group of words to find synsets for
+     * @return any and all synsets for the words in wordGroup
+     */
+	private final Set<Resource> getSynsets(List<String> wordGroup) {
+		if(wordGroup == null || wordGroup.size() == 0) {
+			throw new IllegalArgumentException("WordGroup must have 1 or more elements.");
+		} else {			
+			Set<Resource> synsets = new HashSet<Resource>();
+			final String firstWord = wordGroup.get(0);
+			Property senseLabelProperty = testReasoner.getModel(ModelType.UNIFIED).getProperty(WN20SCHEMA_URI + "senseLabel");
+			//Statements are formed [Subject, Predicate, Object]
+			//e.g., [http://www.w3.org/2006/03/wn/wn20/instances/synset-teach-verb-1, http://www.w3.org/2006/03/wn/wn20/schema/senseLabel, "teach"@en-US]
+	        StmtIterator statements = testReasoner.getModel(ModelType.UNIFIED).listStatements(
+	        	new  SimpleSelector(null, senseLabelProperty, (RDFNode)null) {
+                    @Override
+                    public boolean selects(Statement s) {
+                            return s.getString().equals(firstWord);
+                    }
+	            }
+        	);
+	        
+            while (statements.hasNext()) {
+            	Statement statement = statements.nextStatement();
+            	logger.debug("  " + statement.getObject().asLiteral().getString() + "  found in  " + statement.getSubject());
+            	StmtIterator subjectProperties = statement.getSubject().listProperties(senseLabelProperty);
+            	List<String> synsetWords = new ArrayList<String>();
+            	while (subjectProperties.hasNext()) {
+            		Statement propertyStatement = subjectProperties.nextStatement();
+            		logger.debug("  		" + propertyStatement.getObject().asLiteral().getString() + "  found in  " + propertyStatement.getSubject());
+            		synsetWords.add(propertyStatement.getObject().asLiteral().getString());
+				}
+            	if(synsetWords.containsAll(wordGroup)) {
+            		synsets.add(statement.getSubject());
+            	}
+            }
+			return synsets;			
+		}
+	}
+
 	
 }

@@ -155,21 +155,6 @@ public class MyJenaInference {
 						+ "}"
 						+ "LIMIT 10";
 		
-		// relationships between wn20instances:synset-call-verb-2 and any of a set of other synsets
-		String showCallDialRelations =
-				"PREFIX  wn20schema: <http://www.w3.org/2006/03/wn/wn20/schema/> "
-				+ "PREFIX  wn20instances: <http://www.w3.org/2006/03/wn/wn20/instances/>"
-				+ "SELECT ?relation "
-						+ "WHERE { "
-						+ " {wn20instances:synset-call-verb-2 ?relation wn20instances:synset-dial-verb-1}  "
-						+ "UNION {wn20instances:synset-call-verb-2 ?relation wn20instances:synset-dial-verb-2}  "
-						+ "UNION {wn20instances:synset-call-verb-2 ?relation wn20instances:synset-dial-noun-2} "
-						+ "UNION {wn20instances:synset-call-verb-2 ?relation wn20instances:synset-dial-noun-3} "
-						+ "UNION {wn20instances:synset-call-verb-2 ?relation wn20instances:synset-dial-noun-4} "
-						+ "UNION {wn20instances:synset-call-verb-2 ?relation wn20instances:synset-dial-noun-1} "
-						+ "} "
-						+ "LIMIT 10";
-
 		// positive closure hyponyms of synset-social_relation-noun-1 (e.g., synset-professional_relation-noun-1, synset-legal_relation-noun-1)
 		String showPosiveClosureHyponyms =
 				"PREFIX  wn20schema: <http://www.w3.org/2006/03/wn/wn20/schema/> "
@@ -181,31 +166,31 @@ public class MyJenaInference {
 						+ "LIMIT 10";
 
 		// all the relationships between two synsets
-		String showRelationships = 
+		String testRelationships = 
 				"PREFIX  wn20schema: <http://www.w3.org/2006/03/wn/wn20/schema/> "
 				+ "PREFIX  wn20instances: <http://www.w3.org/2006/03/wn/wn20/instances/>"
-				+ "SELECT ?relation "
-						+ "WHERE { "
-						+ "?synset1 ?relation ?synset2 . "
-						+ "FILTER(?synset1 = wn20instances:synset-call-verb-2 && " +
-						"		?synset2 = wn20instances:synset-dial-verb-1 || wn20instances:synset-dial-verb-2 || wn20instances:synset-dial-noun-2 || wn20instances:synset-dial-noun-3 || wn20instances:synset-dial-noun-4 || wn20instances:synset-dial-noun-1)"
+				+ "ASK  "
+						+ " { "
+						+ "?synset1 wn20schema:entails ?synset2 . "
+						+ "FILTER(?synset1 IN (wn20instances:synset-call-verb-2) && " +
+						"		?synset2 IN (wn20instances:synset-dial-verb-1, wn20instances:synset-dial-verb-2, wn20instances:synset-dial-noun-2, wn20instances:synset-dial-noun-3, wn20instances:synset-dial-noun-4, wn20instances:synset-dial-noun-1))"
 						+ "}"
 						+ "LIMIT 10";
 
-		// not working
+		
 		String showMultipleRelations =
 				"PREFIX  wn20schema: <http://www.w3.org/2006/03/wn/wn20/schema/> "
 				+ "PREFIX  wn20instances: <http://www.w3.org/2006/03/wn/wn20/instances/>"
 				+ "SELECT ?synset1 ?relation1 ?relation2 ?synset2 "
 						+ "WHERE { "
-						+ " ?synset1 ?relation1 ?synset2 . "  
-						+ " ?synset1 ?relation2 ?synset2 . "
-						+ " FILTER ( ?relation1 = wn20schema:causes || wn20schema:entails  "
-						+ "       && ?relation2 =                                            wn20schema:hyponymOf  || wn20schema:meronymOf  || wn20schema:memberMeronymOf  || wn20schema:partMeronymOf  ||  wn20schema:substanceMeronymOf "
-						//+ "       && ?relation1 != ?relation2"
+						+ "      ?synset1 ?relation1 ?synset2 .  "  
+						+ "      ?synset2 ?relation2 ?synset1 . "  
+						+ " FILTER ( ?relation1 IN ( wn20schema:causes, wn20schema:hyponymOf, wn20schema:entails, wn20schema:meronymOf)  "
+						+ "       && ?relation2 IN ( wn20schema:causes, wn20schema:hyponymOf, wn20schema:entails, wn20schema:meronymOf) "
+						+ "       && ?relation1 != ?relation2"
 						+ ") "
-						+ "} "
-						+ "LIMIT 10";
+						+ "} ";
+
 		
 		String partTwoTest1 = 
 				"PREFIX  wn20schema: <http://www.w3.org/2006/03/wn/wn20/schema/> "
@@ -239,25 +224,70 @@ public class MyJenaInference {
 				+ "		    FILTER (regex(STR(?genLex),\"^banana\",\"i\")) . "
 				+ "		} LIMIT 20 ";
 		
-		String partTwoTestMeronymRelations = 
+		
+		
+		String test1 = 
+				"PREFIX wn20schema: <http://www.w3.org/2006/03/wn/wn20/schema/> " +
+				"PREFIX  wn20instances: <http://www.w3.org/2006/03/wn/wn20/instances/> " +
+				"ASK { " +
+				"?synset1 wn20instances:hyponymOf ?synset2 . " +
+				"FILTER(" +
+				"?synset1 IN ( " +
+				"wn20instances:synset-make-verb-24, wn20instances:synset-form-verb-1, wn20instances:synset-make-verb-14, " +
+				"wn20instances:synset-make-verb-33, wn20instances:synset-do-verb-8, wn20instances:synset-make-verb-43, " +
+				"wn20instances:synset-cook-verb-2, wn20instances:synset-make-verb-29, wn20instances:synset-induce-verb-2," +
+				" wn20instances:synset-have-verb-17, wn20instances:synset-make-verb-47, wn20instances:synset-make-verb-37, " +
+				"wn20instances:synset-seduce-verb-1, wn20instances:synset-stool-verb-4, wn20instances:synset-make-verb-19, " +
+				"wn20instances:synset-make-verb-1, wn20instances:synset-make-verb-15, wn20instances:synset-make-verb-25, " +
+				"wn20instances:synset-make-verb-42, wn20instances:synset-make-verb-32, wn20instances:synset-create-verb-5, " +
+				"wn20instances:synset-gain-verb-8, wn20instances:synset-reach-verb-1, wn20instances:synset-make-verb-46, " +
+				"wn20instances:synset-shuffle-noun-1, wn20instances:synset-make-verb-36, wn20instances:synset-make-verb-8, " +
+				"wn20instances:synset-draw-verb-4, wn20instances:synset-make-verb-16, wn20instances:synset-produce-verb-2, " +
+				"wn20instances:synset-name-verb-3, wn20instances:synset-make-verb-26, wn20instances:synset-lay_down-verb-1, " +
+				"wn20instances:synset-make-verb-41, wn20instances:synset-make-verb-45, wn20instances:synset-make-verb-49, " +
+				"wn20instances:synset-make-verb-3, wn20instances:synset-make-verb-39, wn20instances:synset-make-verb-35, " +
+				"wn20instances:synset-cause-verb-1, wn20instances:synset-take-verb-27, wn20instances:synset-brand-noun-2, " +
+				"wn20instances:synset-reach-verb-7, wn20instances:synset-hold-verb-1, wn20instances:synset-make-verb-44, " +
+				"wn20instances:synset-make-verb-48, wn20instances:synset-make-verb-38, wn20instances:synset-make-verb-2, " +
+				"wn20instances:synset-make-verb-18, wn20instances:synset-make-verb-34, wn20instances:synset-construct-verb-1) && ?synset1 IN ( wn20instances:synset-suffice-verb-1, wn20instances:synset-make-verb-1, wn20instances:synset-dress-verb-16, wn20instances:synset-do-verb-4, wn20instances:synset-do-noun-2, wn20instances:synset-do-verb-3, wn20instances:synset-do-verb-8, wn20instances:synset-perform-verb-1, wn20instances:synset-do-verb-11, wn20instances:synset-serve-verb-9, wn20instances:synset-do-verb-13, wn20instances:synset-bash-noun-2, wn20instances:synset-practice-verb-3, wn20instances:synset-act-verb-2, wn20instances:synset-cause-verb-1))}";
+		String test2 = "PREFIX wn20schema: <http://www.w3.org/2006/03/wn/wn20/schema/> PREFIX  wn20instances: <http://www.w3.org/2006/03/wn/wn20/instances/> ASK { ?synset1 ^wn20instances:hyponymOf ?synset2 . FILTER(?synset1 IN ( wn20instances:synset-make-verb-24, wn20instances:synset-form-verb-1, wn20instances:synset-make-verb-14, wn20instances:synset-make-verb-33, wn20instances:synset-do-verb-8, wn20instances:synset-make-verb-43, wn20instances:synset-cook-verb-2, wn20instances:synset-make-verb-29, wn20instances:synset-induce-verb-2, wn20instances:synset-have-verb-17, wn20instances:synset-make-verb-47, wn20instances:synset-make-verb-37, wn20instances:synset-seduce-verb-1, wn20instances:synset-stool-verb-4, wn20instances:synset-make-verb-19, wn20instances:synset-make-verb-1, wn20instances:synset-make-verb-15, wn20instances:synset-make-verb-25, wn20instances:synset-make-verb-42, wn20instances:synset-make-verb-32, wn20instances:synset-create-verb-5, wn20instances:synset-gain-verb-8, wn20instances:synset-reach-verb-1, wn20instances:synset-make-verb-46, wn20instances:synset-shuffle-noun-1, wn20instances:synset-make-verb-36, wn20instances:synset-make-verb-8, wn20instances:synset-draw-verb-4, wn20instances:synset-make-verb-16, wn20instances:synset-produce-verb-2, wn20instances:synset-name-verb-3, wn20instances:synset-make-verb-26, wn20instances:synset-lay_down-verb-1, wn20instances:synset-make-verb-41, wn20instances:synset-make-verb-45, wn20instances:synset-make-verb-49, wn20instances:synset-make-verb-3, wn20instances:synset-make-verb-39, wn20instances:synset-make-verb-35, wn20instances:synset-cause-verb-1, wn20instances:synset-take-verb-27, wn20instances:synset-brand-noun-2, wn20instances:synset-reach-verb-7, wn20instances:synset-hold-verb-1, wn20instances:synset-make-verb-44, wn20instances:synset-make-verb-48, wn20instances:synset-make-verb-38, wn20instances:synset-make-verb-2, wn20instances:synset-make-verb-18, wn20instances:synset-make-verb-34, wn20instances:synset-construct-verb-1) && ?synset1 IN ( wn20instances:synset-suffice-verb-1, wn20instances:synset-make-verb-1, wn20instances:synset-dress-verb-16, wn20instances:synset-do-verb-4, wn20instances:synset-do-noun-2, wn20instances:synset-do-verb-3, wn20instances:synset-do-verb-8, wn20instances:synset-perform-verb-1, wn20instances:synset-do-verb-11, wn20instances:synset-serve-verb-9, wn20instances:synset-do-verb-13, wn20instances:synset-bash-noun-2, wn20instances:synset-practice-verb-3, wn20instances:synset-act-verb-2, wn20instances:synset-cause-verb-1))}";
+
+		String test1a = 
 				"PREFIX  wn20schema: <http://www.w3.org/2006/03/wn/wn20/schema/> "
-				+ "	SELECT  ?synset1 ?relation ?synset2 "
-				+ "	WHERE   {  "
-				+ "?synset1 wn20schema:senseLabel \"warp\"@en-US . "
-				+ "?synset2 wn20schema:senseLabel \"fabric\"@en-US . "
-				+ "?synset2 wn20schema:senseLabel \"textile\"@en-US . "
-				+ "?synset1 ?relation ?synset2 . "
-				+ "}";
+				+ "PREFIX  wn20instances: <http://www.w3.org/2006/03/wn/wn20/instances/>"
+				+ "ASK  "
+						+ " { "
+						+ "?synset1 ^wn20schema:causes ?synset2 . "
+						+ "?synset1 wn20schema:senseLabel \"do\"@en-US . "
+						+ "?synset2 wn20schema:senseLabel \"make\"@en-US . "
+						+ "}";
+
+		
+//		String partTwoTestMeronymRelations = 
+//				"PREFIX  wn20schema: <http://www.w3.org/2006/03/wn/wn20/schema/> "
+//				+ "	SELECT  ?synset1 ?relation ?synset2 "
+//				+ "	WHERE   {  "
+//				+ " FILTER ( ?relation IN (wn20schema:causes,  wn20schema:entails,  wn20schema:hyponymOf, wn20schema:meronymOf)) "
+//
+//				+ "?synset1 wn20schema:senseLabel \"warp\"@en-US . "
+//				+ "?synset2 wn20schema:senseLabel \"fabric\"@en-US . "
+//				+ "?synset2 wn20schema:senseLabel \"textile\"@en-US . "
+//				+ "?synset1 ?relation ?synset2 . "
+//				+ "}";
 				
-		Query query = QueryFactory.create(partTwoTestMeronymRelations);
+//		System.out.println(showMultipleRelations2);
+		Query query = QueryFactory.create(test1a);
 		QueryExecution qe = QueryExecutionFactory.create(query, unifiedModel);
-		ResultSet results = qe.execSelect();
+//		ResultSet results = qe.execSelect();
+
+		boolean b = qe.execAsk();
+		System.out.println(b);
 //		while(results.hasNext()) {
 ////			System.out.println(results.next().varNames().next());
 //			System.out.println(results.next().getResource("synset"));
 ////			System.out.println(results.next());
 //		}
-		ResultSetFormatter.out(System.out, results, query);
+//		ResultSetFormatter.out(System.out, results, query);
 		qe.close();
 		
 //		query = QueryFactory.create(showHypernymRelations);
