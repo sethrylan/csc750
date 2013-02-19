@@ -6,19 +6,9 @@ This application loads [WordNet] [1] RDF files and an OWL ontology to derive sin
 ### Build instructions ###
 Verify that the following files are included in root project directory
 
- Core File:
-* wordnet-senselabels.rdf
-
-Relationship Files:
-* wordnet-causes.rdf
-* wordnet-entailment.rdf
-* wordnet-hyponym.rdf
-* wordnet-membermeronym.rdf
-* wordnet-partmeronym.rdf
-* wordnet-substancemeronym.rdf
-
-Ontology Files:
-* wnbasic.owl
+ * Core File: wordnet-senselabels.rdf
+ * Relationship Files: wordnet-causes.rdf, wordnet-entailment.rdf, wordnet-hyponym.rdf, wordnet-membermeronym.rdf, wordnet-partmeronym.rdf, wordnet-substancemeronym.rdf
+ * Ontology Files: wnbasic.owl
 
 Verify that the classpath includes the [Jena] [3] 2.7.4 libraries.
 
