@@ -173,10 +173,7 @@ public class MyWordnetReasoner {
 		 * 					 wn20instances:synset-dial-noun-2, 
 		 * 					 wn20instances:synset-dial-noun-3, 
 		 * 					 wn20instances:synset-dial-noun-4, 
-		 * 					 wn20instances:synset-dial-noun-1)
-		 * 	    )
-		 * }
-		 * 
+		 * 					 wn20instances:synset-dial-noun-1) ) }
 		 */
 		if(synsetSet1 == null || synsetSet1.size() == 0 || synsetSet2 == null || synsetSet2.size() == 0) {
 			return Collections.singleton(Relation.NONE);
@@ -194,13 +191,13 @@ public class MyWordnetReasoner {
 		queryEndSb.append("FILTER(?synset1 IN (");
 		String delimiter = "";
 		for(Resource synset : synsetSet1) {
-			queryEndSb.append(delimiter + " wn20instances:" + synset.getLocalName());
+			queryEndSb.append(delimiter + " " + WN20INSTANCES + ":" + synset.getLocalName());
 			delimiter = ",";
 		}
 		queryEndSb.append(") && ?synset2 IN (");
 		delimiter = "";
 		for(Resource synset : synsetSet2) {
-			queryEndSb.append(delimiter + " wn20instances:" + synset.getLocalName());
+			queryEndSb.append(delimiter + " " + WN20INSTANCES + ":" + synset.getLocalName());
 			delimiter = ",";
 		}
 		queryEndSb.append("))}");
@@ -255,11 +252,11 @@ public class MyWordnetReasoner {
 		} else {			
 			Set<Resource> synsets = new HashSet<Resource>();
 			StringBuilder querySb = new StringBuilder();
-			querySb.append("PREFIX  wn20schema: <http://www.w3.org/2006/03/wn/wn20/schema/> ");
+			querySb.append("PREFIX  " + WN20SCHEMA + ": <" + WN20SCHEMA_URI + "> ");
 			querySb.append("	SELECT  ?synset ");
 			querySb.append("	WHERE   { ");
 			for(String word : wordGroup) {
-				querySb.append("		?synset wn20schema:senseLabel \"" + word +"\"@en-US . ");
+				querySb.append("		?synset "+ WN20SCHEMA + ":senseLabel \"" + word +"\"@en-US . ");
 			}
 			querySb.append("	}");
 			

@@ -381,7 +381,9 @@ public class MyWordnetReasonerTest extends TestCase {
     }
     
     
-	/* Produces a query in the form:
+	/** 
+	 * Older version of getRelations for comparison.
+	 * Produces a query in the form:
 	 * SELECT ?relation
 	 * WHERE
 	 * { ?synset1 wn20schema:senseLabel "learn"@en-US .
@@ -446,6 +448,7 @@ public class MyWordnetReasonerTest extends TestCase {
 	}
 
     /**
+     * Older version of getSynsets for comparison purposes.
      * Queries for synsets using a StatementIterator
      * @param wordGroup group of words to find synsets for
      * @return any and all synsets for the words in wordGroup
