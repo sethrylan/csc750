@@ -66,19 +66,19 @@ If more than one of the same relationship is found from wordgroup 1 to wordgroup
 
 <table>
   <tr>
-    <th>Relation</th><th>Reflective/Inverse</th><th>a.k.a.</th>
+    <th>Relation</th><th>Reflective/Inverse</th><th>a.k.a.</th><th>Example</th>
   </tr>
   <tr>
-    <td>entails</td><td>entailed by</td><td>Entails</td>
+    <td>entails</td><td>entailed by</td><td>Entails</td><td>"call, ring" "dial"</td>
   </tr>
   <tr>
-    <td>hyponymOf</td><td>hypernym of</td><td>is a</td>
+    <td>hyponymOf</td><td>hypernym of</td><td>is a</td><td>"relation" "abstraction"</td>
   </tr>
   <tr>
-    <td>meronymOf</td><td>holonym of</td><td>part of, member of, made of</td>
+    <td>meronymOf</td><td>holonym of</td><td>part of, member of, made of</td><td>"warp" "fabric, textile"</td>
   </tr>
   <tr>
-    <td>causes</td><td>casued by</td><td>causes</td>
+    <td>causes</td><td>casued by</td><td>causes</td><td>"teach, instruct", "learn, acquire"</td>
   </tr>
 </table>
 
