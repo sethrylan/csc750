@@ -71,8 +71,8 @@ public class MyWordnetReasoner {
 	 * Example:
 	 * <i>Entailment</i>: java MyWordnetReasoner "call, ring" "dial" -> "Entails"
 	 * <i>Meronymy</i>: java MyWordnetReasoner "warp" "fabric, textile" -> "Meronym"
-	 * <i>Hyponymy</i>: java MyWordnetReasoner "relation" "abstraction" -> "Hyponym"
-	 * <i>Cause</i>: java MyWordnetReasoner "teach, instruct", "learn, acquire" -> "Causes"
+	 * <i>Hyponymy</i>: java MyWordnetReasoner "social relation" "abstraction" -> "Hyponym"
+	 * <i>Cause</i>: java MyWordnetReasoner "teach, instruct" "learn, acquire" -> "Causes"
 	 * If no relationship exists between the two synsets, then the program prints "Relationship unknown".
 	 *
 	 * @param args commandline arguments of two quoted, comma-delimited strings representing word groups
