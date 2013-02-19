@@ -1,7 +1,7 @@
 # CSC750 Project #3 #
 ====================
 
-This application which loads WordNet RDF files and an OWL ontology to derive single-step and multiple-step (positive closure) relationships from one group of words to another.
+This application loads [WordNet] [1] RDF files and an OWL ontology to derive single-step and multiple-step (positive closure) relationships from one group of words to another.
 
 ### Build instructions ###
 Verify that the following files are included in root project directory
@@ -66,7 +66,7 @@ Calculating positive-closure relations... 	done.
 ```
 
 ### Fine Print ###
-Each group of words should represent a [synset] [1]; if it does not, then an error message will be displayed.
+Each group of words should represent a [synset] [2]; if it does not, then an error message will be displayed.
 
 Relationships are only derived from the first group to the second; however, the reflective relationships (e.g., 'caused by' to 'causes') from group 1 to group 2 are also found.
 
@@ -90,7 +90,8 @@ Relationships are only derived from the first group to the second; however, the 
   </tr>
 </table>
 
-[1]: http://en.wikipedia.org/wiki/Synonym_ring       "Synset"
+[2]: http://wordnet.princeton.edu/      	 "WordNet"
+[2]: http://en.wikipedia.org/wiki/Synonym_ring       "synset"
 
 
 
