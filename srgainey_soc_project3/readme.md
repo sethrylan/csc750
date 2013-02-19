@@ -54,7 +54,10 @@ Calculating positive-closure relations... 	done.
 
 ### Fine Print ###
 Each group of words must represent a [synset] [2]; if it does not, then an error message will be displayed.
-
+E.g.,
+```
+Validating synsets... Invalid word-group: perspicacity,banana,skeuomorph
+```
 Relationships are only derived from the first group to the second; however, the reflective relationships (e.g., 'caused by' to 'causes') from group 1 to group 2 are also found.
 
 If more than one of the same relationship is found from wordgroup 1 to wordgroup 2 (e.g., "do" "make" has several hyponymOf and hypernymOf relationships), then only one of each type is displayed.
