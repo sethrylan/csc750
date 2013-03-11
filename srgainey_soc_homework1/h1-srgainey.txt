@@ -1,0 +1,49 @@
+1.
+C. Formulating goals for agents representing business partners or user is a high-level way of instructing
+such agents
+F. Distributed enactments are subject to the (potential) hazards of race conditions
+G. One of the biggest challenges in realizing the vision of service-oriented computing is ensuring that the
+parties involved interact in a trustworthy manner
+
+2.
+C. All else being equal, we prefer a knowledge representation that is easier to elaborate
+D. All else being equal, we prefer a knowledge representation that supports expressing incomplete knowledge
+about an entity
+
+3.
+A. It is inconsistent to declare a class that is disjoint with itself
+??? B. The intersection of an OWL class C with any of its superclasses equals C itself
+F. Only an OWL Object Property may be declared to be a Transitive Property
+H. A restriction is one of the more complicated kinds of an axiom in the OWL language
+
+	
+False:	
+C. "Both object properties and datatype properties can be declared as "functional"."
+D/E. "This characteristic has been referred to as having a unique property. FunctionalProperty is shorthand for stating that the property's minimum cardinality is zero and its maximum 
+cardinality is 1."
+G. Assuming we can declare a property as being irreflexive, we can model that a person is not his or her own sibling by asserting isSiblingOf to be symmetric, transitive, and irreflexive
+	- transitivity is defined as a linkage of three, but that may not hold with 1-2 persons in this example
+J. Whereas RDF assertions can be spread over many input files, OWL assertions need to be placed in the
+same input file for the OWL semantics to apply
+	- http://www.w3.org/TR/2002/WD-owl-guide-20021104/
+I. Given any property P and class C, any restriction of P with respect to some values from C is a subclass of any restriction of P with respect to all values from C
+	- in the example from http://www.w3.org/TR/owl-guide/, a wine that is made by a brewery would be part of someValueOf, but not allValuesOf
+	
+	
+4.
+A. RDF supports assertions to capture a frame-like knowledge representation
+D. A reasonable criterion for assessing RDF models is how easy it is to draw useful inferences from a
+particular representation
+H. In RDF reification applies to one statement at a time
+I. http://www.w3.org/TR/rdf-concepts/#section-Literals
+	http://www.w3.org/TR/rdf-mt/#literalnote
+K. In RDF, a property is simply a kind of resource
+M. The rdf:domain of rdf:domain is rdf:Property
+
+False:
+B. RDF relies upon literals being named via URIs
+	- http://www.w3.org/TR/rdf-concepts/#section-Literals
+L. So how do we introduce subject and object URIs in RDF/XML?
+	1. rdf:about sets the subject URI of a statement, which may be absolute (http://example.com/) or resolved relative to the BASE of the document (e.g. /foo/bar, #frag). (Like href in html)
+	2. rdf:resource sets the object URI of a statement, once again either absolute or relative.
+	3. rdf:ID sets the subject URI, but it can only be within this document. An ID can also only be used once. Very like <a name="baz"> or id="baz" in html.
