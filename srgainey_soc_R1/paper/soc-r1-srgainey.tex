@@ -1,65 +1,58 @@
 \documentclass[9pt,letterpaper]{article} 
 \usepackage{fullpage}
 \usepackage{setspace}
+\usepackage{graphicx}
 \setstretch{1.5}
 \headheight 0in
 \headsep 0in
+\DeclareGraphicsExtensions{.pdf,.jpeg,.png,.jpg,.gif}   
 
-\title{Research Seminar \#1}
 
-\author{Seth Rylan Gainey}
-\date{Due 02/15/2013}
+\title{Service Oriented Computing -- CSC750-601 -- R1}
+
+\author{Seth Rylan Gainey (srgainey)}
+\date{Due 03/17/2013}
 \begin{document}
 
 \bibliographystyle{plain}
 
 \maketitle{}
 
-\subsection*{} 
 
-Andrew Ng --- STAIR: The STanford Artificial Intelligence Robot project\cite{AndrewNg} (2010 April 12)
+\subsection*{Lifestyle Motivator Application}
 
-\subsection*{Summary}
 
-\begin{itemize}
+In this paper, I present a Tropos\cite{website:tropos}, context-elaborated\cite{pradeep:1} model for a lifestyle motivator application, which takes into account the patient's location, desired and recommended activity levels, and social relationships to recommend a medically appropriate activity and partner.
+
+In the as-is model (Figure~\ref{fig:one}), constant user interaction is required to define the patient's state, and network connection required to match the state against a database of potential exercise partners.
+
+In the to-be model (Figure~\ref{fig:two}), a context-aware application uses available environmental clues (GPS, WIFI, accelerometer, gyoscope, magnetometer), an evidence-based model of recommended physical activities and the patient's social graph to:
+
+\begin{enumerate}
 \addtolength{\itemsep}{-0.5\baselineskip}
-\item Convergence of robotic appliances is coming (Dishwasher $->$ Robot that washes dishes).
-\item However, general purpose robotics are uncommon because low-level perception and control are limiting factors; not first-order logic and high-level planning.
-\item Form and force closure models in the Image$->$model$->$grasp-point pipeline 
-\begin{itemize}
-\addtolength{\itemsep}{-0.5\baselineskip}
-\item ``I believe it is beyond the state-of-the art to build a 3D model of an object [from a single view].''
-\item But form and force closure models don't even work that well with a 3D model
-\end{itemize}
-\item Alternative method: use supervised learning to go from image directly to grasp point
-\item Dynamic models of flight also tend not to work well. But reinforcement learning based on low-level system attributes can produce viable control model.
-\item Computer vision is hard
-\begin{itemize}
-\addtolength{\itemsep}{-0.5\baselineskip}
-\item The human eye uses a fovea to increase center-gaze resolution. Robots can have this too with a PTZ camera.
-\item Moving the object or using depth perception can also aid image recognition
-\end{itemize}
-\item Low-level feature representations can be dervied from images to drive AI algorithms. Feature representation such as SIFT or spectrographs are difficult to create, but we use synethesia-like approaches to use audio feature representations as image feature representations.
-\item Sparse coding (Olshausen and Field 1996) can do unsupervised learning on images to create new image representations by combing the output of a subset of bases functions. This can do edge-detection. But just like sparse coding puts pixels together to model edges, you can combine edges for object parts, and objects parts for a complete object model. This technique lead one ML grad student to improve on state-of-the-art image and audio (phoneme) detection algorithms.
-\item This argument between complex model vs low-level emergence existed in NLP between linguists and ML proponents. The machine learning people won.
-\item Importantly, feature representation methods work on sensor outputs for which there is no human cognate (e.g., lidar scans, camera arrays, thermal infrared), which tend to difficult for us to think about in a holistic way.
-\item The monolithic models for sensing and motion are not feasible. Systems like ROS are more flexible and modular in a Unix-like architecture.
-\end{itemize}
+\item Model current and desired physical activity states (determined by performance metrics from fast-sample actimetry, such as number of steps per day).
+\item Model location using Platys middleware \cite{pradeep:2}.
+\item Recommend an appropriate solo or group activity to encourage the patient to move into the desired physical activity state.
+\end{enumerate}
+In this way, the application motivates the patient to maintain an appropriately active lifestyle with the minimum level of interruption or manual input.
+
+\begin{figure}
+\centerline{\includegraphics[scale=.51]{soc-r1-srgainey-as-is.png}}
+\caption{Tropos As-Is model}
+\label{fig:one}
+\end{figure}
+
+\begin{figure}
+\centerline{\includegraphics[scale=.51]{soc-r1-srgainey-to-be.png}}
+\caption{Tropos To-Be model}
+\label{fig:two}
+\end{figure}
 
 %\footnote{footnote here}
 
-\subsection*{Suggestions}
-
-\begin{itemize}
-\addtolength{\itemsep}{-0.5\baselineskip}
-\item Ng did not mention possible cross-over between synethesia and the generation of feature representations using cross-sensor approaches. Is there any meaningful connection between the psychology concept and Ng's research?
-\item There was a very large leap from low-level representation methods to ROS's modular architecture. Having done some work on ROS (https://github.com/sethrylan/ROS/), I have not seen a ROS package which uses the techniques Ng describes (beyond the standard OpenCV library).
-\end{itemize}
-
-
 \begin{singlespace}
 \begin{footnotesize}
-\bibliography{lecture_1}
+\bibliography{soc-r1-srgainey}
 \end{footnotesize}
 \end{singlespace}
 
