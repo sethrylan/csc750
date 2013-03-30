@@ -4,7 +4,7 @@ import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
 
-import edu.ncsu.soc.project1.R;
+import edu.ncsu.soc.motivator.R;
 
 import android.content.Context;
 import android.content.Intent;

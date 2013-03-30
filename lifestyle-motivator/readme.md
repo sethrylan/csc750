@@ -22,3 +22,15 @@ Context can also be used to suggest a buddy. For example, 1) those who are not b
 and plan to participate in an activity, 2) those who are easy to coordinate with (e.g.,
 people nearby), 3) those who are skilled at the activity, and so on.
 
+
+### Installation
+
+Add local.properties file with the contents
+'''
+sdk.dir=<ANDROID_SDK_LOCATION>
+'''
+
+From the root project directory, run
+'''
+gradlew installDebug
+'''

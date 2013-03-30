@@ -20,19 +20,28 @@ android {
 	compileSdkVersion 'Google Inc.:Google APIs:10'
 	// TODO: TDD with http://tryge.com/2013/02/28/android-gradle-build/
 	// https://github.com/alexthaler/OpenSesameDroid/blob/22cc14ab0319c007d082986e57719f74e20f3792/build.gradle
-		
-	
-//    sourceSets {
-//        main {
-//            manifest.srcFile 'AndroidManifest.xml'
-//            java.srcDirs = ['src']
-//            resources.srcDirs = ['src']
-//            aild.srcDirs = ['src']
-//            renderscript.srcDirs = ['src']
-//            res.srcDirs = ['res']
-//            assets.srcDirs = ['assets']
-//        }
-//    }
+			  
+    sourceSets {
+        main {
+            manifest {
+                srcFile 'AndroidManifest.xml'
+            }
+            java {
+                srcDir 'src/main/java'
+            }
+            res {
+                srcDir 'src/main/res'
+            }
+            assets {
+                srcDir 'assets'
+            }
+        }
+        test {
+            java {
+                srcDir 'src/test'
+            }
+        }
+    }
 
 }
 

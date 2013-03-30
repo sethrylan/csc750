@@ -10,7 +10,11 @@
 	<View android:layout_height="2dip" android:background="#FF909090"
 		android:layout_width="fill_parent" /> 
 		
-	<ListView android:layout_width="wrap_content" android:layout_height="wrap_content" android:choiceMode="none" android:id="@+id/FriendList"></ListView> 
+	<ListView android:layout_width="wrap_content" 
+			  android:layout_height="200dip" 
+			  android:choiceMode="none" 
+			  android:id="@+id/FriendList">
+	</ListView> 
 	
 	<View android:layout_height="2dip" android:background="#FF909090"
 		android:layout_width="fill_parent" /> 
