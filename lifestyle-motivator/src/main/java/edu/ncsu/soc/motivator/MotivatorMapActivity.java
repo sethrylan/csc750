@@ -1,4 +1,4 @@
-package edu.ncsu.soc.srgainey;
+package edu.ncsu.soc.motivator;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
@@ -35,6 +35,7 @@ public class MotivatorMapActivity extends MapActivity {
 	private static final Location DEFAULT_LOCATION = geoPointToLocation(DEFAULT_GEOPOINT);
 
 	/** Called when the activity is first created. */
+	@SuppressWarnings("deprecation")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		
@@ -150,6 +151,7 @@ public class MotivatorMapActivity extends MapActivity {
 
 		@Override
 		public void onStatusChanged(String provider, int status, Bundle extras) {}
+		
 	}
 	
 	

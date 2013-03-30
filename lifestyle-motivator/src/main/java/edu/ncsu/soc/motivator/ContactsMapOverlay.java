@@ -1,4 +1,4 @@
-package edu.ncsu.soc.srgainey;
+package edu.ncsu.soc.motivator;
 
 import java.util.ArrayList;
 

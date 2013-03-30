@@ -17,10 +17,10 @@ repositories {
 apply plugin: 'android'
 
 android {
-	compileSdkVersion 'Google Inc.:Google APIs:10'
+	compileSdkVersion 'Google Inc.:Google APIs:17'
 	// TODO: TDD with http://tryge.com/2013/02/28/android-gradle-build/
 	// https://github.com/alexthaler/OpenSesameDroid/blob/22cc14ab0319c007d082986e57719f74e20f3792/build.gradle
-			  
+			 
     sourceSets {
         main {
             manifest {
@@ -46,7 +46,7 @@ android {
 }
 
 dependencies {
-//	compile files('libs/android-support-v4.jar')
+	compile files('libs/android-support-v4.jar')
 //	compile files('libs/google-10/maps.jar')
 
 //    compile fileTree(dir: 'libs', include: '*.jar')
