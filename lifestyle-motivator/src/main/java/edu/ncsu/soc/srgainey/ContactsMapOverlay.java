@@ -10,9 +10,9 @@ import com.google.android.maps.GeoPoint;
 import com.google.android.maps.ItemizedOverlay;
 import com.google.android.maps.OverlayItem;
 
-public class FriendsMapOverlay extends ItemizedOverlay<OverlayItem> {
+public class ContactsMapOverlay extends ItemizedOverlay<OverlayItem> {
 
-    static final String LOG_TAG = "FriendsMapOverlay";
+    static final String LOG_TAG = "ContactsMapOverlay";
 
 	private ArrayList<OverlayItem> items = new ArrayList<OverlayItem>();
 
@@ -20,7 +20,7 @@ public class FriendsMapOverlay extends ItemizedOverlay<OverlayItem> {
 
 	// TODO: change marker color for each contact; see http://stackoverflow.com/questions/9237831/setcolorfilter-on-itemizedoverlay-marker-drawable
 
-	public FriendsMapOverlay(Context context, Drawable marker) {
+	public ContactsMapOverlay(Context context, Drawable marker) {
 		super(boundCenterBottom(marker));
 		super.populate();  // populate ItemizedOverlay, or NullPointerException will be caused if the the map is scrolled prior to adding an OverlayItem
 		this.context = context;

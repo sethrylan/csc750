@@ -5,7 +5,7 @@
  
 	<TextView android:layout_width="fill_parent"
 		android:layout_height="wrap_content" android:textStyle="bold"
-		android:gravity="center" android:layout_margin="5px" android:text="Friend Mapper"/> 
+		android:gravity="center" android:layout_margin="5px" android:text="Motivator Mapper"/> 
 	
 	<View android:layout_height="2dip" android:background="#FF909090"
 		android:layout_width="fill_parent" /> 
@@ -13,7 +13,7 @@
 	<ListView android:layout_width="wrap_content" 
 			  android:layout_height="200dip" 
 			  android:choiceMode="none" 
-			  android:id="@+id/FriendList">
+			  android:id="@+id/ContactsList">
 	</ListView> 
 	
 	<View android:layout_height="2dip" android:background="#FF909090"

@@ -14,28 +14,28 @@ import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-public class FriendViewAdapter extends BaseAdapter {
+public class ContactsViewAdapter extends BaseAdapter {
 
-    static final String LOG_TAG = "FriendViewAdapter";
+    static final String LOG_TAG = "ContactViewAdapter";
 
-	protected FriendMapper friendMapper;
+	protected MotivatorMapper motivatorMapper;
 
 	protected List<String> names = new ArrayList<String>();
 
-	public FriendViewAdapter(FriendMapper friendMapper) {
-		this.friendMapper = friendMapper;
-		names = getFriendNames();
+	public ContactsViewAdapter(MotivatorMapper motivatorMapper) {
+		this.motivatorMapper = motivatorMapper;
+		names = getContactNames();
 	}
 	
-	protected List<String> getFriendNames() {
-		List<String> friendNames = new ArrayList<String>();
+	protected List<String> getContactNames() {
+		List<String> names = new ArrayList<String>();
 		Uri ContactsUri = ContactsContract.Contacts.CONTENT_URI;  // URI for the provide as authority + path
-		Cursor contacts = this.friendMapper.getContentResolver().query(ContactsUri, null, null, null, null);  // project, selectionClause and selectionArgs left null
+		Cursor contacts = this.motivatorMapper.getContentResolver().query(ContactsUri, null, null, null, null);  // project, selectionClause and selectionArgs left null
 		while (contacts.moveToNext()) {   		// iterate over contracts and add contact display name to names list
 			String contactName = contacts.getString(contacts.getColumnIndex(PhoneLookup.DISPLAY_NAME));
-			friendNames.add(contactName);
+			names.add(contactName);
 		}
-		return friendNames;
+		return names;
 	}
 
 	@Override
@@ -55,7 +55,7 @@ public class FriendViewAdapter extends BaseAdapter {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		TextView textView = new TextView(friendMapper);
+		TextView textView = new TextView(motivatorMapper);
 		textView.setText(names.get(position));
 		textView.setClickable(true);
 		textView.setOnClickListener(new FriendListener());
@@ -67,7 +67,7 @@ public class FriendViewAdapter extends BaseAdapter {
 			TextView textView = (TextView) view;
 			// Background color are coded as Alpha+RGB in hexadecimal
 			textView.setBackgroundColor(Color.BLUE);
-			friendMapper.addMarkerAtCurrentLocation(textView.getText().toString());
+			motivatorMapper.addMarkerAtCurrentLocation(textView.getText().toString());
 		}
 	}
 }

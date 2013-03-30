@@ -16,7 +16,7 @@
 
     <instrumentation
         android:name="android.test.InstrumentationTestRunner"
-        android:targetPackage="edu.ncsu.soc.project1" />
+        android:targetPackage="edu.ncsu.soc.srgainey" />
 	
 	
 	<application
@@ -27,7 +27,7 @@
         <uses-library android:name="com.google.android.maps" />
         <uses-library android:name="android.test.runner" />
         <activity
-            android:name="edu.ncsu.soc.srgainey.FriendMapper"
+            android:name="edu.ncsu.soc.srgainey.MotivatorMapper"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

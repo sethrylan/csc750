@@ -8,6 +8,7 @@ import edu.ncsu.soc.motivator.R;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
@@ -16,40 +17,60 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.widget.ListView;
 
-public class FriendMapper extends MapActivity {
+public class MotivatorMapper extends MapActivity {
 
-    static final String LOG_TAG = "FriendMapper";
+	static SharedPreferences settings;
+	static SharedPreferences.Editor editor;
 
-	private FriendsMapOverlay mapOverlay;
+	static final String LOG_TAG = "MotivatorMap";
+
+	private ContactsMapOverlay mapOverlay;
 	private Location currentLocation;
 	
 	private static final float MILLION = 1E6f;
-		
-	private static final GeoPoint INITIAL_GEOPOINT = new GeoPoint(32807476, -79958239); // Charleston location
-//	private static final GeoPoint INITIAL_GEOPOINT = new GeoPoint(35772052, -78673718); // NCSU location
-	private static final Location INITIAL_LOCATION = new Location(LOCATION_SERVICE) {{
-		setLatitude(INITIAL_GEOPOINT.getLatitudeE6() / MILLION);
-		setLongitude(INITIAL_GEOPOINT.getLongitudeE6() / MILLION);
-	}};
+	
+	// Default locations only used for time application starts
+//	private static final GeoPoint DEFAULT_GEOPOINT = new GeoPoint(32807476, -79958239); // Charleston location
+	private static final GeoPoint DEFAULT_GEOPOINT = new GeoPoint(35772052, -78673718); // NCSU location
+	private static final Location DEFAULT_LOCATION = geoPointToLocation(DEFAULT_GEOPOINT);
 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		
+		Location initialLocation = null;
+		GeoPoint initialGeoPoint = null;
+		
+		settings = this.getPreferences(MODE_WORLD_WRITEABLE);	
+		editor = settings.edit();
+
+		// Retrieve GPS coordinates in form e6 (GeoPoint) form
+		Integer lastGpsLat = settings.getInt("motivator.last_gps_lat", Integer.MIN_VALUE);
+		Integer lastGpsLong = settings.getInt("motivator.last_gps_long", Integer.MIN_VALUE);
+		
+		if (lastGpsLat.equals(Integer.MIN_VALUE) || lastGpsLong.equals(Integer.MIN_VALUE)) {
+			initialGeoPoint = DEFAULT_GEOPOINT;
+			initialLocation = DEFAULT_LOCATION;
+		} else {
+			initialGeoPoint = new GeoPoint(lastGpsLat, lastGpsLong);
+			initialLocation = geoPointToLocation(initialGeoPoint);
+		}
+		
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.friend_map);
+		setContentView(R.layout.motivator_map);
 
 		// create the map overlay
 		Drawable marker = getResources().getDrawable(R.drawable.marker);
 		marker.setBounds(0, 0, marker.getIntrinsicWidth(), marker.getIntrinsicHeight());
-		mapOverlay = new FriendsMapOverlay(this, marker);
+		mapOverlay = new ContactsMapOverlay(this, marker);
 
-		// configure the friends list
-		ListView list = (ListView) findViewById(R.id.FriendList);
-		list.setAdapter(new FriendViewAdapter(this));
+		// configure the contacts list
+		ListView list = (ListView) findViewById(R.id.ContactsList);
+		list.setAdapter(new ContactsViewAdapter(this));
 
-		// configure the map
+		// configure the map and set initial position until GPS is available
 		MapView mapView = (MapView) findViewById(R.id.MapView);
-		mapView.getController().setCenter(INITIAL_GEOPOINT);
+		mapView.getController().setCenter(initialGeoPoint);
 		mapView.getController().setZoom(15);
 		mapView.getOverlays().add(mapOverlay);
 		
@@ -65,16 +86,15 @@ public class FriendMapper extends MapActivity {
 		} 
 
 		// initialize current location
-		this.currentLocation = new Location(INITIAL_LOCATION);
+		this.currentLocation = new Location(initialLocation);
 
 		// Define an listener in an inner class
-		LocationListener locationListener = new FriendMapperLocationListener(this.getApplicationContext(), currentLocation, mapView); 
+		LocationListener locationListener = new MotivatorMapLocationListener(this.getApplicationContext(), currentLocation, mapView); 
 		
 		// Register the listener with the Location Manager
 		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
 
 	}
-
 	
 	public void addMarkerAtCurrentLocation(String markerName) {
 		int latitude = (int)(this.currentLocation.getLatitude() * MILLION);
@@ -97,12 +117,13 @@ public class FriendMapper extends MapActivity {
         super.finish();
     }
 	
-	public class FriendMapperLocationListener implements LocationListener {
+	
+	public class MotivatorMapLocationListener implements LocationListener {
 		Context context;
 		Location location;
 		MapView mapView;
 
-		public FriendMapperLocationListener(Context context, Location location, MapView mapView) {
+		public MotivatorMapLocationListener(Context context, Location location, MapView mapView) {
 			this.context = context;
 			this.location = location;
 			this.mapView = mapView;
@@ -114,6 +135,11 @@ public class FriendMapper extends MapActivity {
 			int latitude = (int)(location.getLatitude() * MILLION);
 			int longitude = (int)(location.getLongitude() * MILLION);
 			mapView.getController().setCenter(new GeoPoint(latitude, longitude));
+			
+			// Save last seen GPS location for quick app start up
+			editor.putInt("motivator.last_gps_lat", latitude);
+			editor.putInt("motivator.last_gps_long", longitude);
+			editor.commit();
 		}
 
 		@Override
@@ -124,6 +150,13 @@ public class FriendMapper extends MapActivity {
 
 		@Override
 		public void onStatusChanged(String provider, int status, Bundle extras) {}
-
+	}
+	
+	
+	public static Location geoPointToLocation(GeoPoint gp) {
+		Location result = new Location(LOCATION_SERVICE);
+		result.setLatitude(gp.getLatitudeE6() / MILLION);
+		result.setLongitude(gp.getLongitudeE6() / MILLION);
+		return result;
 	}
 }
