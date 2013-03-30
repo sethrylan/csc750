@@ -18,19 +18,19 @@ public class ContactsViewAdapter extends BaseAdapter {
 
     static final String LOG_TAG = "ContactViewAdapter";
 
-	protected MotivatorMapper motivatorMapper;
+	protected MotivatorMapActivity motivatorMap;
 
 	protected List<String> names = new ArrayList<String>();
 
-	public ContactsViewAdapter(MotivatorMapper motivatorMapper) {
-		this.motivatorMapper = motivatorMapper;
+	public ContactsViewAdapter(MotivatorMapActivity motivatorMap) {
+		this.motivatorMap = motivatorMap;
 		names = getContactNames();
 	}
 	
 	protected List<String> getContactNames() {
 		List<String> names = new ArrayList<String>();
 		Uri ContactsUri = ContactsContract.Contacts.CONTENT_URI;  // URI for the provide as authority + path
-		Cursor contacts = this.motivatorMapper.getContentResolver().query(ContactsUri, null, null, null, null);  // project, selectionClause and selectionArgs left null
+		Cursor contacts = this.motivatorMap.getContentResolver().query(ContactsUri, null, null, null, null);  // project, selectionClause and selectionArgs left null
 		while (contacts.moveToNext()) {   		// iterate over contracts and add contact display name to names list
 			String contactName = contacts.getString(contacts.getColumnIndex(PhoneLookup.DISPLAY_NAME));
 			names.add(contactName);
@@ -55,7 +55,7 @@ public class ContactsViewAdapter extends BaseAdapter {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		TextView textView = new TextView(motivatorMapper);
+		TextView textView = new TextView(motivatorMap);
 		textView.setText(names.get(position));
 		textView.setClickable(true);
 		textView.setOnClickListener(new FriendListener());
@@ -67,7 +67,7 @@ public class ContactsViewAdapter extends BaseAdapter {
 			TextView textView = (TextView) view;
 			// Background color are coded as Alpha+RGB in hexadecimal
 			textView.setBackgroundColor(Color.BLUE);
-			motivatorMapper.addMarkerAtCurrentLocation(textView.getText().toString());
+			motivatorMap.addMarkerAtCurrentLocation(textView.getText().toString());
 		}
 	}
 }

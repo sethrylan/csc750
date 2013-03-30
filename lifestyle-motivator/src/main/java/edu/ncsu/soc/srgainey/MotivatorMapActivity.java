@@ -17,7 +17,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.widget.ListView;
 
-public class MotivatorMapper extends MapActivity {
+public class MotivatorMapActivity extends MapActivity {
 
 	static SharedPreferences settings;
 	static SharedPreferences.Editor editor;
