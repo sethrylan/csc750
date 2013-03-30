@@ -1,21 +1,49 @@
 package edu.ncsu.soc.motivator;
 
-import android.app.IntentService;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.Service;
 import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
+import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 
-public class MotivatorService extends IntentService {
+public class MotivatorService extends Service {
 
-	/**
-	 * A constructor is required, and must call the super IntentService(String)
-	 * constructor with a name for the worker thread.
-	 */
-	public MotivatorService() {
-		super("MotivatorService");
+	@Override
+	public int onStartCommand(Intent intent, int flags, int startId) {
+		startService();
+		return(START_NOT_STICKY);
+	}
+
+	@Override
+	public void onDestroy() {
+		stopService();
+	}
+
+	@Override
+	public IBinder onBind(Intent intent) {
+		return (null);
+	}
+
+	private void startService() {
+		Notification note = new Notification(R.drawable.ic_launcher, "Can you hear the music?", System.currentTimeMillis());
+		Intent i = new Intent(this, MotivatorMapActivity.class);
+
+		i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+		PendingIntent pi = PendingIntent.getActivity(this, 0, i, 0);
+
+		note.setLatestEventInfo(this, "Fake Player", "Now Playing: \"Ummmm, Nothing\"", pi);
+		note.flags |= Notification.FLAG_NO_CLEAR;
+
+		startForeground(1337, note);
+	}
+
+	private void stopService() {
+		stopForeground(true);
 	}
 
 	/**
@@ -23,7 +51,7 @@ public class MotivatorService extends IntentService {
 	 * the intent that started the service. When this method returns,
 	 * IntentService stops the service, as appropriate.
 	 */
-	@Override
+	/**
 	protected void onHandleIntent(Intent intent) {
 		// Normally we would do some work here, like download a file.
 		// For our sample, we just sleep for 5 seconds.
@@ -62,6 +90,6 @@ public class MotivatorService extends IntentService {
 				}
 			}
 		}
-	}
+	} */
 
 }

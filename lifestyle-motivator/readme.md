@@ -1,8 +1,16 @@
+TODO:
+
+Preferences:
+http://stackoverflow.com/questions/2857121/where-to-store-android-preference-keys
+http://stackoverflow.com/questions/5246741/android-get-keys-from-preferences-xml
+
 The purpose of the lifestyle motivator is to help an individual maintain a healthy lifestyle.
 In the current setting, many users procrastinate or find excuses not to work out. In many
 cases, a user might want workout, but can't find the right activity or a right buddy. The
 lifestyle motivator application will suggest a user 1) activities to perform, and 2) buddies to
 perform those activities with.
+
+
 
 There are several such applications. However, many of them rely on a centralized archi-
 tecture (server) assumed to contain information about all users. Our target is to build the

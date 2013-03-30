@@ -15,6 +15,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.view.View;
 import android.widget.ListView;
 
 public class MotivatorMapActivity extends MapActivity {
@@ -97,6 +98,15 @@ public class MotivatorMapActivity extends MapActivity {
 
 	}
 	
+	public void startPlayer(View v) {
+		Intent i = new Intent(this, MotivatorService.class);
+		startService(i);
+	}
+
+	public void stopPlayer(View v) {
+		stopService(new Intent(this, MotivatorService.class));
+	}
+
 	public void addMarkerAtCurrentLocation(String markerName) {
 		int latitude = (int)(this.currentLocation.getLatitude() * MILLION);
 		int longitude = (int)(this.currentLocation.getLongitude() * MILLION);
