@@ -98,13 +98,28 @@ public class MotivatorMapActivity extends MapActivity {
 
 	}
 	
-	public void startPlayer(View v) {
-		Intent i = new Intent(this, MotivatorService.class);
-		startService(i);
+	public void startServiceButton(View v) {
+
+		Intent intent = new Intent(this, MotivatorAlarmService.class);
+		intent.putExtra("vibration", true);
+		
+//		String busRouteIDString =  getIntent().getStringExtra("busroute");
+//			String busRouteDesc =  getIntent().getStringExtra("busroutedesc");
+//			String busStopID = b.getStopId();				
+//			String busStopDesc = b.getName();
+			
+//			intentAlarmService.putExtra("busstop", b);
+//			intentAlarmService.putExtra("proximity", settings.getProximity());
+//			intentAlarmService.putExtra("proximityUnit", settings.getProximityUnit());
+//			intentAlarmService.putExtra("vibration", settings.getVibration());
+//			intentAlarmService.putExtra("ringtoneUri", ringtoneUri);
+
+
+		startService(intent);
 	}
 
-	public void stopPlayer(View v) {
-		stopService(new Intent(this, MotivatorService.class));
+	public void stopServiceButton(View v) {
+		stopService(new Intent(this, MotivatorAlarmService.class));
 	}
 
 	public void addMarkerAtCurrentLocation(String markerName) {

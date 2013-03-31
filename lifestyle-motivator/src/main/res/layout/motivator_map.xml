@@ -12,10 +12,10 @@
 		android:layout_height="100dip">
 		<Button android:layout_width="fill_parent"
 			android:layout_height="fill_parent" android:layout_weight="1"
-			android:text="Start the Player" android:onClick="startPlayer" />
+			android:text="Start the Player" android:onClick="startServiceButton" />
 		<Button android:layout_width="fill_parent"
 			android:layout_height="fill_parent" android:layout_weight="1"
-			android:text="Stop the Player" android:onClick="stopPlayer" />
+			android:text="Stop the Player" android:onClick="stopServiceButton" />
 	</LinearLayout>
 		
 	<View android:layout_height="2dip" android:background="#FF909090"
