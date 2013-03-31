@@ -35,7 +35,7 @@ public class MotivatorAlarmService extends Service {
 
     private int proximity;
     private String proximityUnit;
-    private BusStop busStop;
+//    private BusStop busStop;
 
     /**
      * setup service managers.
@@ -79,10 +79,10 @@ public class MotivatorAlarmService extends Service {
 
         proximity = intent.getIntExtra("proximity", 1);
         proximityUnit = "meters";
-        busStop = intent.getParcelableExtra("busstop");
-        busStop = new BusStop();
-        busStop.setLatitude(new Double("35.772052"));
-        busStop.setLongitude(new Double("-78.673718"));
+//        busStop = intent.getParcelableExtra("busstop");
+//        busStop = new BusStop();
+//        busStop.setLatitude(new Double("35.772052"));
+//        busStop.setLongitude(new Double("-78.673718"));
 
         Uri ringtoneUri = intent.getParcelableExtra("ringtoneUri");
         boolean vibration = intent.getBooleanExtra("vibration", false);
@@ -93,7 +93,7 @@ public class MotivatorAlarmService extends Service {
 
         notificationManager.notify(NOTIFICATION_ID, notification);
 
-        Log.d("ALARMSERVICE", "prox: " + proximity + ", units: " + proximityUnit + ", stop: " + busStop + ", ringtone: " + ringtoneUri + ", vibration: "
+        Log.d("ALARMSERVICE", "prox: " + proximity + ", units: " + proximityUnit + ", stop: " + "stop" + ", ringtone: " + ringtoneUri + ", vibration: "
                 + vibration);
 
         Intent alarmIntent = new Intent(getApplicationContext(), MotivatorMapActivity.class);
@@ -105,7 +105,7 @@ public class MotivatorAlarmService extends Service {
         float proximityInput = (float) proximity;
         // if (proximityUnit.equals("Yards"))
         // proximityInput = convertYardsToMeters(proximityInput);
-        lm.addProximityAlert(busStop.getLatitude(), busStop.getLongitude(), proximityInput, -1, pendingIntentAlarm);
+//        lm.addProximityAlert(busStop.getLatitude(), busStop.getLongitude(), proximityInput, -1, pendingIntentAlarm);
     }
 
     public float convertYardsToMeters(float yards) {
@@ -140,17 +140,17 @@ public class MotivatorAlarmService extends Service {
          */
         public void onLocationChanged(Location location) {
             currentLoc = location;
-            Location target = new Location(location);
-            target.setLatitude(busStop.getLatitude());
-            target.setLongitude(busStop.getLongitude());
-            float dist = currentLoc.distanceTo(target); // in meters
+//            Location target = new Location(location);
+//            target.setLatitude(busStop.getLatitude());
+//            target.setLongitude(busStop.getLongitude());
+//            float dist = currentLoc.distanceTo(target); // in meters
             // if (proximityUnit.equals("Yards")) {
             // dist = convertMetersToYards(dist);
             // }
 
             PendingIntent pi = PendingIntent.getBroadcast(getApplicationContext(), 0, new Intent(getApplicationContext(), this.getClass()),
                     PendingIntent.FLAG_UPDATE_CURRENT);
-            notification.setLatestEventInfo(getApplicationContext(), "Bus Stop: " + busStop.getName(), dist + " " + proximityUnit + " away", pi);
+            notification.setLatestEventInfo(getApplicationContext(), "Bus Stop: " + "name", 1234 + " " + proximityUnit + " away", pi);
             notification.when = System.currentTimeMillis();
             notificationManager.notify(NOTIFICATION_ID, notification);
             Log.d("ALARMSERVICE", "location updated");

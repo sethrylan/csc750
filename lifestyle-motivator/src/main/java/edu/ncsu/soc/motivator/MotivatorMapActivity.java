@@ -52,7 +52,7 @@ public class MotivatorMapActivity extends MapActivity {
         Integer lastGpsLong = settings.getInt("motivator.last_gps_long", Integer.MIN_VALUE);
         
         if (lastGpsLat.equals(Integer.MIN_VALUE) || lastGpsLong.equals(Integer.MIN_VALUE)) {            
-            Toast toast = Toast.makeText(getApplicationContext(), "Using default location for first time use.", Toast.LENGTH_SHORT);
+            Toast toast = Toast.makeText(getApplicationContext(), "Using default location for first time use.", Toast.LENGTH_LONG);
             toast.show();
             initialGeoPoint = DEFAULT_GEOPOINT;
             initialLocation = DEFAULT_LOCATION;

@@ -26,9 +26,8 @@ public class PlacesService {
     public static final String PLACE_RADAR_JSON = "https://maps.googleapis.com/maps/api/place/radarsearch/json";
     public static final String SENSOR = "true";
     private static final int TIMEOUT_MS = 10000;
-    private static final int MILLION = 100000;
+    private static final float MILLION = 1E6f;
     private static final int RADIUS_METERS = 5000;
-
     
     private Context context;
 
@@ -36,7 +35,7 @@ public class PlacesService {
         this.context = context;
     }
     
-    private void radarSearch(int latitude, int longitude) {
+    public void radarSearch(int latitude, int longitude) {
         String location = new StringBuilder()
             .append(latitude / MILLION)
             .append(",")
