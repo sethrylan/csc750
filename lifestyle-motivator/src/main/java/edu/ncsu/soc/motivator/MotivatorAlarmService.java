@@ -1,10 +1,12 @@
 package edu.ncsu.soc.motivator;
 
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
@@ -13,23 +15,22 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 /**
- * Service runs in the background and listens to the GPS.
+ * Service runs in the background and sends notifications based on GPS/Places data
  */
 public class MotivatorAlarmService extends Service {
 
-    private static final int SERVICE_ID = 1234567;
-
     private static final int NOTIFICATION_ID = 42;
     private static final int PENDING_INTENT_REQUEST_CODE1 = 4242;
-    private static final int PENDING_INTENT_REQUEST_CODE2 = 424242;
-    private static final int MIN_TIME_TO_UPDATE_LOCATION = 5000; // milliseconds
-    private static final int MIN_DISTANCE_TO_UPDATE_LOCATION = 5; // meters
+    private static final int UPDATE_THRESHOLD_MS = 5000; // milliseconds
+    private static final int UPDATE_THRESHOLD_METERS = 5; // meters
 
-    private LocationManager lm;
-    private Location currentLoc;
+    private LocationManager locationManager;
+    private LocationListener locationListener;
+//    private Location currentLoc;
     private NotificationManager notificationManager;
     private Notification notification;
 
@@ -42,19 +43,18 @@ public class MotivatorAlarmService extends Service {
      */
     @Override
     public void onCreate() {
+        Log.d(this.getClass().getSimpleName(), "onCreate");
+
         super.onCreate();
-        lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME_TO_UPDATE_LOCATION, MIN_DISTANCE_TO_UPDATE_LOCATION, new AlarmLocationListener());
-        notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        
+        // start location manager with non-aggressive threshold values to preserve battery life
+        this.locationListener = new AlarmLocationListener();
+        this.locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        this.locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, UPDATE_THRESHOLD_MS, UPDATE_THRESHOLD_METERS, this.locationListener);
 
-        notification = new Notification(R.drawable.ic_launcher, "Starting Lifestyle Motivator Service", System.currentTimeMillis());
-        Intent i = new Intent(this, MotivatorMapActivity.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        PendingIntent pi_test = PendingIntent.getActivity(this, 0, i, 0);
-        notification.setLatestEventInfo(this, "Lifestyle Motivator - srgainey", "Checking for opportunities...", pi_test);
-        notification.flags |= Notification.FLAG_NO_CLEAR;
-//        startForeground(SERVICE_ID, ntf);
-
+        // initialize notification service
+        this.notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+                
     }
 
     /**
@@ -63,12 +63,12 @@ public class MotivatorAlarmService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        notificationManager.cancel(NOTIFICATION_ID);
+        this.locationManager.removeUpdates(this.locationListener);
+        this.notificationManager.cancel(NOTIFICATION_ID);
         Intent alarmIntent = new Intent(getApplicationContext(), MotivatorMapActivity.class);
         PendingIntent pendingIntentAlarm = PendingIntent.getBroadcast(getApplicationContext(), PENDING_INTENT_REQUEST_CODE1, alarmIntent,
                 PendingIntent.FLAG_CANCEL_CURRENT);
         pendingIntentAlarm.cancel();
-        Log.d("ALARMSERVICE", "current alarm is destroyed");
     }
 
     /**
@@ -86,52 +86,74 @@ public class MotivatorAlarmService extends Service {
 
         Uri ringtoneUri = intent.getParcelableExtra("ringtoneUri");
         boolean vibration = intent.getBooleanExtra("vibration", false);
-
-        PendingIntent pi = PendingIntent.getBroadcast(getApplicationContext(), PENDING_INTENT_REQUEST_CODE2, new Intent(getApplicationContext(),
-                this.getClass()), PendingIntent.FLAG_UPDATE_CURRENT);
-        notification.setLatestEventInfo(getApplicationContext(), "Bus Stop: " + "busstopname", "acquiring location...", pi);
-
-        notificationManager.notify(NOTIFICATION_ID, notification);
-
-        Log.d("ALARMSERVICE", "prox: " + proximity + ", units: " + proximityUnit + ", stop: " + "stop" + ", ringtone: " + ringtoneUri + ", vibration: "
-                + vibration);
+        
+        sendNotification(getApplicationContext(), "Bus Stop: " + "busstopname", "acquiring location...", MotivatorMapActivity.class);
 
         Intent alarmIntent = new Intent(getApplicationContext(), MotivatorMapActivity.class);
-
         alarmIntent.putExtra("ringtoneUri", ringtoneUri);
         alarmIntent.putExtra("vibration", vibration);
-        PendingIntent pendingIntentAlarm = PendingIntent.getBroadcast(getApplicationContext(), PENDING_INTENT_REQUEST_CODE1, alarmIntent,
-                PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent pendingIntentAlarm = PendingIntent.getBroadcast(getApplicationContext(), PENDING_INTENT_REQUEST_CODE1, alarmIntent,  PendingIntent.FLAG_CANCEL_CURRENT);
         float proximityInput = (float) proximity;
         // if (proximityUnit.equals("Yards"))
         // proximityInput = convertYardsToMeters(proximityInput);
 //        lm.addProximityAlert(busStop.getLatitude(), busStop.getLongitude(), proximityInput, -1, pendingIntentAlarm);
     }
 
-    public float convertYardsToMeters(float yards) {
-        return (float) (yards * 0.9144);
+    public static float yardsToMeters(float yards) {
+        return (float)(yards * 0.9144);
     }
 
-    public float convertMetersToYards(float meters) {
-        return (float) (meters * 1.0936133);
+    public static float metersToYards(float meters) {
+        return (float)(meters * 1.0936133);
     }
 
     /**
-     * Service requires that this function must be overridden, but we don't need
-     * it.
+     * Unneeded abstract method
      */
     @Override
     public IBinder onBind(Intent intent) {
-        // TODO Auto-generated method stub
         return null;
+    }
+    
+    /**
+     * Method to send notification
+     * @param context       
+     * @param title
+     * @param text
+     * @param intentClass
+     */
+    protected void sendNotification(Context context, String title, String text , Class<? extends Activity> intentClass) {
+
+        Log.d(this.getClass().getSimpleName(), "sendNotification(): " + "context: " + context + ", title: " + title + ", text: " + text + ", class: " + intentClass.getSimpleName());
+
+        // create notification
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(getApplicationContext())
+            .setSmallIcon(R.drawable.ic_launcher)
+            .setContentTitle(title)
+            .setContentText(text);
+
+        // creates explicit intent for an Activity
+        Intent notificationIntent = new Intent(context, intentClass);
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+        // stack builder object contains an artificial back stack for the activity, so 
+        // that navigating backward from the Activity leads out of your application to the Home screen
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
+        stackBuilder.addParentStack(MotivatorMapActivity.class);
+        stackBuilder.addNextIntent(notificationIntent);
+        PendingIntent pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        notificationBuilder.setContentIntent(pendingIntent);
+                
+        this.notification = notificationBuilder.build();
+        this.notification.when = System.currentTimeMillis();
+        this.notification.flags |= Notification.FLAG_NO_CLEAR; 
+        
+        // ID allows you to update the notification later on.
+        this.notificationManager.notify(NOTIFICATION_ID, this.notification);
     }
 
     /**
-     * {@link AlarmLocationListener} listens to the GPS, and updates the users
-     * location
-     * 
-     * @author David Nufer
-     * 
+     * Listens for GPS updates
      */
     private class AlarmLocationListener implements LocationListener {
 
@@ -139,7 +161,7 @@ public class MotivatorAlarmService extends Service {
          * Updates the current Location and notification.
          */
         public void onLocationChanged(Location location) {
-            currentLoc = location;
+//            currentLoc = location;
 //            Location target = new Location(location);
 //            target.setLatitude(busStop.getLatitude());
 //            target.setLongitude(busStop.getLongitude());
@@ -148,24 +170,19 @@ public class MotivatorAlarmService extends Service {
             // dist = convertMetersToYards(dist);
             // }
 
-            PendingIntent pi = PendingIntent.getBroadcast(getApplicationContext(), 0, new Intent(getApplicationContext(), this.getClass()),
-                    PendingIntent.FLAG_UPDATE_CURRENT);
-            notification.setLatestEventInfo(getApplicationContext(), "Bus Stop: " + "name", 1234 + " " + proximityUnit + " away", pi);
-            notification.when = System.currentTimeMillis();
-            notificationManager.notify(NOTIFICATION_ID, notification);
-            Log.d("ALARMSERVICE", "location updated");
+            sendNotification(getApplicationContext(), "Bus Stop: " + "name", 1234 + " " + proximityUnit + " away", MotivatorMapActivity.class);
         }
 
         public void onProviderDisabled(String provider) {
-            // TODO Auto-generated method stub
+
         }
 
         public void onProviderEnabled(String provider) {
-            // TODO Auto-generated method stub
+
         }
 
         public void onStatusChanged(String provider, int status, Bundle extras) {
-            // TODO Auto-generated method stub
+
         }
     }
 
