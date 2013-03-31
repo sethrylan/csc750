@@ -16,6 +16,8 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -70,11 +72,11 @@ public class MotivatorMapActivity extends MapActivity {
         mapOverlay = new ContactsMapOverlay(this, marker);
 
         // configure the contacts list
-        ListView list = (ListView) findViewById(R.id.ContactsList);
+        ListView list = (ListView)findViewById(R.id.ContactsList);
         list.setAdapter(new ContactsViewAdapter(this));
 
         // configure the map and set initial position until GPS is available
-        MapView mapView = (MapView) findViewById(R.id.MapView);
+        MapView mapView = (MapView)findViewById(R.id.MapView);
         mapView.getController().setCenter(initialGeoPoint);
         mapView.getController().setZoom(15);
         mapView.getOverlays().add(mapOverlay);
@@ -98,32 +100,26 @@ public class MotivatorMapActivity extends MapActivity {
         
         // Register the listener with the Location Manager
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-
-    }
-    
-    public void startServiceButton(View v) {
-
-        Intent intent = new Intent(this, MotivatorAlarmService.class);
-        intent.putExtra("vibration", true);
         
-//        String busRouteIDString =  getIntent().getStringExtra("busroute");
-//            String busRouteDesc =  getIntent().getStringExtra("busroutedesc");
-//            String busStopID = b.getStopId();                
-//            String busStopDesc = b.getName();
-            
-//            intentAlarmService.putExtra("busstop", b);
-//            intentAlarmService.putExtra("proximity", settings.getProximity());
-//            intentAlarmService.putExtra("proximityUnit", settings.getProximityUnit());
-//            intentAlarmService.putExtra("vibration", settings.getVibration());
-//            intentAlarmService.putExtra("ringtoneUri", ringtoneUri);
-
-
-        startService(intent);
+        // register button clicklisteners
+        // equivalent to <Button ... android:onClick="stopServiceButton"/> in layout xml
+        ((Button)findViewById(R.id.StartServiceButton)).setOnClickListener(mStartButtonListener);
+        ((Button)findViewById(R.id.StopServiceButton)).setOnClickListener(mStopButtonListener);
     }
 
-    public void stopServiceButton(View v) {
-        stopService(new Intent(this, MotivatorAlarmService.class));
-    }
+    private OnClickListener mStartButtonListener = new OnClickListener() {
+        public void onClick(View v) {
+            Intent intent = new Intent(MotivatorMapActivity.this, MotivatorAlarmService.class);
+            intent.putExtra("vibration", true);
+            startService(intent);
+        }
+    };
+    
+    private OnClickListener mStopButtonListener = new OnClickListener() {
+        public void onClick(View v) {
+            stopService(new Intent(MotivatorMapActivity.this, MotivatorAlarmService.class));
+        }
+    };
 
     public void addMarkerAtCurrentLocation(String markerName) {
         int latitude = (int)(this.currentLocation.getLatitude() * MILLION);

@@ -10,12 +10,12 @@
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="horizontal" android:layout_width="fill_parent"
         android:layout_height="100dip">
-        <Button android:layout_width="fill_parent"
+        <Button android:layout_width="fill_parent" android:id="@+id/StartServiceButton"
             android:layout_height="fill_parent" android:layout_weight="1"
-            android:text="@string/start_service_button_text" android:onClick="startServiceButton" />
-        <Button android:layout_width="fill_parent"
+            android:text="@string/start_service_button_text"  />
+        <Button android:layout_width="fill_parent" android:id="@+id/StopServiceButton"
             android:layout_height="fill_parent" android:layout_weight="1"
-            android:text="@string/stop_service_button_text" android:onClick="stopServiceButton" />
+            android:text="@string/stop_service_button_text" />
     </LinearLayout>
         
     <View android:layout_height="2dip" android:background="#FF909090"

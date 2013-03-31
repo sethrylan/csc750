@@ -54,7 +54,8 @@ public class MotivatorAlarmService extends Service {
 
         // initialize notification service
         this.notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
-                
+        
+        sendBanner("Starting Lifestyle Motivator Service");
     }
 
     /**
@@ -99,11 +100,11 @@ public class MotivatorAlarmService extends Service {
 //        lm.addProximityAlert(busStop.getLatitude(), busStop.getLongitude(), proximityInput, -1, pendingIntentAlarm);
     }
 
-    public static float yardsToMeters(float yards) {
+    private static float yardsToMeters(float yards) {
         return (float)(yards * 0.9144);
     }
 
-    public static float metersToYards(float meters) {
+    private static float metersToYards(float meters) {
         return (float)(meters * 1.0936133);
     }
 
@@ -116,11 +117,25 @@ public class MotivatorAlarmService extends Service {
     }
     
     /**
+     * Uses deprecated methods to send status message
+     * @param text      text of status message
+     */
+    protected void sendBanner(String text) {
+        this.notification = new Notification(R.drawable.ic_launcher, text, System.currentTimeMillis());
+        Intent i = new Intent(this, MotivatorMapActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent pi_test = PendingIntent.getActivity(this, 0, i, 0);
+        this.notification.setLatestEventInfo(this, "", "", null);
+        this.notification.flags |= Notification.FLAG_NO_CLEAR;
+        this.notificationManager.notify(NOTIFICATION_ID, this.notification);
+    }
+
+    /**
      * Method to send notification
-     * @param context       
-     * @param title
-     * @param text
-     * @param intentClass
+     * @param context       context
+     * @param title         notification title
+     * @param text          notification text
+     * @param intentClass   notification intent
      */
     protected void sendNotification(Context context, String title, String text , Class<? extends Activity> intentClass) {
 
