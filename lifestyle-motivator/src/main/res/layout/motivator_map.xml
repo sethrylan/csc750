@@ -1,41 +1,41 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:orientation="vertical" android:layout_width="fill_parent"
-	android:layout_height="fill_parent"
-	android:layout_gravity="fill_horizontal"> 
+    android:orientation="vertical" android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_gravity="fill_horizontal"> 
  
-	<TextView android:layout_width="fill_parent"
-		android:layout_height="wrap_content" android:textStyle="bold"
-		android:gravity="center" android:layout_margin="5px" android:text="@string/main_activity_title"/> 
-		
-	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-		android:orientation="horizontal" android:layout_width="fill_parent"
-		android:layout_height="100dip">
-		<Button android:layout_width="fill_parent"
-			android:layout_height="fill_parent" android:layout_weight="1"
-			android:text="Start the Player" android:onClick="startServiceButton" />
-		<Button android:layout_width="fill_parent"
-			android:layout_height="fill_parent" android:layout_weight="1"
-			android:text="Stop the Player" android:onClick="stopServiceButton" />
-	</LinearLayout>
-		
-	<View android:layout_height="2dip" android:background="#FF909090"
-		android:layout_width="fill_parent" /> 
-		
-		
-	<ListView android:layout_width="wrap_content" 
-			  android:layout_height="200dip" 
-			  android:choiceMode="none" 
-			  android:id="@+id/ContactsList">
-	</ListView> 
-	
-	<View android:layout_height="2dip" android:background="#FF909090"
-		android:layout_width="fill_parent" /> 
+    <TextView android:layout_width="fill_parent"
+        android:layout_height="wrap_content" android:textStyle="bold"
+        android:gravity="center" android:layout_margin="5px" android:text="@string/main_activity_title"/> 
+        
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="horizontal" android:layout_width="fill_parent"
+        android:layout_height="100dip">
+        <Button android:layout_width="fill_parent"
+            android:layout_height="fill_parent" android:layout_weight="1"
+            android:text="Start the Player" android:onClick="startServiceButton" />
+        <Button android:layout_width="fill_parent"
+            android:layout_height="fill_parent" android:layout_weight="1"
+            android:text="Stop the Player" android:onClick="stopServiceButton" />
+    </LinearLayout>
+        
+    <View android:layout_height="2dip" android:background="#FF909090"
+        android:layout_width="fill_parent" /> 
+        
+        
+    <ListView android:layout_width="wrap_content" 
+              android:layout_height="200dip" 
+              android:choiceMode="none" 
+              android:id="@+id/ContactsList">
+    </ListView> 
+    
+    <View android:layout_height="2dip" android:background="#FF909090"
+        android:layout_width="fill_parent" /> 
  
-	<com.google.android.maps.MapView android:id="@+id/MapView"
-		 android:layout_width="fill_parent"
-		 android:layout_height="fill_parent"
-		 android:enabled="true"
-		 android:clickable="true"
-		 android:apiKey="@string/maps_api_key" /> 
+    <com.google.android.maps.MapView android:id="@+id/MapView"
+         android:layout_width="fill_parent"
+         android:layout_height="fill_parent"
+         android:enabled="true"
+         android:clickable="true"
+         android:apiKey="@string/maps_api_key" /> 
 
 </LinearLayout> 

@@ -14,44 +14,44 @@ public class ContactsMapOverlay extends ItemizedOverlay<OverlayItem> {
 
     static final String LOG_TAG = "ContactsMapOverlay";
 
-	private ArrayList<OverlayItem> items = new ArrayList<OverlayItem>();
+    private ArrayList<OverlayItem> items = new ArrayList<OverlayItem>();
 
-	private Context context;
+    private Context context;
 
-	// TODO: change marker color for each contact; see http://stackoverflow.com/questions/9237831/setcolorfilter-on-itemizedoverlay-marker-drawable
+    // TODO: change marker color for each contact; see http://stackoverflow.com/questions/9237831/setcolorfilter-on-itemizedoverlay-marker-drawable
 
-	public ContactsMapOverlay(Context context, Drawable marker) {
-		super(boundCenterBottom(marker));
-		super.populate();  // populate ItemizedOverlay, or NullPointerException will be caused if the the map is scrolled prior to adding an OverlayItem
-		this.context = context;
-	}
+    public ContactsMapOverlay(Context context, Drawable marker) {
+        super(boundCenterBottom(marker));
+        super.populate();  // populate ItemizedOverlay, or NullPointerException will be caused if the the map is scrolled prior to adding an OverlayItem
+        this.context = context;
+    }
 
-	public void addMarker(String markerName, GeoPoint geoPoint) {
-		for(OverlayItem item : items) {
-			if(item.getTitle().equals(markerName)) {
-				items.remove(item);
-				break;
-			}
-		}
-		
-		OverlayItem item = new OverlayItem(geoPoint, markerName, markerName);
-		items.add(item);
-		super.populate();
-	}
+    public void addMarker(String markerName, GeoPoint geoPoint) {
+        for(OverlayItem item : items) {
+            if(item.getTitle().equals(markerName)) {
+                items.remove(item);
+                break;
+            }
+        }
+        
+        OverlayItem item = new OverlayItem(geoPoint, markerName, markerName);
+        items.add(item);
+        super.populate();
+    }
 
-	@Override
-	protected OverlayItem createItem(int i) {
-		return (items.get(i));
-	}
+    @Override
+    protected OverlayItem createItem(int i) {
+        return (items.get(i));
+    }
 
-	@Override
-	protected boolean onTap(int i) {
-		Toast.makeText(context, items.get(i).getSnippet(), Toast.LENGTH_SHORT).show();
-		return true;
-	}
+    @Override
+    protected boolean onTap(int i) {
+        Toast.makeText(context, items.get(i).getSnippet(), Toast.LENGTH_SHORT).show();
+        return true;
+    }
 
-	@Override
-	public int size() {
-		return items.size();
-	}
+    @Override
+    public int size() {
+        return items.size();
+    }
 }
