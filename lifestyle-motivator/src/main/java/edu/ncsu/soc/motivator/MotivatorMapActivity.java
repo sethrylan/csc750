@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.Toast;
 
 public class MotivatorMapActivity extends MapActivity {
 
@@ -50,7 +51,9 @@ public class MotivatorMapActivity extends MapActivity {
         Integer lastGpsLat = settings.getInt("motivator.last_gps_lat", Integer.MIN_VALUE);
         Integer lastGpsLong = settings.getInt("motivator.last_gps_long", Integer.MIN_VALUE);
         
-        if (lastGpsLat.equals(Integer.MIN_VALUE) || lastGpsLong.equals(Integer.MIN_VALUE)) {
+        if (lastGpsLat.equals(Integer.MIN_VALUE) || lastGpsLong.equals(Integer.MIN_VALUE)) {            
+            Toast toast = Toast.makeText(getApplicationContext(), "Using default location for first time use.", Toast.LENGTH_SHORT);
+            toast.show();
             initialGeoPoint = DEFAULT_GEOPOINT;
             initialLocation = DEFAULT_LOCATION;
         } else {
