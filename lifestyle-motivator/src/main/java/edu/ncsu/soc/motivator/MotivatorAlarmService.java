@@ -1,5 +1,7 @@
 package edu.ncsu.soc.motivator;
 
+import java.util.Calendar;
+
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Notification;
@@ -9,6 +11,7 @@ import android.app.Service;
 import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -38,7 +41,7 @@ public class MotivatorAlarmService extends Service {
     private String proximityUnit;
 //    private BusStop busStop;
     
-    private WeatherServiceReceiver weatherService;
+    private WeatherServiceReceiver weatherService = null;
 
     /**
      * setup service managers.
@@ -56,8 +59,26 @@ public class MotivatorAlarmService extends Service {
 
         // initialize notification service
         this.notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
-        
-        this.weatherService = new WeatherServiceReceiver(getApplicationContext(), null, 5);
+
+        int timeoutSeconds = 5;
+        AlarmManager alarmManager = (AlarmManager)this.getSystemService(Context.ALARM_SERVICE);         
+        Intent intent = new Intent( WeatherServiceReceiver.WEATHER_SERVICE_ACTION );
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Calendar triggerTime = Calendar.getInstance();
+        triggerTime.setTimeInMillis(System.currentTimeMillis());
+        triggerTime.add(Calendar.SECOND, timeoutSeconds);         
+        alarmManager.setInexactRepeating(AlarmManager.RTC, triggerTime.getTimeInMillis(), timeoutSeconds * 1000, pendingIntent);
+
+        /*
+         * Registration here equivalent to declarative method in AndroidManifest:
+         *      <receiver android:name=".WeatherServiceReceiver">
+         *           <intent-filter>
+         *               <action android:name="WEATHER_SERVICE_ACTION" />
+         *           </intent-filter>
+         *       </receiver>
+         */
+        this.weatherService = new WeatherServiceReceiver();
+        registerReceiver(this.weatherService, new IntentFilter(WeatherServiceReceiver.WEATHER_SERVICE_ACTION));
         
         sendBanner("Starting Lifestyle Motivator Service");
     }
@@ -70,9 +91,14 @@ public class MotivatorAlarmService extends Service {
         super.onDestroy();
         this.locationManager.removeUpdates(this.locationListener);
         this.notificationManager.cancel(NOTIFICATION_ID);
-        Intent alarmIntent = new Intent(getApplicationContext(), MotivatorMapActivity.class);
-        PendingIntent pendingIntentAlarm = PendingIntent.getBroadcast(getApplicationContext(), PENDING_INTENT_REQUEST_CODE1, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-        pendingIntentAlarm.cancel();
+        
+//        Intent alarmIntent = new Intent(getApplicationContext(), MotivatorMapActivity.class);
+//        PendingIntent pendingIntentAlarm = PendingIntent.getBroadcast(getApplicationContext(), PENDING_INTENT_REQUEST_CODE1, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+//        pendingIntentAlarm.cancel();
+        
+        if(this.weatherService != null) {
+            unregisterReceiver(this.weatherService);
+        }
     }
 
     /**
@@ -93,11 +119,11 @@ public class MotivatorAlarmService extends Service {
         
         sendNotification(getApplicationContext(), "Bus Stop: " + "busstopname", "acquiring location...", MotivatorMapActivity.class);
 
-        Intent alarmIntent = new Intent(getApplicationContext(), MotivatorMapActivity.class);
-        alarmIntent.putExtra("ringtoneUri", ringtoneUri);
-        alarmIntent.putExtra("vibration", vibration);
-        PendingIntent pendingIntentAlarm = PendingIntent.getBroadcast(getApplicationContext(), PENDING_INTENT_REQUEST_CODE1, alarmIntent,  PendingIntent.FLAG_CANCEL_CURRENT);
-        float proximityInput = (float) proximity;
+//        Intent alarmIntent = new Intent(getApplicationContext(), MotivatorMapActivity.class);
+//        alarmIntent.putExtra("ringtoneUri", ringtoneUri);
+//        alarmIntent.putExtra("vibration", vibration);
+//        PendingIntent pendingIntentAlarm = PendingIntent.getBroadcast(getApplicationContext(), PENDING_INTENT_REQUEST_CODE1, alarmIntent,  PendingIntent.FLAG_CANCEL_CURRENT);
+//        float proximityInput = (float) proximity;
         // if (proximityUnit.equals("Yards"))
         // proximityInput = convertYardsToMeters(proximityInput);
 //        lm.addProximityAlert(busStop.getLatitude(), busStop.getLongitude(), proximityInput, -1, pendingIntentAlarm);
