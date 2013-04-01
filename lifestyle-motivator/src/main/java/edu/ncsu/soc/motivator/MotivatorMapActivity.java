@@ -3,6 +3,7 @@ package edu.ncsu.soc.motivator;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
+import com.google.android.maps.MyLocationOverlay;
 
 import edu.ncsu.soc.motivator.R;
 
@@ -31,7 +32,9 @@ public class MotivatorMapActivity extends MapActivity {
     private static final int UPDATE_THRESHOLD_METERS = 0;
     private static final int UPDATE_THRESHOLD_MS = 0;
 
+    private MapView mapView;
     private ContactsMapOverlay mapOverlay;
+    private MyLocationOverlay myLocationOverlay;
     private Location currentLocation;
     private LocationManager locationManager;
     private LocationListener locationListener;
@@ -73,24 +76,33 @@ public class MotivatorMapActivity extends MapActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.motivator_map);
 
+        // configure the map and set initial position until GPS is available
+        this.mapView = (MapView)findViewById(R.id.MapView);
+        this.mapView.getController().setCenter(initialGeoPoint);
+        this.mapView.getController().setZoom(15);
+
         // create the map overlay
         Drawable marker = getResources().getDrawable(R.drawable.marker);
         marker.setBounds(0, 0, marker.getIntrinsicWidth(), marker.getIntrinsicHeight());
-        mapOverlay = new ContactsMapOverlay(this, marker);
+        this.mapOverlay = new ContactsMapOverlay(this, marker);
+        this.mapView.getOverlays().add(mapOverlay);
+        this.myLocationOverlay = new MyLocationOverlay(this, mapView);
+        this.myLocationOverlay.enableCompass();
+        this.myLocationOverlay.enableMyLocation();
+        this.myLocationOverlay.runOnFirstFix(new Runnable() {
+            public void run() {
+                mapView.getController().animateTo(myLocationOverlay.getMyLocation());
+            }
+        });
+        mapView.getOverlays().add(myLocationOverlay);
 
         // configure the contacts list
         ListView list = (ListView)findViewById(R.id.ContactsList);
         list.setAdapter(new ContactsViewAdapter(this));
-
-        // configure the map and set initial position until GPS is available
-        MapView mapView = (MapView)findViewById(R.id.MapView);
-        mapView.getController().setCenter(initialGeoPoint);
-        mapView.getController().setZoom(15);
-        mapView.getOverlays().add(mapOverlay);
         
         // Add location listener
         // get reference to Location Manager
-        locationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
+        this.locationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
         
         // check if GPS is enabled; if not, the send user to GPS settings
         boolean enabled = this.locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
@@ -141,7 +153,7 @@ public class MotivatorMapActivity extends MapActivity {
         int latitude = (int)(this.currentLocation.getLatitude() * MILLION);
         int longitude = (int)(this.currentLocation.getLongitude() * MILLION);
         
-        mapOverlay.addMarker(markerName, new GeoPoint(latitude, longitude));
+        this.mapOverlay.addMarker(markerName, new GeoPoint(latitude, longitude));
         
         // redraw the map
         MapView mapView = (MapView) findViewById(R.id.MapView);
