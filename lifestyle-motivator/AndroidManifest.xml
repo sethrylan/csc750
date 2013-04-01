@@ -33,6 +33,8 @@
             </intent-filter>
         </activity>
         <service android:name=".MotivatorAlarmService" />
+        <receiver android:name=".WeatherServiceReceiver" />
+        
     </application>
 
     <supports-screens 

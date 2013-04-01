@@ -27,9 +27,14 @@ public class MotivatorMapActivity extends MapActivity {
     static SharedPreferences.Editor editor;
 
     static final String LOG_TAG = "MotivatorMap";
+    
+    private static final int UPDATE_THRESHOLD_METERS = 0;
+    private static final int UPDATE_THRESHOLD_MS = 0;
 
     private ContactsMapOverlay mapOverlay;
     private Location currentLocation;
+    private LocationManager locationManager;
+    private LocationListener locationListener;
     
     private static final float MILLION = 1E6f;
     
@@ -43,6 +48,8 @@ public class MotivatorMapActivity extends MapActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         
+        super.onCreate(savedInstanceState);
+
         Location initialLocation = null;
         GeoPoint initialGeoPoint = null;
         
@@ -83,10 +90,10 @@ public class MotivatorMapActivity extends MapActivity {
         
         // Add location listener
         // get reference to Location Manager
-        LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        locationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
         
         // check if GPS is enabled; if not, the send user to GPS settings
-        boolean enabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        boolean enabled = this.locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         if (!enabled) {
             Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
             startActivity(intent);
@@ -96,28 +103,37 @@ public class MotivatorMapActivity extends MapActivity {
         this.currentLocation = new Location(initialLocation);
 
         // Define an listener in an inner class
-        LocationListener locationListener = new MotivatorMapLocationListener(this.getApplicationContext(), currentLocation, mapView); 
-        
-        // Register the listener with the Location Manager
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-        
+        this.locationListener = new MotivatorMapLocationListener(this.getApplicationContext(), currentLocation, mapView); 
+                
         // register button clicklisteners
         // equivalent to <Button ... android:onClick="stopServiceButton"/> in layout xml
-        ((Button)findViewById(R.id.StartServiceButton)).setOnClickListener(mStartButtonListener);
-        ((Button)findViewById(R.id.StopServiceButton)).setOnClickListener(mStopButtonListener);
+        Button startButton = ((Button)findViewById(R.id.StartServiceButton));
+        Button stopButton = ((Button)findViewById(R.id.StopServiceButton));
+        startButton.setOnClickListener(mStartButtonListener);
+        startButton.setEnabled(true);
+        stopButton.setOnClickListener(mStopButtonListener);
+        stopButton.setEnabled(false);
     }
 
     private OnClickListener mStartButtonListener = new OnClickListener() {
         public void onClick(View v) {
+            ((Button)findViewById(R.id.StartServiceButton)).setEnabled(false);
+            
             Intent intent = new Intent(MotivatorMapActivity.this, MotivatorAlarmService.class);
             intent.putExtra("vibration", true);
             startService(intent);
+                        
+            ((Button)findViewById(R.id.StopServiceButton)).setEnabled(true);
         }
     };
     
     private OnClickListener mStopButtonListener = new OnClickListener() {
         public void onClick(View v) {
+            ((Button)findViewById(R.id.StopServiceButton)).setEnabled(false);
+
             stopService(new Intent(MotivatorMapActivity.this, MotivatorAlarmService.class));
+                        
+            ((Button)findViewById(R.id.StartServiceButton)).setEnabled(true);
         }
     };
 
@@ -142,7 +158,29 @@ public class MotivatorMapActivity extends MapActivity {
         super.finish();
     }
     
+    @Override
+    public void onStop() {
+        super.onStop();
+        this.locationManager.removeUpdates(this.locationListener);
+    }
     
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        this.locationManager.removeUpdates(this.locationListener);
+    }
+    
+    /**
+     * Called on application start or resume
+     */
+    @Override
+    public void onResume() {
+        super.onResume();
+        
+        // Register the listener with the Location Manager
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, UPDATE_THRESHOLD_MS, UPDATE_THRESHOLD_METERS, this.locationListener);
+    }
+
     public class MotivatorMapLocationListener implements LocationListener {
         Context context;
         Location location;

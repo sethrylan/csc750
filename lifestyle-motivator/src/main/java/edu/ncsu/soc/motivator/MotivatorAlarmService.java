@@ -37,6 +37,8 @@ public class MotivatorAlarmService extends Service {
     private int proximity;
     private String proximityUnit;
 //    private BusStop busStop;
+    
+    private WeatherServiceReceiver weatherService;
 
     /**
      * setup service managers.
@@ -55,6 +57,8 @@ public class MotivatorAlarmService extends Service {
         // initialize notification service
         this.notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
         
+        this.weatherService = new WeatherServiceReceiver(getApplicationContext(), null, 5);
+        
         sendBanner("Starting Lifestyle Motivator Service");
     }
 
@@ -67,8 +71,7 @@ public class MotivatorAlarmService extends Service {
         this.locationManager.removeUpdates(this.locationListener);
         this.notificationManager.cancel(NOTIFICATION_ID);
         Intent alarmIntent = new Intent(getApplicationContext(), MotivatorMapActivity.class);
-        PendingIntent pendingIntentAlarm = PendingIntent.getBroadcast(getApplicationContext(), PENDING_INTENT_REQUEST_CODE1, alarmIntent,
-                PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent pendingIntentAlarm = PendingIntent.getBroadcast(getApplicationContext(), PENDING_INTENT_REQUEST_CODE1, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
         pendingIntentAlarm.cancel();
     }
 
