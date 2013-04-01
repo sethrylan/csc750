@@ -60,18 +60,18 @@ public class PlacesService {
     
     public String httpGet(String url) {
         String result = "";
-        try {
-            HttpParams parameters = new BasicHttpParams();
-            HttpConnectionParams.setConnectionTimeout(parameters, TIMEOUT_MS);
-            HttpClient client = new DefaultHttpClient(parameters);
-            HttpResponse response = null;
-            response = client.execute(new HttpGet(url));
-            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-                result = EntityUtils.toString(response.getEntity());
-            }
-        } catch (Exception e) {
-            return null;
-        }
+//        try {
+//            HttpParams parameters = new BasicHttpParams();
+//            HttpConnectionParams.setConnectionTimeout(parameters, TIMEOUT_MS);
+//            HttpClient client = new DefaultHttpClient(parameters);
+//            HttpResponse response = null;
+//            response = client.execute(new HttpGet(url));
+//            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+//                result = EntityUtils.toString(response.getEntity());
+//            }
+//        } catch (Exception e) {
+//            return null;
+//        }
         return result;
     }
 
