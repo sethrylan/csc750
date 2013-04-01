@@ -160,6 +160,15 @@ public class MotivatorMapActivity extends MapActivity {
         mapView.invalidate();
     }
 
+    /**
+     * Disables all location features with use GPS
+     */
+    private void disableLocation() {
+        this.myLocationOverlay.disableMyLocation();
+        this.myLocationOverlay.disableCompass();
+        this.locationManager.removeUpdates(this.locationListener);
+    }
+    
     @Override
     protected boolean isRouteDisplayed() {
         return false;
@@ -173,13 +182,13 @@ public class MotivatorMapActivity extends MapActivity {
     @Override
     public void onStop() {
         super.onStop();
-        this.locationManager.removeUpdates(this.locationListener);
+        disableLocation();
     }
     
     @Override
     public void onDestroy() {
         super.onDestroy();
-        this.locationManager.removeUpdates(this.locationListener);
+        disableLocation();
     }
     
     /**
@@ -189,6 +198,8 @@ public class MotivatorMapActivity extends MapActivity {
     public void onResume() {
         super.onResume();
         
+        this.myLocationOverlay.enableCompass();
+        this.myLocationOverlay.enableMyLocation();
         // Register the listener with the Location Manager
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, UPDATE_THRESHOLD_MS, UPDATE_THRESHOLD_METERS, this.locationListener);
     }
