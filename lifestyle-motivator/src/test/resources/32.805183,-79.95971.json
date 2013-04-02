@@ -1,0 +1,1068 @@
+{
+  "latitude": 32.805183,
+  "longitude": -79.95971,
+  "timezone": "America\/New_York",
+  "offset": -4,
+  "currently": {
+    "time": 1364869679,
+    "summary": "Clear",
+    "icon": "clear-night",
+    "precipIntensity": 0,
+    "temperature": 61.07,
+    "windSpeed": 3.23,
+    "windBearing": 302,
+    "cloudCover": 0.07,
+    "humidity": 0.76,
+    "pressure": 1013.19,
+    "visibility": 9.54
+  },
+  "minutely": {
+    "summary": "Clear for the hour.",
+    "icon": "clear-night",
+    "data": [
+      {
+        "time": 1364869620,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364869680,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364869740,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364869800,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364869860,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364869920,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364869980,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364870040,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364870100,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364870160,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364870220,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364870280,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364870340,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364870400,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364870460,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364870520,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364870580,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364870640,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364870700,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364870760,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364870820,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364870880,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364870940,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364871000,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364871060,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364871120,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364871180,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364871240,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364871300,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364871360,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364871420,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364871480,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364871540,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364871600,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364871660,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364871720,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364871780,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364871840,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364871900,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364871960,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364872020,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364872080,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364872140,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364872200,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364872260,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364872320,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364872380,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364872440,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364872500,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364872560,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364872620,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364872680,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364872740,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364872800,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364872860,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364872920,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364872980,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364873040,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364873100,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364873160,
+        "precipIntensity": 0
+      },
+      {
+        "time": 1364873220,
+        "precipIntensity": 0
+      }
+    ]
+  },
+  "hourly": {
+    "summary": "Clear throughout the day.",
+    "icon": "clear-night",
+    "data": [
+      {
+        "time": 1364868000,
+        "summary": "Clear",
+        "icon": "clear-night",
+        "precipIntensity": 0,
+        "temperature": 61.79,
+        "windSpeed": 1.9,
+        "windBearing": 299,
+        "cloudCover": 0.07,
+        "humidity": 0.78,
+        "pressure": 1012.87,
+        "visibility": 9.87
+      },
+      {
+        "time": 1364871600,
+        "summary": "Clear",
+        "icon": "clear-night",
+        "precipIntensity": 0,
+        "temperature": 60.25,
+        "windSpeed": 4.75,
+        "windBearing": 305,
+        "cloudCover": 0.06,
+        "humidity": 0.73,
+        "pressure": 1013.55,
+        "visibility": 9.16
+      },
+      {
+        "time": 1364875200,
+        "summary": "Clear",
+        "icon": "clear-night",
+        "precipIntensity": 0,
+        "temperature": 58.98,
+        "windSpeed": 5.52,
+        "windBearing": 298,
+        "cloudCover": 0.05,
+        "humidity": 0.74,
+        "pressure": 1014.58,
+        "visibility": 9.05
+      },
+      {
+        "time": 1364878800,
+        "summary": "Clear",
+        "icon": "clear-night",
+        "precipIntensity": 0,
+        "temperature": 58.3,
+        "windSpeed": 6.92,
+        "windBearing": 280,
+        "cloudCover": 0.03,
+        "humidity": 0.73,
+        "pressure": 1014.36,
+        "visibility": 9.27
+      },
+      {
+        "time": 1364882400,
+        "summary": "Clear",
+        "icon": "clear-night",
+        "precipIntensity": 0,
+        "temperature": 57.23,
+        "windSpeed": 8.07,
+        "windBearing": 266,
+        "cloudCover": 0.01,
+        "humidity": 0.72,
+        "pressure": 1015.33,
+        "visibility": 9.53
+      },
+      {
+        "time": 1364886000,
+        "summary": "Clear",
+        "icon": "clear-night",
+        "precipIntensity": 0,
+        "temperature": 56.24,
+        "windSpeed": 8.36,
+        "windBearing": 255,
+        "cloudCover": 0,
+        "humidity": 0.72,
+        "pressure": 1015.06,
+        "visibility": 9.4
+      },
+      {
+        "time": 1364889600,
+        "summary": "Clear",
+        "icon": "clear-night",
+        "precipIntensity": 0,
+        "temperature": 55.14,
+        "windSpeed": 8.47,
+        "windBearing": 248,
+        "cloudCover": 0,
+        "humidity": 0.73,
+        "pressure": 1016.07,
+        "visibility": 9.34
+      },
+      {
+        "time": 1364893200,
+        "summary": "Clear",
+        "icon": "clear-night",
+        "precipIntensity": 0,
+        "temperature": 53.47,
+        "windSpeed": 8.22,
+        "windBearing": 234,
+        "cloudCover": 0,
+        "humidity": 0.75,
+        "pressure": 1016.55,
+        "visibility": 9.16
+      },
+      {
+        "time": 1364896800,
+        "summary": "Clear",
+        "icon": "clear-night",
+        "precipIntensity": 0,
+        "temperature": 52.32,
+        "windSpeed": 8.66,
+        "windBearing": 196,
+        "cloudCover": 0,
+        "humidity": 0.75,
+        "pressure": 1017.13,
+        "visibility": 9.06
+      },
+      {
+        "time": 1364900400,
+        "summary": "Clear",
+        "icon": "clear-night",
+        "precipIntensity": 0,
+        "temperature": 51.19,
+        "windSpeed": 9.64,
+        "windBearing": 170,
+        "cloudCover": 0,
+        "humidity": 0.76,
+        "pressure": 1017.58,
+        "visibility": 9.07
+      },
+      {
+        "time": 1364904000,
+        "summary": "Clear",
+        "icon": "clear-day",
+        "precipIntensity": 0,
+        "temperature": 52.14,
+        "windSpeed": 9.77,
+        "windBearing": 141,
+        "cloudCover": 0,
+        "humidity": 0.72,
+        "pressure": 1018.96,
+        "visibility": 9.4
+      },
+      {
+        "time": 1364907600,
+        "summary": "Clear",
+        "icon": "clear-day",
+        "precipIntensity": 0,
+        "temperature": 54.91,
+        "windSpeed": 11.13,
+        "windBearing": 126,
+        "cloudCover": 0.11,
+        "humidity": 0.65,
+        "pressure": 1019.42,
+        "visibility": 10
+      },
+      {
+        "time": 1364911200,
+        "summary": "Clear",
+        "icon": "clear-day",
+        "precipIntensity": 0,
+        "temperature": 58.37,
+        "windSpeed": 10.84,
+        "windBearing": 126,
+        "cloudCover": 0.11,
+        "humidity": 0.58,
+        "pressure": 1019.87,
+        "visibility": 10
+      },
+      {
+        "time": 1364914800,
+        "summary": "Clear",
+        "icon": "clear-day",
+        "precipIntensity": 0,
+        "temperature": 61.23,
+        "windSpeed": 10.21,
+        "windBearing": 122,
+        "cloudCover": 0.11,
+        "humidity": 0.54,
+        "pressure": 1020.48,
+        "visibility": 10
+      },
+      {
+        "time": 1364918400,
+        "summary": "Clear",
+        "icon": "clear-day",
+        "precipIntensity": 0,
+        "temperature": 63.64,
+        "windSpeed": 8.63,
+        "windBearing": 117,
+        "cloudCover": 0.11,
+        "humidity": 0.51,
+        "pressure": 1020.6,
+        "visibility": 10
+      },
+      {
+        "time": 1364922000,
+        "summary": "Clear",
+        "icon": "clear-day",
+        "precipIntensity": 0,
+        "temperature": 65.21,
+        "windSpeed": 7.23,
+        "windBearing": 113,
+        "cloudCover": 0.11,
+        "humidity": 0.5,
+        "pressure": 1020.86,
+        "visibility": 10
+      },
+      {
+        "time": 1364925600,
+        "summary": "Clear",
+        "icon": "clear-day",
+        "precipIntensity": 0,
+        "temperature": 67.02,
+        "windSpeed": 6.75,
+        "windBearing": 97,
+        "cloudCover": 0.11,
+        "humidity": 0.46,
+        "pressure": 1020.22,
+        "visibility": 10
+      },
+      {
+        "time": 1364929200,
+        "summary": "Clear",
+        "icon": "clear-day",
+        "precipIntensity": 0,
+        "temperature": 66.92,
+        "windSpeed": 7.99,
+        "windBearing": 100,
+        "cloudCover": 0.11,
+        "humidity": 0.47,
+        "pressure": 1019.91,
+        "visibility": 10
+      },
+      {
+        "time": 1364932800,
+        "summary": "Clear",
+        "icon": "clear-day",
+        "precipIntensity": 0,
+        "temperature": 66.8,
+        "windSpeed": 8.82,
+        "windBearing": 100,
+        "cloudCover": 0.12,
+        "humidity": 0.48,
+        "pressure": 1019.5,
+        "visibility": 10
+      },
+      {
+        "time": 1364936400,
+        "summary": "Clear",
+        "icon": "clear-day",
+        "precipIntensity": 0,
+        "temperature": 65.33,
+        "windSpeed": 9.53,
+        "windBearing": 103,
+        "cloudCover": 0.13,
+        "humidity": 0.5,
+        "pressure": 1019.24,
+        "visibility": 10
+      },
+      {
+        "time": 1364940000,
+        "summary": "Clear",
+        "icon": "clear-day",
+        "precipIntensity": 0,
+        "temperature": 63.37,
+        "windSpeed": 8.85,
+        "windBearing": 99,
+        "cloudCover": 0.14,
+        "humidity": 0.52,
+        "pressure": 1019.28,
+        "visibility": 10
+      },
+      {
+        "time": 1364943600,
+        "summary": "Clear",
+        "icon": "clear-day",
+        "precipIntensity": 0,
+        "temperature": 60.64,
+        "windSpeed": 8.07,
+        "windBearing": 97,
+        "cloudCover": 0.14,
+        "humidity": 0.58,
+        "pressure": 1019.49,
+        "visibility": 10
+      },
+      {
+        "time": 1364947200,
+        "summary": "Clear",
+        "icon": "clear-night",
+        "precipIntensity": 0,
+        "temperature": 57.88,
+        "windSpeed": 6.73,
+        "windBearing": 85,
+        "cloudCover": 0.15,
+        "humidity": 0.64,
+        "pressure": 1019.76,
+        "visibility": 10
+      },
+      {
+        "time": 1364950800,
+        "summary": "Clear",
+        "icon": "clear-night",
+        "precipIntensity": 0,
+        "temperature": 56.48,
+        "windSpeed": 6.04,
+        "windBearing": 89,
+        "cloudCover": 0.04,
+        "humidity": 0.69,
+        "pressure": 1020.07,
+        "visibility": 10
+      },
+      {
+        "time": 1364954400,
+        "summary": "Clear",
+        "icon": "clear-night",
+        "precipIntensity": 0,
+        "temperature": 55.06,
+        "windSpeed": 6.08,
+        "windBearing": 57,
+        "cloudCover": 0.1,
+        "humidity": 0.76,
+        "pressure": 1020.42
+      },
+      {
+        "time": 1364958000,
+        "summary": "Clear",
+        "icon": "clear-night",
+        "precipIntensity": 0,
+        "temperature": 54.95,
+        "windSpeed": 5.69,
+        "windBearing": 55,
+        "cloudCover": 0.12,
+        "humidity": 0.79,
+        "pressure": 1020.68
+      },
+      {
+        "time": 1364961600,
+        "summary": "Clear",
+        "icon": "clear-night",
+        "precipIntensity": 0,
+        "temperature": 54.42,
+        "windSpeed": 5.02,
+        "windBearing": 50,
+        "cloudCover": 0.14,
+        "humidity": 0.8,
+        "pressure": 1020.77
+      },
+      {
+        "time": 1364965200,
+        "summary": "Clear",
+        "icon": "clear-night",
+        "precipIntensity": 0,
+        "temperature": 53.86,
+        "windSpeed": 4.25,
+        "windBearing": 45,
+        "cloudCover": 0.17,
+        "humidity": 0.82,
+        "pressure": 1020.76
+      },
+      {
+        "time": 1364968800,
+        "summary": "Partly Cloudy",
+        "icon": "partly-cloudy-night",
+        "precipIntensity": 0,
+        "temperature": 53.39,
+        "windSpeed": 3.69,
+        "windBearing": 43,
+        "cloudCover": 0.22,
+        "humidity": 0.83,
+        "pressure": 1020.69
+      },
+      {
+        "time": 1364972400,
+        "summary": "Partly Cloudy",
+        "icon": "partly-cloudy-night",
+        "precipIntensity": 0,
+        "temperature": 53,
+        "windSpeed": 3.45,
+        "windBearing": 55,
+        "cloudCover": 0.29,
+        "humidity": 0.85,
+        "pressure": 1020.51
+      },
+      {
+        "time": 1364976000,
+        "summary": "Partly Cloudy",
+        "icon": "partly-cloudy-night",
+        "precipIntensity": 0,
+        "temperature": 52.64,
+        "windSpeed": 3.43,
+        "windBearing": 102,
+        "cloudCover": 0.37,
+        "humidity": 0.86,
+        "pressure": 1020.29
+      },
+      {
+        "time": 1364979600,
+        "summary": "Partly Cloudy",
+        "icon": "partly-cloudy-night",
+        "precipIntensity": 0,
+        "temperature": 52.38,
+        "windSpeed": 3.62,
+        "windBearing": 141,
+        "cloudCover": 0.43,
+        "humidity": 0.86,
+        "pressure": 1020.22
+      },
+      {
+        "time": 1364983200,
+        "summary": "Partly Cloudy",
+        "icon": "partly-cloudy-night",
+        "precipIntensity": 0,
+        "temperature": 52.01,
+        "windSpeed": 4.03,
+        "windBearing": 178,
+        "cloudCover": 0.43,
+        "humidity": 0.87,
+        "pressure": 1020.42
+      },
+      {
+        "time": 1364986800,
+        "summary": "Partly Cloudy",
+        "icon": "partly-cloudy-night",
+        "precipIntensity": 0,
+        "temperature": 51.76,
+        "windSpeed": 4.64,
+        "windBearing": 195,
+        "cloudCover": 0.4,
+        "humidity": 0.88,
+        "pressure": 1020.79
+      },
+      {
+        "time": 1364990400,
+        "summary": "Partly Cloudy",
+        "icon": "partly-cloudy-day",
+        "precipIntensity": 0,
+        "temperature": 52.4,
+        "windSpeed": 5.38,
+        "windBearing": 196,
+        "cloudCover": 0.42,
+        "humidity": 0.86,
+        "pressure": 1021.26
+      },
+      {
+        "time": 1364994000,
+        "summary": "Mostly Cloudy",
+        "icon": "partly-cloudy-day",
+        "precipIntensity": 0,
+        "temperature": 54.83,
+        "windSpeed": 6.28,
+        "windBearing": 191,
+        "cloudCover": 0.51,
+        "humidity": 0.82,
+        "pressure": 1021.9
+      },
+      {
+        "time": 1364997600,
+        "summary": "Mostly Cloudy",
+        "icon": "partly-cloudy-day",
+        "precipIntensity": 0,
+        "temperature": 58.25,
+        "windSpeed": 7.35,
+        "windBearing": 181,
+        "cloudCover": 0.65,
+        "humidity": 0.76,
+        "pressure": 1022.65
+      },
+      {
+        "time": 1365001200,
+        "summary": "Mostly Cloudy",
+        "icon": "partly-cloudy-day",
+        "precipIntensity": 0,
+        "temperature": 60.89,
+        "windSpeed": 8.46,
+        "windBearing": 171,
+        "cloudCover": 0.77,
+        "humidity": 0.71,
+        "pressure": 1023.23
+      },
+      {
+        "time": 1365004800,
+        "summary": "Mostly Cloudy",
+        "icon": "cloudy",
+        "precipIntensity": 0,
+        "temperature": 61.73,
+        "windSpeed": 9.62,
+        "windBearing": 162,
+        "cloudCover": 0.86,
+        "humidity": 0.68,
+        "pressure": 1023.52
+      },
+      {
+        "time": 1365008400,
+        "summary": "Overcast",
+        "icon": "cloudy",
+        "precipIntensity": 0,
+        "temperature": 61.6,
+        "windSpeed": 10.77,
+        "windBearing": 153,
+        "cloudCover": 0.92,
+        "humidity": 0.66,
+        "pressure": 1023.63
+      },
+      {
+        "time": 1365012000,
+        "summary": "Overcast",
+        "icon": "cloudy",
+        "precipIntensity": 0,
+        "temperature": 61.47,
+        "windSpeed": 11.7,
+        "windBearing": 147,
+        "cloudCover": 0.94,
+        "humidity": 0.65,
+        "pressure": 1023.63
+      },
+      {
+        "time": 1365015600,
+        "summary": "Overcast",
+        "icon": "cloudy",
+        "precipIntensity": 0,
+        "temperature": 62.06,
+        "windSpeed": 12.35,
+        "windBearing": 143,
+        "cloudCover": 0.88,
+        "humidity": 0.63,
+        "pressure": 1023.46
+      },
+      {
+        "time": 1365019200,
+        "summary": "Mostly Cloudy",
+        "icon": "partly-cloudy-day",
+        "precipIntensity": 0,
+        "temperature": 62.71,
+        "windSpeed": 12.77,
+        "windBearing": 141,
+        "cloudCover": 0.77,
+        "humidity": 0.62,
+        "pressure": 1023.18
+      },
+      {
+        "time": 1365022800,
+        "summary": "Mostly Cloudy",
+        "icon": "partly-cloudy-day",
+        "precipIntensity": 0,
+        "temperature": 62.35,
+        "windSpeed": 12.95,
+        "windBearing": 139,
+        "cloudCover": 0.67,
+        "humidity": 0.61,
+        "pressure": 1023.07
+      },
+      {
+        "time": 1365026400,
+        "summary": "Mostly Cloudy",
+        "icon": "partly-cloudy-day",
+        "precipIntensity": 0,
+        "temperature": 60.09,
+        "windSpeed": 12.83,
+        "windBearing": 136,
+        "cloudCover": 0.58,
+        "humidity": 0.62,
+        "pressure": 1023.27
+      },
+      {
+        "time": 1365030000,
+        "summary": "Partly Cloudy",
+        "icon": "partly-cloudy-day",
+        "precipIntensity": 0,
+        "temperature": 56.9,
+        "windSpeed": 12.53,
+        "windBearing": 134,
+        "cloudCover": 0.5,
+        "humidity": 0.64,
+        "pressure": 1023.66
+      },
+      {
+        "time": 1365033600,
+        "summary": "Partly Cloudy",
+        "icon": "partly-cloudy-night",
+        "precipIntensity": 0,
+        "temperature": 54.54,
+        "windSpeed": 12.28,
+        "windBearing": 131,
+        "cloudCover": 0.48,
+        "humidity": 0.66,
+        "pressure": 1024.06
+      },
+      {
+        "time": 1365037200,
+        "summary": "Mostly Cloudy",
+        "icon": "partly-cloudy-night",
+        "precipIntensity": 0,
+        "temperature": 53.78,
+        "windSpeed": 12.14,
+        "windBearing": 130,
+        "cloudCover": 0.61,
+        "humidity": 0.67,
+        "pressure": 1024.5
+      },
+      {
+        "time": 1365040800,
+        "summary": "Mostly Cloudy",
+        "icon": "cloudy",
+        "precipIntensity": 0,
+        "temperature": 53.75,
+        "windSpeed": 12.04,
+        "windBearing": 129,
+        "cloudCover": 0.81,
+        "humidity": 0.69,
+        "pressure": 1024.96
+      }
+    ]
+  },
+  "daily": {
+    "summary": "Light rain off-and-on until Friday; temperatures falling to 61\u00c2\u00b0 on Thursday.",
+    "icon": "rain",
+    "data": [
+      {
+        "time": 1364788800,
+        "summary": "Sprinkling until evening.",
+        "icon": "rain",
+        "sunriseTime": 1364814514,
+        "sunsetTime": 1364859654,
+        "precipIntensity": 0.008,
+        "precipType": "rain",
+        "temperatureMin": 59.06,
+        "temperatureMinTime": 1364817600,
+        "temperatureMax": 74.37,
+        "temperatureMaxTime": 1364850000,
+        "windSpeed": 7.76,
+        "windBearing": 342,
+        "cloudCover": 0.4,
+        "humidity": 0.7,
+        "pressure": 1012.24,
+        "visibility": 9.79
+      },
+      {
+        "time": 1364875200,
+        "summary": "Partly cloudy overnight.",
+        "icon": "partly-cloudy-night",
+        "sunriseTime": 1364900836,
+        "sunsetTime": 1364946096,
+        "precipIntensity": 0,
+        "temperatureMin": 51.19,
+        "temperatureMinTime": 1364900400,
+        "temperatureMax": 67.02,
+        "temperatureMaxTime": 1364925600,
+        "windSpeed": 8.18,
+        "windBearing": 123,
+        "cloudCover": 0.08,
+        "humidity": 0.64,
+        "pressure": 1018.56,
+        "visibility": 9.69
+      },
+      {
+        "time": 1364961600,
+        "summary": "Mostly cloudy throughout the day.",
+        "icon": "partly-cloudy-day",
+        "sunriseTime": 1364987158,
+        "sunsetTime": 1365032538,
+        "precipIntensity": 0.001,
+        "precipType": "rain",
+        "temperatureMin": 51.76,
+        "temperatureMinTime": 1364986800,
+        "temperatureMax": 62.71,
+        "temperatureMaxTime": 1365019200,
+        "windSpeed": 8.48,
+        "windBearing": 138,
+        "cloudCover": 0.57,
+        "humidity": 0.74,
+        "pressure": 1022.49
+      },
+      {
+        "time": 1365048000,
+        "summary": "Light rain throughout the day.",
+        "icon": "rain",
+        "sunriseTime": 1365073480,
+        "sunsetTime": 1365118980,
+        "precipIntensity": 0.077,
+        "precipType": "rain",
+        "temperatureMin": 51.94,
+        "temperatureMinTime": 1365073200,
+        "temperatureMax": 61.37,
+        "temperatureMaxTime": 1365130800,
+        "windSpeed": 13.82,
+        "windBearing": 98,
+        "cloudCover": 0.96,
+        "humidity": 0.82,
+        "pressure": 1020.3
+      },
+      {
+        "time": 1365134400,
+        "summary": "Light rain until afternoon.",
+        "icon": "rain",
+        "sunriseTime": 1365159802,
+        "sunsetTime": 1365205422,
+        "precipIntensity": 0.05,
+        "precipType": "rain",
+        "temperatureMin": 52.63,
+        "temperatureMinTime": 1365217200,
+        "temperatureMax": 65.77,
+        "temperatureMaxTime": 1365184800,
+        "windSpeed": 10.27,
+        "windBearing": 281,
+        "cloudCover": 0.67,
+        "humidity": 0.87,
+        "pressure": 1004.57
+      },
+      {
+        "time": 1365220800,
+        "summary": "Mostly cloudy overnight.",
+        "icon": "partly-cloudy-night",
+        "sunriseTime": 1365246125,
+        "sunsetTime": 1365291864,
+        "precipIntensity": 0,
+        "temperatureMin": 42.31,
+        "temperatureMinTime": 1365246000,
+        "temperatureMax": 64.62,
+        "temperatureMaxTime": 1365274800,
+        "windSpeed": 7.03,
+        "windBearing": 153,
+        "cloudCover": 0.14,
+        "humidity": 0.71,
+        "pressure": 1017.01
+      },
+      {
+        "time": 1365307200,
+        "summary": "Mostly cloudy throughout the day.",
+        "icon": "partly-cloudy-day",
+        "sunriseTime": 1365332448,
+        "sunsetTime": 1365378306,
+        "precipIntensity": 0,
+        "temperatureMin": 42.88,
+        "temperatureMinTime": 1365325200,
+        "temperatureMax": 73.06,
+        "temperatureMaxTime": 1365361200,
+        "windSpeed": 3.73,
+        "windBearing": 72,
+        "cloudCover": 0.72,
+        "humidity": 0.72,
+        "pressure": 1020.49
+      },
+      {
+        "time": 1365393600,
+        "summary": "Clear throughout the day.",
+        "icon": "clear-day",
+        "sunriseTime": 1365418772,
+        "sunsetTime": 1365464749,
+        "precipIntensity": 0,
+        "temperatureMin": 48.46,
+        "temperatureMinTime": 1365411600,
+        "temperatureMax": 76.11,
+        "temperatureMaxTime": 1365444000,
+        "windSpeed": 4.23,
+        "windBearing": 25,
+        "cloudCover": 0.04,
+        "humidity": 0.8,
+        "pressure": 1019.48
+      }
+    ]
+  },
+  "flags": {
+    "sources": [
+      "nwspa",
+      "darksky",
+      "isd",
+      "fnmoc",
+      "naefs",
+      "rap",
+      "nam",
+      "cmc",
+      "gfs",
+      "lamp",
+      "metar"
+    ],
+    "darksky-stations": [
+      "KCLX"
+    ],
+    "isd-stations": [
+      "722080-13880",
+      "722086-13758",
+      "722088-99999",
+      "994230-99999",
+      "999999-13782"
+    ],
+    "lamp-stations": [
+      "KCHS"
+    ],
+    "metar-stations": [
+      "KCHS",
+      "KJZI",
+      "KLRO"
+    ]
+  }
+}

@@ -24,8 +24,8 @@ import android.widget.Toast;
 
 public class MotivatorMapActivity extends MapActivity {
 
-    static SharedPreferences settings;
-    static SharedPreferences.Editor editor;
+    protected SharedPreferences preferences;
+    protected SharedPreferences.Editor editor;
 
     static final String LOG_TAG = "MotivatorMap";
     
@@ -47,7 +47,6 @@ public class MotivatorMapActivity extends MapActivity {
     private static final Location DEFAULT_LOCATION = geoPointToLocation(DEFAULT_GEOPOINT);
 
     /** Called when the activity is first created. */
-    @SuppressWarnings("deprecation")
     @Override
     public void onCreate(Bundle savedInstanceState) {
         
@@ -56,20 +55,20 @@ public class MotivatorMapActivity extends MapActivity {
         Location initialLocation = null;
         GeoPoint initialGeoPoint = null;
         
-        settings = this.getPreferences(MODE_WORLD_WRITEABLE);    
-        editor = settings.edit();
+        this.preferences = this.getSharedPreferences(getString(R.string.shared_preferences), Context.MODE_PRIVATE);  
+        this.editor = this.preferences.edit();
 
         // Retrieve GPS coordinates in form e6 (GeoPoint) form
-        Integer lastGpsLat = settings.getInt("motivator.last_gps_lat", Integer.MIN_VALUE);
-        Integer lastGpsLong = settings.getInt("motivator.last_gps_long", Integer.MIN_VALUE);
+        Integer lastLatitude = this.preferences.getInt(getString(R.string.last_latitude_e6), Integer.MIN_VALUE);
+        Integer lastLongitude = this.preferences.getInt(getString(R.string.last_longitude_e6), Integer.MIN_VALUE);
         
-        if (lastGpsLat.equals(Integer.MIN_VALUE) || lastGpsLong.equals(Integer.MIN_VALUE)) {            
+        if (lastLatitude.equals(Integer.MIN_VALUE) || lastLongitude.equals(Integer.MIN_VALUE)) {            
             Toast toast = Toast.makeText(getApplicationContext(), "Using default location for first time use.", Toast.LENGTH_LONG);
             toast.show();
             initialGeoPoint = DEFAULT_GEOPOINT;
             initialLocation = DEFAULT_LOCATION;
         } else {
-            initialGeoPoint = new GeoPoint(lastGpsLat, lastGpsLong);
+            initialGeoPoint = new GeoPoint(lastLatitude, lastLongitude);
             initialLocation = geoPointToLocation(initialGeoPoint);
         }
         
@@ -223,8 +222,8 @@ public class MotivatorMapActivity extends MapActivity {
             mapView.getController().setCenter(new GeoPoint(latitude, longitude));
             
             // Save last seen GPS location for quick app start up
-            editor.putInt("motivator.last_gps_lat", latitude);
-            editor.putInt("motivator.last_gps_long", longitude);
+            editor.putInt(getString(R.string.last_latitude_e6), latitude);
+            editor.putInt(getString(R.string.last_longitude_e6), longitude);
             editor.commit();
         }
 

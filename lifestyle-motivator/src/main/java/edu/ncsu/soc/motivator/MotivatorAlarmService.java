@@ -2,6 +2,8 @@ package edu.ncsu.soc.motivator;
 
 import java.util.Calendar;
 
+import edu.ncsu.soc.motivator.R;
+
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Notification;
@@ -12,6 +14,7 @@ import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -25,11 +28,15 @@ import android.util.Log;
  * Service runs in the background and sends notifications based on GPS/Places data
  */
 public class MotivatorAlarmService extends Service {
+    
+    protected SharedPreferences preferences;
+    protected SharedPreferences.Editor editor;
 
     private static final int NOTIFICATION_ID = 42;
-    private static final int PENDING_INTENT_REQUEST_CODE1 = 4242;
     private static final int UPDATE_THRESHOLD_MS = 5000; // milliseconds
     private static final int UPDATE_THRESHOLD_METERS = 5; // meters
+    private static final int INTERVAL_SECONDS = 5; // meters
+    private static final float MILLION = 1E6f;
 
     private LocationManager locationManager;
     private LocationListener locationListener;
@@ -60,14 +67,17 @@ public class MotivatorAlarmService extends Service {
         // initialize notification service
         this.notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
 
-        int timeoutSeconds = 5;
+        // initialize preferences references
+        this.preferences = getApplicationContext().getSharedPreferences(getString(R.string.shared_preferences), Context.MODE_PRIVATE);
+        this.editor = this.preferences.edit();
+
         AlarmManager alarmManager = (AlarmManager)this.getSystemService(Context.ALARM_SERVICE);         
         Intent intent = new Intent( WeatherServiceReceiver.WEATHER_SERVICE_ACTION );
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         Calendar triggerTime = Calendar.getInstance();
         triggerTime.setTimeInMillis(System.currentTimeMillis());
-        triggerTime.add(Calendar.SECOND, timeoutSeconds);         
-        alarmManager.setInexactRepeating(AlarmManager.RTC, triggerTime.getTimeInMillis(), timeoutSeconds * 1000, pendingIntent);
+        triggerTime.add(Calendar.SECOND, INTERVAL_SECONDS);         
+        alarmManager.setInexactRepeating(AlarmManager.RTC, triggerTime.getTimeInMillis(), INTERVAL_SECONDS * 1000, pendingIntent);
 
         /*
          * Registration here equivalent to declarative method in AndroidManifest:
@@ -215,6 +225,12 @@ public class MotivatorAlarmService extends Service {
             // }
 
             sendNotification(getApplicationContext(), "Bus Stop: " + "name", 1234 + " " + proximityUnit + " away", MotivatorMapActivity.class);
+            
+            int latitude = (int)(location.getLatitude() * MILLION);
+            int longitude = (int)(location.getLongitude() * MILLION);            
+            editor.putInt(getString(R.string.last_latitude_e6), latitude);
+            editor.putInt(getString(R.string.last_longitude_e6), longitude);
+            editor.commit();
         }
 
         public void onProviderDisabled(String provider) {

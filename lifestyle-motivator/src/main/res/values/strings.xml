@@ -14,4 +14,12 @@
     <string name="darksky_api_key">7d0f47e0b42b30ddbe05872d55fb695a</string>
     <string name="maps_api_key">0Sb3tMN-RVrsvaYMZkOSx5iBHE5tyn8FFmqZGJQ</string>
 
+    <string name="darksky_forecast_root">https://api.forecast.io/forecast</string>
+    <string name="google_places_host">https://maps.googleapis.com</string>
+    
+    <string name="shared_preferences">srgainey-motivator</string>
+	<string name="last_latitude_e6">last_latitude_e6</string>
+	<string name="last_longitude_e6">last_longitude_e6</string>
+    
+
 </resources>
