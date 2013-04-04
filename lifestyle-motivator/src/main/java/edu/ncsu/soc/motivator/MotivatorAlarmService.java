@@ -18,11 +18,11 @@ import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 /**
  * Service runs in the background and sends notifications based on GPS/Places data
@@ -35,7 +35,7 @@ public class MotivatorAlarmService extends Service {
     private static final int NOTIFICATION_ID = 42;
     private static final int UPDATE_THRESHOLD_MS = 5000; // milliseconds
     private static final int UPDATE_THRESHOLD_METERS = 5; // meters
-    private static final int INTERVAL_SECONDS = 5; // meters
+    private static final int INTERVAL_SECONDS = 5;
     private static final float MILLION = 1E6f;
 
     private LocationManager locationManager;
@@ -76,7 +76,7 @@ public class MotivatorAlarmService extends Service {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         Calendar triggerTime = Calendar.getInstance();
         triggerTime.setTimeInMillis(System.currentTimeMillis());
-        triggerTime.add(Calendar.SECOND, INTERVAL_SECONDS);         
+//        triggerTime.add(Calendar.SECOND, INTERVAL_SECONDS);         
         alarmManager.setInexactRepeating(AlarmManager.RTC, triggerTime.getTimeInMillis(), INTERVAL_SECONDS * 1000, pendingIntent);
 
         /*
@@ -124,10 +124,12 @@ public class MotivatorAlarmService extends Service {
 //        busStop.setLatitude(new Double("35.772052"));
 //        busStop.setLongitude(new Double("-78.673718"));
 
-        Uri ringtoneUri = intent.getParcelableExtra("ringtoneUri");
-        boolean vibration = intent.getBooleanExtra("vibration", false);
-        
-        sendNotification(getApplicationContext(), "Bus Stop: " + "busstopname", "acquiring location...", MotivatorMapActivity.class);
+//        Uri ringtoneUri = intent.getParcelableExtra("ringtoneUri");
+//        boolean vibration = intent.getBooleanExtra("vibration", false);
+                
+        sendNotification(getApplicationContext(), MotivatorMapActivity.class, "Looking up current conditions", "acquiring current location...");
+
+//        sendNotification(getApplicationContext(), "Bus Stop: " + "busstopname", "acquiring location...", MotivatorMapActivity.class);
 
 //        Intent alarmIntent = new Intent(getApplicationContext(), MotivatorMapActivity.class);
 //        alarmIntent.putExtra("ringtoneUri", ringtoneUri);
@@ -172,20 +174,28 @@ public class MotivatorAlarmService extends Service {
     /**
      * Method to send notification
      * @param context       context
-     * @param title         notification title
-     * @param text          notification text
      * @param intentClass   notification intent
+     * @param texts         context title, content text and subtext
      */
-    protected void sendNotification(Context context, String title, String text , Class<? extends Activity> intentClass) {
+    protected void sendNotification(Context context, Class<? extends Activity> intentClass, String ...texts) {
 
-        Log.d(this.getClass().getSimpleName(), "sendNotification(): " + "context: " + context + ", title: " + title + ", text: " + text + ", class: " + intentClass.getSimpleName());
 
         // create notification
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(getApplicationContext())
-            .setSmallIcon(R.drawable.ic_launcher)
-            .setContentTitle(title)
-            .setContentText(text);
-
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(getApplicationContext()).setSmallIcon(R.drawable.ic_launcher);
+        
+        if(texts.length > 0) {
+            notificationBuilder.setContentTitle(texts[0]);
+            Log.d(this.getClass().getSimpleName(), "sendNotification(): " + "context: " + context + ", title: " + texts[0] + ", class: " + intentClass.getSimpleName());
+            if(texts.length > 1) {
+                notificationBuilder.setContentText(texts[1]);
+                Log.d(this.getClass().getSimpleName(), "sendNotification(): " + "context: " + context + ", title: " + texts[0] + ", text: " + texts[1] + ", class: " + intentClass.getSimpleName());
+                if(texts.length > 2) {
+                    notificationBuilder.setSubText(texts[2]);
+                    Log.d(this.getClass().getSimpleName(), "sendNotification(): " + "context: " + context + ", title: " + texts[0] + ", text: " + texts[1] + ", subtext :" + texts[2] + ", class: " + intentClass.getSimpleName());
+                }
+            }
+        }
+        
         // creates explicit intent for an Activity
         Intent notificationIntent = new Intent(context, intentClass);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -224,7 +234,15 @@ public class MotivatorAlarmService extends Service {
             // dist = convertMetersToYards(dist);
             // }
 
-            sendNotification(getApplicationContext(), "Bus Stop: " + "name", 1234 + " " + proximityUnit + " away", MotivatorMapActivity.class);
+            
+            boolean isNice = MotivatorAlarmService.this.preferences.getBoolean(getString(R.string.nice_weather), true);
+            if(isNice) {
+                sendNotification(getApplicationContext(), MotivatorMapActivity.class, "The weather is " + isNice, "Nearest park is " + 1234 + " " + proximityUnit + " away");
+            } else {
+                String weatherReason = MotivatorAlarmService.this.preferences.getString(getString(R.string.weather_reason), "");
+                sendNotification(getApplicationContext(), MotivatorMapActivity.class, "The weather is not nice.", weatherReason , "Maybe you should find a gym");
+            }
+//            sendNotification(getApplicationContext(), "Bus Stop: " + "name", 1234 + " " + proximityUnit + " away", MotivatorMapActivity.class);
             
             int latitude = (int)(location.getLatitude() * MILLION);
             int longitude = (int)(location.getLongitude() * MILLION);            

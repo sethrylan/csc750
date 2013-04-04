@@ -36,6 +36,10 @@ public class JsonUtils {
      * @return      Pretty JSON
      */
     public static String prettyPrint(String json) {
-        return new GsonBuilder().setPrettyPrinting().create().toJson(new JsonParser().parse(json));
+        try {
+            return new GsonBuilder().setPrettyPrinting().create().toJson(new JsonParser().parse(json));
+        } catch (JsonSyntaxException e) {
+            return json;
+        }
     }
 }

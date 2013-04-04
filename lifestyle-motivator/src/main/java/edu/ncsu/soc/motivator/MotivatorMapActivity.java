@@ -129,11 +129,9 @@ public class MotivatorMapActivity extends MapActivity {
     private OnClickListener mStartButtonListener = new OnClickListener() {
         public void onClick(View v) {
             ((Button)findViewById(R.id.StartServiceButton)).setEnabled(false);
-            
             Intent intent = new Intent(MotivatorMapActivity.this, MotivatorAlarmService.class);
-            intent.putExtra("vibration", true);
+//            intent.putExtra("vibration", true);
             startService(intent);
-                        
             ((Button)findViewById(R.id.StopServiceButton)).setEnabled(true);
         }
     };
@@ -141,9 +139,7 @@ public class MotivatorMapActivity extends MapActivity {
     private OnClickListener mStopButtonListener = new OnClickListener() {
         public void onClick(View v) {
             ((Button)findViewById(R.id.StopServiceButton)).setEnabled(false);
-
             stopService(new Intent(MotivatorMapActivity.this, MotivatorAlarmService.class));
-                        
             ((Button)findViewById(R.id.StartServiceButton)).setEnabled(true);
         }
     };
