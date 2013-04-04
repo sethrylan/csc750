@@ -67,6 +67,9 @@ public class MotivatorMapActivity extends MapActivity {
             toast.show();
             initialGeoPoint = DEFAULT_GEOPOINT;
             initialLocation = DEFAULT_LOCATION;
+            this.editor.putInt(this.getString(R.string.last_latitude_e6), DEFAULT_GEOPOINT.getLatitudeE6());
+            this.editor.putInt(this.getString(R.string.last_longitude_e6), DEFAULT_GEOPOINT.getLongitudeE6());
+            this.editor.commit();
         } else {
             initialGeoPoint = new GeoPoint(lastLatitude, lastLongitude);
             initialLocation = geoPointToLocation(initialGeoPoint);
