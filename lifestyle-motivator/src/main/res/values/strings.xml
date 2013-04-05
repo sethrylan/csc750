@@ -17,12 +17,9 @@
 	<string name="maps_api_key">0Sb3tMN-RVrsvaYMZkOSx5iBHE5tyn8FFmqZGJQ</string>
 
 	<string name="darksky_forecast_root">https://api.forecast.io/forecast</string>
-	<string name="google_places_details_root">https://maps.googleapis.com/maps/api/place/radarsearch/json
-	</string>
-	<string name="google_places_radar_root">https://maps.googleapis.com/maps/api/place/radarsearch/json
-	</string>
-	<string name="google_places_nearby_root">https://maps.googleapis.com/maps/api/place/nearbysearch/json
-	</string>
+	<string name="google_places_details_root">https://maps.googleapis.com/maps/api/place/radarsearch/json</string>
+	<string name="google_places_radar_root">https://maps.googleapis.com/maps/api/place/radarsearch/json</string>
+	<string name="google_places_nearby_root">https://maps.googleapis.com/maps/api/place/nearbysearch/json</string>
 
 	<!-- inter-Service communication variables -->
 	<string name="shared_preferences">srgainey-motivator</string>
@@ -35,15 +32,21 @@
 	<string name="nearby_json">nearby_json</string>
 
 
-	<string name="max_temperature">80</string>
-	<string name="min_temperature">50</string>
-	<string name="max_wind">20</string>
-	<string name="max_cloud_cover">.50</string>
-	<string name="min_visibility">5</string>
-	<string name="max_precip_probability">.4</string>
+    <string name="max_temperature">max_temperature</string>
+    <string name="min_temperature">min_temperature</string>
+    <string name="max_wind">max_wind</string>
+    <string name="max_cloud_cover">max_cloud_cover</string>
+    <string name="min_visibility">min_visibility</string>
+    <string name="max_precip_probability">max_precip_probability</string>
 
+	<string name="default_max_temperature">80</string>
+	<string name="default_min_temperature">50</string>
+	<string name="default_max_wind">20</string>
+	<string name="default_max_cloud_cover">.50</string>
+	<string name="default_min_visibility">5</string>
+	<string name="default_max_precip_probability">.4</string>
 
-
+    <string name="json_debug_length">50</string>
 
 
 	<string name="preferences_from_xml">Preference/1. Preferences from XML</string>

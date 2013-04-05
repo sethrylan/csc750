@@ -19,6 +19,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
@@ -72,7 +73,9 @@ public class MotivatorAlarmService extends Service {
         this.notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
 
         // initialize preferences references
-        this.preferences = getApplicationContext().getSharedPreferences(getString(R.string.shared_preferences), Context.MODE_PRIVATE);
+        
+        this.preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+//        this.preferences = getApplicationContext().getSharedPreferences(getString(R.string.shared_preferences), Context.MODE_PRIVATE);
         this.editor = this.preferences.edit();
 
         AlarmManager alarmManager = (AlarmManager)this.getSystemService(Context.ALARM_SERVICE);         
@@ -198,22 +201,32 @@ public class MotivatorAlarmService extends Service {
      */
     protected void sendNotification(Context context, Class<? extends Activity> intentClass, String ...texts) {
 
+        if(texts.length < 1) {
+            throw new IllegalArgumentException();
+        }
 
         // create notification
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(getApplicationContext()).setSmallIcon(R.drawable.ic_launcher);
         
         if(texts.length > 0) {
             notificationBuilder.setContentTitle(texts[0]);
-            Log.d(LOG_TAG, "sendNotification(): " + "context: " + context + ", title: " + texts[0] + ", class: " + intentClass.getSimpleName());
             if(texts.length > 1) {
                 notificationBuilder.setContentText(texts[1]);
-                Log.d(LOG_TAG, "sendNotification(): " + "context: " + context + ", title: " + texts[0] + ", text: " + texts[1] + ", class: " + intentClass.getSimpleName());
                 if(texts.length > 2) {
                     notificationBuilder.setSubText(texts[2]);
-                    Log.d(LOG_TAG, "sendNotification(): " + "context: " + context + ", title: " + texts[0] + ", text: " + texts[1] + ", subtext :" + texts[2] + ", class: " + intentClass.getSimpleName());
                 }
             }
         }
+        
+        StringBuilder params = new StringBuilder();
+        String delimiter = "";
+        for(String text : texts) {
+            params.append(delimiter + text);
+            delimiter = ", ";
+        }
+        Log.d(LOG_TAG, "sendNotification(): " + "context: " + context + "texts: " + params.toString() + ", class: " + intentClass.getSimpleName());
+
+
         
         // creates explicit intent for an Activity
         Intent notificationIntent = new Intent(context, intentClass);

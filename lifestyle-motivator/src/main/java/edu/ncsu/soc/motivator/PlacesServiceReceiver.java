@@ -17,6 +17,7 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import edu.ncsu.soc.motivator.domain.Nearby;
 
@@ -42,7 +43,8 @@ public class PlacesServiceReceiver extends BroadcastReceiver {
         this.context = context;
 
         // initialize preferences references
-        this.preferences = this.context.getSharedPreferences(this.context.getString(R.string.shared_preferences), Context.MODE_PRIVATE);
+        this.preferences = PreferenceManager.getDefaultSharedPreferences(context);
+//        this.preferences = this.context.getSharedPreferences(this.context.getString(R.string.shared_preferences), Context.MODE_PRIVATE);
         this.editor = this.preferences.edit();
         
         if(isConnected()) {
@@ -61,7 +63,7 @@ public class PlacesServiceReceiver extends BroadcastReceiver {
         String json = preferences.getString(this.context.getString(R.string.nearby_json), "");
 
         if(!json.isEmpty()) {
-            Log.d(LOG_TAG, "JSON = " + JsonUtils.prettyPrint(json));
+            Log.d(LOG_TAG, "JSON = " + JsonUtils.prettyPrint(json).substring(0, Integer.valueOf(context.getString(R.string.json_debug_length))));
             Nearby nearby = JsonUtils.createFromJson(Nearby.class, json);
 //            editor.putBoolean(this.context.getString(R.string.nice_weather), factors.size() == 0);
 //            editor.putString(this.context.getString(R.string.weather_reason), getWeatherReason(factors));

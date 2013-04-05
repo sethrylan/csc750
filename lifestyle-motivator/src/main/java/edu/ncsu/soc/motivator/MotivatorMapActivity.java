@@ -10,7 +10,7 @@ import com.google.android.maps.MyLocationOverlay;
 
 import edu.ncsu.soc.motivator.R;
 import edu.ncsu.soc.motivator.domain.Nearby;
-
+import edu.ncsu.soc.motivator.Preferences;
 
 import android.content.Context;
 import android.content.Intent;
@@ -20,6 +20,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -61,7 +62,8 @@ public class MotivatorMapActivity extends MapActivity {
         Location initialLocation = null;
         GeoPoint initialGeoPoint = null;
         
-        this.preferences = this.getSharedPreferences(getString(R.string.shared_preferences), Context.MODE_PRIVATE);  
+        this.preferences = PreferenceManager.getDefaultSharedPreferences(this);
+//        this.preferences = this.getSharedPreferences(getString(R.string.shared_preferences), Context.MODE_PRIVATE);  
         this.editor = this.preferences.edit();
 
         // Retrieve GPS coordinates in form e6 (GeoPoint) form
@@ -130,10 +132,14 @@ public class MotivatorMapActivity extends MapActivity {
         // equivalent to <Button ... android:onClick="stopServiceButton"/> in layout xml
         Button startButton = ((Button)findViewById(R.id.StartServiceButton));
         Button stopButton = ((Button)findViewById(R.id.StopServiceButton));
+        Button settingsButton = ((Button)findViewById(R.id.SettingsButton));
         startButton.setOnClickListener(mStartButtonListener);
         startButton.setEnabled(true);
         stopButton.setOnClickListener(mStopButtonListener);
         stopButton.setEnabled(false);
+        settingsButton.setOnClickListener(mSettingsButtonListener);
+        settingsButton.setEnabled(true);
+
     }
     
     private List<Nearby.PlaceResult> getPlacesFromJson(String json) {
@@ -163,6 +169,11 @@ public class MotivatorMapActivity extends MapActivity {
         }
     };
 
+    private OnClickListener mSettingsButtonListener = new OnClickListener() {
+        public void onClick(View v) {
+            startActivity(new Intent(MotivatorMapActivity.this, Preferences.class));
+        }
+    };
     
     public void addMarker(String markerName, int latitude_e6, int longitude_e6) {
         this.mapOverlay.addMarker(markerName, new GeoPoint(latitude_e6, longitude_e6));

@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import org.apache.http.HttpResponse;
@@ -53,7 +54,8 @@ public class WeatherServiceReceiver extends BroadcastReceiver {
         this.context = context;
 
         // initialize preferences references
-        this.preferences = this.context.getSharedPreferences(this.context.getString(R.string.shared_preferences), Context.MODE_PRIVATE);
+        this.preferences = PreferenceManager.getDefaultSharedPreferences(context);
+//        this.preferences = this.context.getSharedPreferences(this.context.getString(R.string.shared_preferences), Context.MODE_PRIVATE);
         this.editor = this.preferences.edit();
         
         if(isConnected()) {
@@ -71,7 +73,7 @@ public class WeatherServiceReceiver extends BroadcastReceiver {
         String json = preferences.getString(this.context.getString(R.string.weather_json), "");
 
         if(!json.isEmpty()) {
-            Log.d(LOG_TAG, "JSON = " + JsonUtils.prettyPrint(json));
+            Log.d(LOG_TAG, "JSON = " + JsonUtils.prettyPrint(json).substring(0, Integer.valueOf(context.getString(R.string.json_debug_length))));
             Forecast forecast = JsonUtils.createFromJson(Forecast.class, json);
             List<WeatherFactor> factors = getWeatherFactors(forecast);
             editor.putBoolean(this.context.getString(R.string.nice_weather), factors.size() == 0);
@@ -81,7 +83,6 @@ public class WeatherServiceReceiver extends BroadcastReceiver {
             Log.d(LOG_TAG, "JSON was empty.");
         }
     }
-
 
     private boolean isConnected() {
         ConnectivityManager cm = (ConnectivityManager)this.context.getSystemService(this.context.CONNECTIVITY_SERVICE);
@@ -94,24 +95,36 @@ public class WeatherServiceReceiver extends BroadcastReceiver {
         }
     }
         
+    private double getPreferenceDouble(int resourceId, int defaultResourceId) {
+        String defaultValue = preferences.getString(this.context.getString(defaultResourceId), "0.0");
+        return Double.valueOf(preferences.getString(this.context.getString(resourceId), defaultValue));
+    }
+    
+    // Preferences are only set after the user goes to the preference screen, so there are many checks to set the default values.
     private List<WeatherFactor> getWeatherFactors(Forecast forecast) {
         List<WeatherFactor> factors = new ArrayList<WeatherFactor>();
-        if(forecast.currently.cloudCover > Double.valueOf(this.context.getString(R.string.max_cloud_cover))) {
+        if(forecast.currently.cloudCover > getPreferenceDouble(R.string.max_cloud_cover, R.string.default_max_cloud_cover)) {
+            Log.d(LOG_TAG, forecast.currently.cloudCover + " > " + getPreferenceDouble(R.string.max_cloud_cover, R.string.default_max_cloud_cover));
             factors.add(WeatherFactor.CLOUD);
         }
-        if(forecast.currently.temperature > Double.valueOf(this.context.getString(R.string.max_temperature))) {
+        if(forecast.currently.temperature > getPreferenceDouble(R.string.max_temperature, R.string.default_max_temperature)) {
+            Log.d(LOG_TAG, forecast.currently.temperature + " > " + getPreferenceDouble(R.string.max_temperature, R.string.default_max_temperature));
             factors.add(WeatherFactor.TEMPERATURE_HIGH);
         }
-        if(forecast.currently.temperature < Double.valueOf(this.context.getString(R.string.min_temperature))) {
+        if(forecast.currently.temperature < getPreferenceDouble(R.string.min_temperature, R.string.default_min_temperature)) {
+            Log.d(LOG_TAG, forecast.currently.temperature + " < " + getPreferenceDouble(R.string.min_temperature, R.string.default_min_temperature));
             factors.add(WeatherFactor.TEMPERATURE_LOW);
         }
-        if(forecast.currently.windSpeed > Double.valueOf(this.context.getString(R.string.max_wind))) {
+        if(forecast.currently.windSpeed > getPreferenceDouble(R.string.max_wind, R.string.default_max_wind)) {
+            Log.d(LOG_TAG, forecast.currently.windSpeed + " > " + getPreferenceDouble(R.string.max_wind, R.string.default_max_wind));
             factors.add(WeatherFactor.WIND);
         }
-        if(forecast.currently.visibility > Double.valueOf(this.context.getString(R.string.min_visibility))) {
+        if(forecast.currently.visibility > getPreferenceDouble(R.string.min_visibility, R.string.default_min_visibility)) {
+            Log.d(LOG_TAG, forecast.currently.visibility + " > " + getPreferenceDouble(R.string.min_visibility, R.string.default_min_visibility));
             factors.add(WeatherFactor.VISIBILITY);
         }
-        if(forecast.currently.precipProbability > Double.valueOf(this.context.getString(R.string.max_precip_probability))) {
+        if(forecast.currently.precipProbability > getPreferenceDouble(R.string.max_precip_probability, R.string.default_max_precip_probability)) {
+            Log.d(LOG_TAG, forecast.currently.precipProbability + " > " + getPreferenceDouble(R.string.max_precip_probability, R.string.default_max_precip_probability));
             factors.add(WeatherFactor.PRECIPITATION);
         }
         return factors;
