@@ -1,11 +1,16 @@
 package edu.ncsu.soc.motivator;
 
+import java.util.Collections;
+import java.util.List;
+
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
 
 import edu.ncsu.soc.motivator.R;
+import edu.ncsu.soc.motivator.domain.Nearby;
+
 
 import android.content.Context;
 import android.content.Intent;
@@ -19,6 +24,7 @@ import android.provider.Settings;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -33,7 +39,7 @@ public class MotivatorMapActivity extends MapActivity {
     private static final int UPDATE_THRESHOLD_MS = 0;
 
     private MapView mapView;
-    private ContactsMapOverlay mapOverlay;
+    private PlacesMapOverlay mapOverlay;
     private MyLocationOverlay myLocationOverlay;
     private Location currentLocation;
     private LocationManager locationManager;
@@ -86,7 +92,7 @@ public class MotivatorMapActivity extends MapActivity {
         // create the map overlay
         Drawable marker = getResources().getDrawable(R.drawable.marker);
         marker.setBounds(0, 0, marker.getIntrinsicWidth(), marker.getIntrinsicHeight());
-        this.mapOverlay = new ContactsMapOverlay(this, marker);
+        this.mapOverlay = new PlacesMapOverlay(this, marker);
         this.mapView.getOverlays().add(mapOverlay);
         this.myLocationOverlay = new MyLocationOverlay(this, mapView);
         this.myLocationOverlay.enableCompass();
@@ -98,9 +104,10 @@ public class MotivatorMapActivity extends MapActivity {
         });
         mapView.getOverlays().add(myLocationOverlay);
 
-        // configure the contacts list
-        ListView list = (ListView)findViewById(R.id.ContactsList);
-        list.setAdapter(new ContactsViewAdapter(this));
+        // configure the places list
+        ListView list = (ListView)findViewById(R.id.PlacesList);
+        String placesJson = this.preferences.getString(getString(R.string.nearby_json), "");
+        list.setAdapter(new PlacesViewAdapter(this, getPlacesFromJson(placesJson)));
         
         // Add location listener
         // get reference to Location Manager
@@ -128,6 +135,15 @@ public class MotivatorMapActivity extends MapActivity {
         stopButton.setOnClickListener(mStopButtonListener);
         stopButton.setEnabled(false);
     }
+    
+    private List<Nearby.PlaceResult> getPlacesFromJson(String json) {
+        Nearby nearby = JsonUtils.createFromJson(Nearby.class, json);
+        if(nearby != null) {
+            return nearby.results;
+        } else {
+            return Collections.emptyList();
+        }
+    }
 
     private OnClickListener mStartButtonListener = new OnClickListener() {
         public void onClick(View v) {
@@ -147,15 +163,18 @@ public class MotivatorMapActivity extends MapActivity {
         }
     };
 
-    public void addMarkerAtCurrentLocation(String markerName) {
-        int latitude = (int)(this.currentLocation.getLatitude() * MILLION);
-        int longitude = (int)(this.currentLocation.getLongitude() * MILLION);
-        
-        this.mapOverlay.addMarker(markerName, new GeoPoint(latitude, longitude));
-        
+    
+    public void addMarker(String markerName, int latitude_e6, int longitude_e6) {
+        this.mapOverlay.addMarker(markerName, new GeoPoint(latitude_e6, longitude_e6));
         // redraw the map
         MapView mapView = (MapView) findViewById(R.id.MapView);
         mapView.invalidate();
+    }
+    
+    public void addMarkerAtCurrentLocation(String markerName) {
+        int latitude_e6 = (int)(this.currentLocation.getLatitude() * MILLION);
+        int longitude_e6 = (int)(this.currentLocation.getLongitude() * MILLION);
+        this.addMarker(markerName, latitude_e6, longitude_e6);
     }
 
     /**
@@ -224,6 +243,13 @@ public class MotivatorMapActivity extends MapActivity {
             editor.putInt(getString(R.string.last_latitude_e6), latitude);
             editor.putInt(getString(R.string.last_longitude_e6), longitude);
             editor.commit();
+            
+            // update the places list
+            ListView list = (ListView)findViewById(R.id.PlacesList);
+            String placesJson = preferences.getString(getString(R.string.nearby_json), "");
+            ListAdapter adapter = list.getAdapter();
+            ((PlacesViewAdapter)adapter).setPlaces(getPlacesFromJson(placesJson));
+            list.invalidate();
         }
 
         @Override

@@ -5,9 +5,9 @@ import java.util.List;
 public class Nearby {
     
     public String next_page_token;
-    public List<Result> results;
+    public List<PlaceResult> results;
     
-    public class Result {
+    public static class PlaceResult {
         public Geometry geometry;
         public String icon;
         public String id;

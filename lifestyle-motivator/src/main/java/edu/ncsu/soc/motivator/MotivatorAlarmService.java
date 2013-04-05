@@ -37,7 +37,8 @@ public class MotivatorAlarmService extends Service {
     private static final int NOTIFICATION_ID = 42;
     private static final int UPDATE_THRESHOLD_MS = 5000; // milliseconds
     private static final int UPDATE_THRESHOLD_METERS = 5; // meters
-    private static final int INTERVAL_SECONDS = 5;
+    private static final int WEATHER_INTERVAL_SECONDS = 5;
+    private static final int PLACES_INTERVAL_SECONDS = 5;
     private static final float MILLION = 1E6f;
 
     private LocationManager locationManager;
@@ -48,9 +49,10 @@ public class MotivatorAlarmService extends Service {
 
     private int proximity;
     private String proximityUnit;
-//    private BusStop busStop;
     
     private WeatherServiceReceiver weatherService = null;
+    private PlacesServiceReceiver placesService = null;
+
 
     /**
      * setup service managers.
@@ -74,13 +76,21 @@ public class MotivatorAlarmService extends Service {
         this.editor = this.preferences.edit();
 
         AlarmManager alarmManager = (AlarmManager)this.getSystemService(Context.ALARM_SERVICE);         
-        Intent intent = new Intent( WeatherServiceReceiver.WEATHER_SERVICE_ACTION );
+        Intent intent = new Intent(WeatherServiceReceiver.WEATHER_SERVICE_ACTION);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         Calendar triggerTime = Calendar.getInstance();
         triggerTime.setTimeInMillis(System.currentTimeMillis());
 //        triggerTime.add(Calendar.SECOND, INTERVAL_SECONDS);         
-        alarmManager.setInexactRepeating(AlarmManager.RTC, triggerTime.getTimeInMillis(), INTERVAL_SECONDS * 1000, pendingIntent);
+        alarmManager.setInexactRepeating(AlarmManager.RTC, triggerTime.getTimeInMillis(), WEATHER_INTERVAL_SECONDS * 1000, pendingIntent);
 
+        intent = new Intent(PlacesServiceReceiver.PLACES_SERVICE_ACTION);
+        pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        triggerTime = Calendar.getInstance();
+        triggerTime.setTimeInMillis(System.currentTimeMillis());
+//        triggerTime.add(Calendar.SECOND, INTERVAL_SECONDS);         
+        alarmManager.setInexactRepeating(AlarmManager.RTC, triggerTime.getTimeInMillis(), PLACES_INTERVAL_SECONDS * 1000, pendingIntent);
+
+        
         /*
          * Registration here equivalent to declarative method in AndroidManifest:
          *      <receiver android:name=".WeatherServiceReceiver">
@@ -91,6 +101,10 @@ public class MotivatorAlarmService extends Service {
          */
         this.weatherService = new WeatherServiceReceiver();
         registerReceiver(this.weatherService, new IntentFilter(WeatherServiceReceiver.WEATHER_SERVICE_ACTION));
+        
+        this.placesService = new PlacesServiceReceiver();
+        registerReceiver(this.placesService, new IntentFilter(PlacesServiceReceiver.PLACES_SERVICE_ACTION));
+
         
         sendBanner("Starting Lifestyle Motivator Service");
     }
@@ -167,7 +181,6 @@ public class MotivatorAlarmService extends Service {
         this.notification = new Notification(R.drawable.ic_launcher, text, System.currentTimeMillis());
         Intent i = new Intent(this, MotivatorMapActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        PendingIntent pi_test = PendingIntent.getActivity(this, 0, i, 0);
         this.notification.setLatestEventInfo(this, "", "", null);
         this.notification.flags |= Notification.FLAG_NO_CLEAR;
         this.notificationManager.notify(NOTIFICATION_ID, this.notification);
