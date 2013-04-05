@@ -15,7 +15,9 @@
 	<string name="maps_api_key">0Sb3tMN-RVrsvaYMZkOSx5iBHE5tyn8FFmqZGJQ</string>
 
 	<string name="darksky_forecast_root">https://api.forecast.io/forecast</string>
-	<string name="google_places_host">https://maps.googleapis.com</string>
+	<string name="google_places_details_root">https://maps.googleapis.com/maps/api/place/radarsearch/json</string>
+    <string name="google_places_radar_root">https://maps.googleapis.com/maps/api/place/radarsearch/json</string>
+    <string name="google_places_nearby_root">https://maps.googleapis.com/maps/api/place/nearbysearch/json</string>
 
     <!--  inter-Service communication variables -->
 	<string name="shared_preferences">srgainey-motivator</string>
@@ -24,6 +26,9 @@
 	<string name="nice_weather">nice_weather</string>
 	<string name="weather_reason">weather_reason</string>
     <string name="weather_json">weather_json</string>
+    <string name="radar_json">radar_json</string>
+    <string name="nearby_json">nearby_json</string>
+    
 
 	<string name="max_temperature">80</string>
 	<string name="min_temperature">50</string>

@@ -10,6 +10,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+import edu.ncsu.soc.motivator.domain.Forecast;
+
 @RunWith(Parameterized.class)
 public class ForecastJsonUtilsTest extends JsonUtilsTest {
 

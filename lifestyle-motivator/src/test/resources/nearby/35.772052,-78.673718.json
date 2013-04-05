@@ -1,0 +1,459 @@
+{
+   "html_attributions" : [],
+   "next_page_token" : "CpQBiAAAAAlqcAFvrImffhqvgPLj2pMHVsVsaf8ARTKuJNzRrHlTxEgYJ704TyFdI0_cbcyCLfZ0q3RhlAgnkUG6pbYbs6EJhNVlk4aUHjgQHnnMtv8jFcfTo5znedH06QUx7OciNJ_aiFRRW9w0D0IyIZ1q-7-b_wZMCCqBVi9P1jv-J-6Q3QSqxmHLKCC-kW69Aejk2xIQPCggw3AYoQkWGwaTkaxDlxoU6QjVYbgWwI-FevLyJc7hymcQQ_8",
+   "results" : [
+      {
+         "geometry" : {
+            "location" : {
+               "lat" : 35.7948820,
+               "lng" : -78.700290
+            }
+         },
+         "icon" : "http://maps.gstatic.com/mapfiles/place_api/icons/generic_business-71.png",
+         "id" : "6a5754130519a435b89f5210865dabe78c36f125",
+         "name" : "JC Raulston Arboretum at NC State University",
+         "photos" : [
+            {
+               "height" : 450,
+               "html_attributions" : [],
+               "photo_reference" : "CoQBdwAAAHm0nVILGIBc4zaxoaUubjMu5bOxx6LlBWAFoDBO2Ems3Ms24lpDTT1JqKbL32nMkbftGxSZHhftdjHvhOcTRWP_wSVHmmxKC-U8mj4p7BIjp2s3Tk0xpBxDaKOEHtFXkAmqtduopanXhahdtiq2elbP-W6HKhfttaZ3syK7u5AGEhAofbOPlQ55U7FO7gSBD2PLGhSP5WHW87bzeqpk60WCpu5oZUJ28w",
+               "width" : 600
+            }
+         ],
+         "rating" : 4.80,
+         "reference" : "CpQBiQAAAAInpViYjVuqEf-OIHUAyP0Jp2eu_fgf_yw5YkSQzV4F3yeJBXxte7aWhi8HKDq7PDQUsuR5hxjf5fl8jnLYnmA9um6Q_Ieu35bt0p_zi1tPDKELgMjMVHdL2fbJwuRyFYuka5SIDY39d3-CCLOTg_YAZ3TYQ-8KJ68Zsn4LseCiF9lG5nASE8xV8KKvY59cNBIQDXrh5AWxHPESJa_1YchzShoUVtj2YgRrGT10KLS7HIN41OZJGhI",
+         "types" : [ "park", "establishment" ],
+         "vicinity" : "4415 Beryl Road, Raleigh"
+      },
+      {
+         "geometry" : {
+            "location" : {
+               "lat" : 35.7922540,
+               "lng" : -78.6327740
+            }
+         },
+         "icon" : "http://maps.gstatic.com/mapfiles/place_api/icons/museum-71.png",
+         "id" : "9048ad11c6dc30edd912c0f5f57e6298fd6d1828",
+         "name" : "Mordecai Historic Park",
+         "opening_hours" : {
+            "open_now" : false
+         },
+         "photos" : [
+            {
+               "height" : 768,
+               "html_attributions" : [ "From a Google User" ],
+               "photo_reference" : "CoQBdQAAAOiwG7A-r1lKIYk27Ek8rqdPTuTfHBTDnIRJ2WUSIuM99l7PW9F_5PuLs3l1u4yyiBgeCH8QoTCpK01s5QijRrz5u796KxD67T-U725FJecQsOSueM3ERk_w_76tyuGBZ_4tekwOHobJxEnCoAvtLqXIdZwmRbj2hWPlEyR_2uU8EhAwS75Q87uZSHGXmCttQ3G-GhQW5wVULXpE92-11bBkvcWTwY6GAQ",
+               "width" : 1024
+            }
+         ],
+         "rating" : 3.30,
+         "reference" : "CoQBdAAAACpew3ghYPq35TL9oECAiVrF_6Gr_k1E9zVzj9nnhR7MYtFmoP7nkbnCeNL_WAu-R6C2RxGneiC9CGtuPrDhFem-OKoShfg8DtFtceLh8VQ1vnYx0lm01_o9NVj3zALldTVZX2C5pOPBNZZ74AyESXtpp3AUqcf2Ug2RP3m86XJAEhCYTTUioiUt8UWIRwWn2TSpGhSw5OiDEm_UGF-P53CP5YPdJXt7iw",
+         "types" : [ "park", "museum", "establishment" ],
+         "vicinity" : "1 Mimosa Street, Raleigh"
+      },
+      {
+         "geometry" : {
+            "location" : {
+               "lat" : 35.775630,
+               "lng" : -78.6362620
+            }
+         },
+         "icon" : "http://maps.gstatic.com/mapfiles/place_api/icons/art_gallery-71.png",
+         "id" : "a2019b2f54fc33197f8fb29ad5bbeb6c5a6b6ecc",
+         "name" : "Artspace Inc",
+         "opening_hours" : {
+            "open_now" : false
+         },
+         "photos" : [
+            {
+               "height" : 540,
+               "html_attributions" : [],
+               "photo_reference" : "CnRpAAAAkgh9SUvzCW41h-I71HMH11g18kiOAsp_4qRev_UIcrOX2dhdFodP-jtEag-IeHB-8tCNOaYQ_6T7VZx35MI3k1RBfJO7pNkVDlgysE4iX73DatBYECSFInN9RixRSRFwXLY2Afi89JtZ8FFt4yhksRIQR69jWjEvyTSY8b5r-EcQiBoUpoAI89c_3K6j53pTWJGKTP9SyxA",
+               "width" : 720
+            }
+         ],
+         "rating" : 4.10,
+         "reference" : "CnRpAAAAJOhaaX0oba_JozWH27JXj8nPSka-Wmt-QnFaIK5MDs-g14OdvPZD0ChXjbxUkBlcaCB6G7VdrpBTmpi53wVUGF-wkAutf7IP0OJgxYFjrc52bm8Ta44QfZ0GoBaDKRDk-_TnUyOkI7YGN9sGmr_YJRIQN8j1ofGUqyGVL0diUJ1Q4RoUfJLSWa0dBYHDUIaB-2f4iTPSk6g",
+         "types" : [ "art_gallery", "store", "establishment" ],
+         "vicinity" : "201 East Davie Street, Raleigh"
+      },
+      {
+         "geometry" : {
+            "location" : {
+               "lat" : 35.7635250,
+               "lng" : -78.71382199999999
+            }
+         },
+         "icon" : "http://maps.gstatic.com/mapfiles/place_api/icons/generic_business-71.png",
+         "id" : "3858beeb1fe9e268bc43382b623ef0e9abd196bc",
+         "name" : "Lake Johnson Park",
+         "opening_hours" : {
+            "open_now" : false
+         },
+         "photos" : [
+            {
+               "height" : 960,
+               "html_attributions" : [ "From a Google User" ],
+               "photo_reference" : "CoQBcwAAADYhzQOIgm7qO5kCqQCloK7oFnh6JDal3QGECY_D5eK2T5kpw5gPuidMyFldvj3ZShM3yanm9KFclmHd7WbZuu4Yzw77aXBRgUU45uy7q1fiswfVoLycQWQe-FtS6b26Gd0ls3R0hyjkSC1yA7bKcJemGw3UdF6gHyTaTuuFK-aQEhARZQIfABjrrMhSP9LMVctgGhQ1Erg5R7rOjjJVA60rsQRGKoxlAw",
+               "width" : 1280
+            }
+         ],
+         "rating" : 4.60,
+         "reference" : "CnRuAAAAWFOmrVZEV1oji9uE-bMVAgJ7CcKZ1f55YeLrHV0olkrDz4G9yNI1RkCXdeIPPsq_PJ9jgtxF3FNCrYfaAimZj_nlTODT5pgDN7bGsJe6NMrAeCwsby_7wrgXDLQNkEYYTdGYDm2a-d3SxD2irbNsMxIQuGmhtiQBI3wZnm2DAy1DKRoUYIHJPjcTE46G-oCd4gMGWDhVOws",
+         "types" : [ "park", "establishment" ],
+         "vicinity" : "4601 Avent Ferry Road, Raleigh"
+      },
+      {
+         "geometry" : {
+            "location" : {
+               "lat" : 35.7772260,
+               "lng" : -78.63597300000001
+            }
+         },
+         "icon" : "http://maps.gstatic.com/mapfiles/place_api/icons/generic_business-71.png",
+         "id" : "c6203870b1f9111f981c22f2e0e0118917efecc8",
+         "name" : "Moore Square",
+         "photos" : [
+            {
+               "height" : 601,
+               "html_attributions" : [ "From a Google User" ],
+               "photo_reference" : "CnRpAAAA8UqN3q_Xf-hTCZ_MyiR8jgfu6zvn6RcOLJpcjnVUHBHg_DT-HtlplIUv6WaS-HkYasam-cQOzHVTzNQC6OVhEgwd-t_ijQ2w5jI8KBh8EXrmUg3ndPcRKyS0nwplkL8GriwQScbBGz0H1R3Iv3Dy6hIQyUV1P0YedUCmadaM5Oz_txoU9VwWhESFhrdjY4MGHHaPgBlpYcY",
+               "width" : 595
+            }
+         ],
+         "rating" : 2.70,
+         "reference" : "CnRpAAAAErhF-v1SGN_7pLDFpoCwb5VQq1XHFg85a_yk7UtSBZyQLPmfcDdo7MPT-zNAbAJiS1jJnMnAn5mxgrFhqUD2s2McqySzSGhMOGv6h0IuRpEOkxQRKrpLyDGKgUKMe-gREX00nU6k3kY3Qc4Lw9pHWxIQp2yTnhK1UJaMVpKu_kIPchoUBIMkk2v6znscde9Gu8rwJEA8Wiw",
+         "types" : [ "park", "establishment" ],
+         "vicinity" : "Raleigh"
+      },
+      {
+         "geometry" : {
+            "location" : {
+               "lat" : 35.7880150,
+               "lng" : -78.6686150
+            }
+         },
+         "icon" : "http://maps.gstatic.com/mapfiles/place_api/icons/bowling-71.png",
+         "id" : "6418109e7fd203eef3398ba82583e96d3bef310e",
+         "name" : "The Alley",
+         "photos" : [
+            {
+               "height" : 1203,
+               "html_attributions" : [],
+               "photo_reference" : "CnRmAAAACana_VoXcWoyaYkeTLOVm13DNKQNezefSwdcB8fRWPmP3pXGZKTqZA8mvIdG-eZKYslFX9F7KDnruswYkDH1TcHE-xzIM9rOcR7PSZVqclqhXbk8VqWplTo1VVEowvuap0Fk7HkWureOJiVU9VWQAxIQNWjBpkY74by4aDB2o4hHXhoU5VVSxvKP4vqmnFP7I2WwgjGvYF0",
+               "width" : 1830
+            }
+         ],
+         "rating" : 4.30,
+         "reference" : "CnRmAAAAJQ7T6yiFN1SnvuplCsD_gjBIDvv1unl9TqnBGrh9qL8vdO_caEAnGWBPPBSNR0Be-QGicD5ly49w3NED101ZhIeAm9VaU0xD_1lTlrv7Rw1afL0dlYbU4C1O0aqhOROwbqvaTKkY-HYv5GP6f0YoJRIQty5WW1bVsj4rWxCpykJcfhoUZv_9b7ok8xAr-loI5JXZDaLMLOg",
+         "types" : [ "bowling_alley", "establishment" ],
+         "vicinity" : "2512 Hillsborough Street, Raleigh"
+      },
+      {
+         "geometry" : {
+            "location" : {
+               "lat" : 35.7758520,
+               "lng" : -78.6958880
+            }
+         },
+         "icon" : "http://maps.gstatic.com/mapfiles/place_api/icons/generic_business-71.png",
+         "id" : "b00ba0159e333ef34dacb24fc943a81fd32e2ffe",
+         "name" : "Kentwood Park",
+         "rating" : 4.80,
+         "reference" : "CnRrAAAAkqXEG_UaQCnSOfoeVtIlNvKDScP_tg3br1VHXCp86cwJwn3sIHpy0PMSiTjR83wlIYUouDYz-rkTtbsUMcgdFvFGgMaJtw6MbFN2NI_aQfDy3E7ok9BVi1wVM85h_cP2OhhE9lnasZTPaj4BEKyTyxIQwA7e_HsAxGktJjhWuUHm8BoUGqnIoF3hW-gI8NAdG6LZ56q-PWw",
+         "types" : [ "park", "establishment" ],
+         "vicinity" : "4531 Kaplan Drive, Raleigh"
+      },
+      {
+         "geometry" : {
+            "location" : {
+               "lat" : 35.7906160,
+               "lng" : -78.63966600000001
+            }
+         },
+         "icon" : "http://maps.gstatic.com/mapfiles/place_api/icons/fitness-71.png",
+         "id" : "3100298d2c11f85b3a4e0ff4765258f0e9d8f0d2",
+         "name" : "O2 Fitness",
+         "opening_hours" : {
+            "open_now" : false
+         },
+         "photos" : [
+            {
+               "height" : 306,
+               "html_attributions" : [],
+               "photo_reference" : "CpQBgwAAAKZWjBLAuFd_20hooJelT6bI9KPaHBmrJ_kSDIeXqNaAPqxgeTopCLXnNbr_Rcn_oehK4qU1X1vaF1tg19V0xSysQcxOZV1gSjKOls1T5Jcc4vY24IaMmTnmShzLm6xdkv99OaDSYcSAO1CRuHoYynH0dKe3lcx170mBK4-poXDqGKu_krhAs5HrGie7O-euphIQ-dcyQNladlpbM5vP-7Z-URoU6UO3sjhgtt7H1gGNG1NqIocjgEs",
+               "width" : 430
+            }
+         ],
+         "rating" : 2.90,
+         "reference" : "CnRnAAAAYYQU17l_F-Gb5iyBvf9rIRyub7cTLB6uRbsZdkoIqq-55hoarSKa1yF0c_LCVXvdhkYjAGJ6dZOmHF9RFJBr6l2Hko9bSczsp2_7K-0zgzBw4aGEjHY2xGHBH86EoBtliKyrbZMqcv82iSV1SUqPMhIQDPl1A_OdEqFXhln_ybbAPhoUIvJLQmaoUDw52hFoSr8iydIyEgM",
+         "types" : [ "gym", "health", "establishment" ],
+         "vicinity" : "802 Semart Drive, Raleigh"
+      },
+      {
+         "geometry" : {
+            "location" : {
+               "lat" : 35.7841260,
+               "lng" : -78.72050900000001
+            }
+         },
+         "icon" : "http://maps.gstatic.com/mapfiles/place_api/icons/fitness-71.png",
+         "id" : "46a23cacde8a8ae0348435fdb97041d8f650e1a6",
+         "name" : "Planet Fitness",
+         "opening_hours" : {
+            "open_now" : false
+         },
+         "photos" : [
+            {
+               "height" : 413,
+               "html_attributions" : [],
+               "photo_reference" : "CoQBcQAAAC5ywuj-uJM5FOKncAHCOS1EcqfvbiT_cL6lr40b1BRPdjFeDV6i7NGIY6S6aPxOSltIKDBMVdhdB6m2se4TACj9kudnWalD5XLK2B8cLhuLz1z_65bALsjaRlXhAm2q6xkUZ4L2vYvkhNPBBH8uvX_5KXLQK1JJDggqILpQ5xqlEhCuNNvcA_7KxdLLK187NftLGhRqA8IHFsfAr32ONLEJ9FjJSksHuw",
+               "width" : 550
+            }
+         ],
+         "rating" : 3.20,
+         "reference" : "CnRsAAAAdVNpRXonN_W4NIpy_GSA_bFzOFjCsxOu5aAp-XSLOlMlrafUw3UoCx_mHavHw60EMpcyUSlut34lUGeynzMjxgLGSGNAw6lNOiSWyN_-rb-zISu0v-kz0d6e70zgujBu_Lc37GsTncbKNc7AAa1HGxIQojX1Dsh01QgLbOHU5IjnkhoUD2cAeJDQTdVLbPKoGvIjWfovxwU",
+         "types" : [ "gym", "health", "establishment" ],
+         "vicinity" : "5563 Western Boulevard #2, Raleigh"
+      },
+      {
+         "geometry" : {
+            "location" : {
+               "lat" : 35.7829830,
+               "lng" : -78.6558840
+            }
+         },
+         "icon" : "http://maps.gstatic.com/mapfiles/place_api/icons/art_gallery-71.png",
+         "id" : "b10e8088739ba0ebb1a443c13ecd07da7948fcd7",
+         "name" : "Phoenix Tattoo Studio",
+         "opening_hours" : {
+            "open_now" : false
+         },
+         "rating" : 4.50,
+         "reference" : "CoQBcgAAACZC9JIbDczoQf7TMYQp9HNmk18-8NQ1WZ3BaNn1YOcHrZDw6UPugOxPT43ukBZj5yah62MPYXIGQ3vUKI9DjOPoI4bQoRfGfu_dJ2mlWoTTJLzYnfOwmtuTxsBAioOCvV6ancFjw1OfN3h1kfSKtRPktsVfETvHGywEWEix6IUtEhAox6BNgu2hzH7fo5Sc_B_EGhSeyiKn4qvTGw3d1QcJosPErdZrqQ",
+         "types" : [ "art_gallery", "store", "establishment" ],
+         "vicinity" : "1215 Hillsborough Street, Raleigh"
+      },
+      {
+         "geometry" : {
+            "location" : {
+               "lat" : 35.789830,
+               "lng" : -78.6911070
+            }
+         },
+         "icon" : "http://maps.gstatic.com/mapfiles/place_api/icons/fitness-71.png",
+         "id" : "99a0831dc02dab9ae0bebb6483adfdd696cc2b16",
+         "name" : "Islamic Center of Raleigh",
+         "opening_hours" : {
+            "open_now" : false
+         },
+         "reference" : "CoQBdwAAAGalpJUmt6uK6Xb9cp9xI259OfRh6M0F7fsHOG5Ciniom-YDN419IbCxt5n_b7d_iK-LP7Q5A7bO5qRqK6j-J8bYCIzGjQo7t-AZJ3NA6g_eVALiOjm7slH3cUyNVyE8HinW_pd23lIQ90vKRsR4qWYXTxALnJvjE9UFhiQn8JIMEhBko_iEe7BNcderfWhN-ecEGhR7spOcmoMoU9gSYfwFDAAzaGdiFQ",
+         "types" : [
+            "gym",
+            "library",
+            "health",
+            "mosque",
+            "place_of_worship",
+            "establishment"
+         ],
+         "vicinity" : "3020 Ligon Street, Raleigh"
+      },
+      {
+         "geometry" : {
+            "location" : {
+               "lat" : 35.7770680,
+               "lng" : -78.64623400000001
+            }
+         },
+         "icon" : "http://maps.gstatic.com/mapfiles/place_api/icons/art_gallery-71.png",
+         "id" : "a4702e0e6f7b4cf05a4c569cd8eff3d412b977b4",
+         "name" : "Flander's Art Gallery",
+         "photos" : [
+            {
+               "height" : 837,
+               "html_attributions" : [],
+               "photo_reference" : "CoQBewAAAF02rO2SiaM6rpDPbyKBINKH8QhsurgTuUHgAvHfDr4gnCPIj0hReqOqlFBNXyInKZuX_fLI-cLcJr1S9K50F3H5vlmGxyJ73vcVEAld-nhCGAYeB6FnuVo3VUwnbUvG6hnaAd9B72ZCyJaAmkyaVZBVCQcoHffTGszAmEgF3C9GEhALXULTofxIIegCVtJa9opdGhS4djWIpb0TbgWSkMnQiiqhZisVeg",
+               "width" : 1280
+            }
+         ],
+         "reference" : "CoQBcwAAADouSUitgpZ0jQZTjc8GOaMRp2OiRQ72uY5_P-M30yRxBSmQHTeRObqfeGrAyTGo-e_JSgtF7FdoLtFeL131IchO7oGxVpdotjo7xeWvpWTqlLP7tVNsz3J12l2irsFA1cPAnfe4WGt8CGSSB-gU8pI5uVCIN4oFCSnuYrJWssOlEhCOt48cHTaW1JJDCkmTapCGGhSMwnD-Upl2PVQKLEex4AbBgFz-Kw",
+         "types" : [ "art_gallery", "store", "establishment" ],
+         "vicinity" : "302 South West Street, Raleigh"
+      },
+      {
+         "geometry" : {
+            "location" : {
+               "lat" : 35.7917190,
+               "lng" : -78.668860
+            }
+         },
+         "icon" : "http://maps.gstatic.com/mapfiles/place_api/icons/generic_business-71.png",
+         "id" : "ec96874bb6ff9fab17b886021d523597ae5c7ed0",
+         "name" : "Rose Garden",
+         "reference" : "CnRpAAAAjTMc6dUWnojXuQFwCJUqFdr4wNHLd_edyNMBVg2CYLLCIB3eNTQqSpBAr6yOX0bVuN8YNY6NkenwSCJhBd5OnkiM-7WOiQsuWTqJYZJShrUKZAAI6ZjdDacBYTd7d5kfZrnO-njbN4bkEVWAHvVL8hIQENDt7NaLDUYCCGZuKMEPHBoUY8Lc3BmE6nr73cCakJzL-U6TFZc",
+         "types" : [ "park", "establishment" ],
+         "vicinity" : "Everett Avenue, Raleigh"
+      },
+      {
+         "geometry" : {
+            "location" : {
+               "lat" : 35.7844630,
+               "lng" : -78.65904399999999
+            }
+         },
+         "icon" : "http://maps.gstatic.com/mapfiles/place_api/icons/fitness-71.png",
+         "id" : "e4f978915f47e0ffc3579d2c5c27729ec2f8e256",
+         "name" : "John M Alexander Ymca",
+         "opening_hours" : {
+            "open_now" : false
+         },
+         "photos" : [
+            {
+               "height" : 1296,
+               "html_attributions" : [ "From a Google User" ],
+               "photo_reference" : "CoQBdgAAADkuXBx24MNSfEYQcm16KYVQTXvp3i2pwlX5FKrtD4sxFjX3TCxKS6ZQwSxpE484fbJe31h2Idb20F5DJyC2CuUFlK4_lS2wDMg2OUW8OvPelES05qPkXkpuDQ6f7_bzsfbST0bbsKOLAcT1BlbNg9Zlt-P-p-Pozag_1mtbzvR3EhA_8VA8DfExyNVpmwe3P5A8GhR21hp5GjxBNsq1LpmOdrE-IUjm4Q",
+               "width" : 972
+            }
+         ],
+         "rating" : 4.80,
+         "reference" : "CoQBcwAAACnitVwMX9Bbo13-WMvSzliVp5RfaLvxmk6EaRTPGbHpBTZwfl1z_uB09q9n1fUaRliML8x61gppDjoRHpIpKnzlvC6y88dwWcTKGZEXKABBELmxah0219EuFb42G_jOIGPcONIP39i03YFSE6V0OPnGAQaMOlwCS0QddQC-ay66EhAspsZtLI92ZWPaioOrz6dnGhS7GREB_SC4pzv5rTF98lvPmVvH0A",
+         "types" : [ "gym", "doctor", "health", "establishment" ],
+         "vicinity" : "1603 Hillsborough Street, Raleigh"
+      },
+      {
+         "geometry" : {
+            "location" : {
+               "lat" : 35.7769990,
+               "lng" : -78.6439790
+            }
+         },
+         "icon" : "http://maps.gstatic.com/mapfiles/place_api/icons/art_gallery-71.png",
+         "id" : "6471a2f94b68715af9d1bf26ec8477d7c3abc7be",
+         "name" : "Designbox, LLC",
+         "opening_hours" : {
+            "open_now" : false
+         },
+         "photos" : [
+            {
+               "height" : 319,
+               "html_attributions" : [],
+               "photo_reference" : "CoQBcgAAAFH_oLNSxWCLIdI4xUF_81iYyKrHM1hYU4XRzxtc8LOT0e0KApmP4xS7ZosnRIUN-XBMOB77J_t3ZAfJnx9opZHGtiUZCzmY1fXW6ADHottoCjIGoMEfpmBy1R7HyJpNjIdZtwfVZKJ9wBDFdGM_Lk2rMagiEE5OIgrAkGcFui81EhAKUefTQP-hlCgZOC3OjK03GhSOCQKsjLy4ZZPpA5HAuYPheps0qw",
+               "width" : 446
+            }
+         ],
+         "reference" : "CnRrAAAADer3W50YQ5AL12g__MJH_GxgLKHpyIbTUCp7ccjIyOsy0IKFIvJbhCvDwsSJED9fZO2zwm6_FawvHvGgMGPUbhfHgFhN4L8IbdQryAhpI4jvXRREGIoEeUbU3UjIdPwny9FBQPXl-KWinHWQACXNgxIQ_oMwPMzPuyxO_9rSnN5wrhoU1VZ6mXwfQeQm2VH_HY1Cn-Uv1eY",
+         "types" : [ "art_gallery", "store", "establishment" ],
+         "vicinity" : "307 West Martin Street, Raleigh"
+      },
+      {
+         "geometry" : {
+            "location" : {
+               "lat" : 35.8026870,
+               "lng" : -78.6868290
+            }
+         },
+         "icon" : "http://maps.gstatic.com/mapfiles/place_api/icons/generic_business-71.png",
+         "id" : "1745dc68b10ec2297fa82125fe68b87438a2336b",
+         "name" : "All Star Bike Shops Inc",
+         "opening_hours" : {
+            "open_now" : false
+         },
+         "rating" : 4.40,
+         "reference" : "CoQBdAAAAF03n-ELCjjX9e-VVFvjJvIJXad8YAYLEmNB-FPk-f5PnNACwt83AuejxVVd5JmrOXH4DB5UlK8sMMhZg4R5rJvL42ie_W11X6tkQyJNxutEK0HBNz4mlXuxwTI9AtJqH-GKgdShUFKcwoQKCpBocIJQa-pOjg1E3voUruSIJSWNEhAH5oQS5CHhZCLo2qWiAo9JGhTmGfrB_aMbxxcpp567wDfcDc9uhA",
+         "types" : [ "bicycle_store", "store", "establishment" ],
+         "vicinity" : "1218 Ridge Road, Raleigh"
+      },
+      {
+         "geometry" : {
+            "location" : {
+               "lat" : 35.7770020,
+               "lng" : -78.6440490
+            }
+         },
+         "icon" : "http://maps.gstatic.com/mapfiles/place_api/icons/art_gallery-71.png",
+         "id" : "4f272a3fa81b1f13193d412077ea2d5eeac380cf",
+         "name" : "Visual Art Exchange",
+         "opening_hours" : {
+            "open_now" : false
+         },
+         "photos" : [
+            {
+               "height" : 1110,
+               "html_attributions" : [],
+               "photo_reference" : "CoQBdQAAADx77CBfvVKBLjlTcDvt13MKkQoXDyLgX2R2o8GD6i67dhhyru6XmIc4Lk0wNc-TlKNRsTequPaxLNkhCcoSGnMAdat1cBVoeTfzIGP9jf5DCsPPQaHf0yamOqgXD1OV335b4QHY9PA5aq2J3B5Eglg_jZ0pkzIJHtSdkBU1YGKcEhDEZBkzWR2DY4FCYzmzt2leGhTalnMAvOawWEhaOZiLK8QjkCpS4A",
+               "width" : 1280
+            }
+         ],
+         "reference" : "CnRwAAAAu3YsoqRGSepDNtH9so7wJtF7CdwkZ-sx5wWM9Dmt8iD6wmryh0D2zcs0zVNyHckQROsFNaPYfU5EKDANLp6Ilfsd_WU5lNtwK4mFrBoTSPm-gYF46_pdtEWSD7niHtmOKXG1qPwEqt1Iu4emO-CfahIQgL17tGqpm4YPjEhTHiMBxxoUOETW9bvuQsabXvQM7pjM600o4o8",
+         "types" : [ "art_gallery", "store", "establishment" ],
+         "vicinity" : "309 West Martin Street, Raleigh"
+      },
+      {
+         "geometry" : {
+            "location" : {
+               "lat" : 35.7770460,
+               "lng" : -78.64971199999999
+            }
+         },
+         "icon" : "http://maps.gstatic.com/mapfiles/place_api/icons/art_gallery-71.png",
+         "id" : "b98c1ba40486edd4dc8bc53a541ba3352335bfc3",
+         "name" : "Rebus Works and pH seven",
+         "opening_hours" : {
+            "open_now" : false
+         },
+         "photos" : [
+            {
+               "height" : 480,
+               "html_attributions" : [],
+               "photo_reference" : "CnRmAAAAPfxNIKRIwWHyUFgOi5kYHqmHcxAXL4EpHJdXO_G17Nd6uVYTIzjlcIDZYOtwi8atzDc-T7nE5cITO8Snkr6XpOljmtZGnJNe_HwL6CyI3axZ_-q9WR-VtgP2Wnh545AnbkG5Jq_Bixd_EqN4WgriGRIQ-idWgoxnwP0ktgdzbpKXhRoUG6BUkXMhWVVMg188CA_DLltCU78",
+               "width" : 640
+            }
+         ],
+         "reference" : "CoQBdQAAACxTYKu3XUXgvLiHdoOxStoDB6RmgbfuoXc-p53OE04IOVv3EEp9H3jXmisIbxsaUiLgJ4yTztXkw7AgSWGPHzDmIXiliOvAAAypdVyITqQ1QlMcWIbO-pottB1EiryExQ0JKNoVYHAhgOxZ8ZdFqCrTNDL0T2_9dKKoo9h-wstzEhAvRql_OjBe4siHyX5kv5o0GhRDP2zNEG8skOjFtr0Cu3ZaZ2BHxQ",
+         "types" : [ "art_gallery", "store", "establishment" ],
+         "vicinity" : "301 Kinsey Street, Raleigh"
+      },
+      {
+         "geometry" : {
+            "location" : {
+               "lat" : 35.7888860,
+               "lng" : -78.6449380
+            }
+         },
+         "icon" : "http://maps.gstatic.com/mapfiles/place_api/icons/generic_business-71.png",
+         "id" : "74d482c64bffacc6149fb440d3adaa407dde04ac",
+         "name" : "Flythe Cyclery",
+         "opening_hours" : {
+            "open_now" : false
+         },
+         "rating" : 4.30,
+         "reference" : "CnRsAAAAZ2MaNUDCI3gkAZ0Uj8R-q4S9gdYcCyoRJlJuNzEF5BgLEo0Tb7tPWKO0O9D-zjg5DnH_nNkN2p0gxUpTUnbT0EWJxD3R4xFsQtWXSWwx1PpH4JwwTGo3QT9ug0QSg1KIvDjfhoXv-OFQKsOhdZItIRIQV4cN_HIpzWndWRX0_XcBOhoUj0OVAat3-WAH0sa3Xvt2DqiBy-w",
+         "types" : [ "bicycle_store", "store", "establishment" ],
+         "vicinity" : "424 West Peace Street, Raleigh"
+      },
+      {
+         "geometry" : {
+            "location" : {
+               "lat" : 35.796170,
+               "lng" : -78.7117360
+            }
+         },
+         "icon" : "http://maps.gstatic.com/mapfiles/place_api/icons/generic_business-71.png",
+         "id" : "aa8e8e17d00220e0525c83103f028a763e7c9a4d",
+         "name" : "NC State Fair Grounds",
+         "photos" : [
+            {
+               "height" : 1024,
+               "html_attributions" : [ "From a Google User" ],
+               "photo_reference" : "CoQBdgAAAJoNVa0Dg22AArLhM7fw0FlUvL28w38x9hGK4yD5In0IJYLIRdL4zXpwaTDQtbIM-Imv0bZgabbiYbiepZmfTx_qbC0QbeIVUyzxVfYk_Gw1vSHPrYp1a08qQRbzXEEPkd2eAUuKds7yT6nRqWBjkSisQmKnScLlPDFjB7PWJsxOEhDbHSdB7A1FmyjhNlFRlwDdGhTC_e_Yw3D6dqiMmAB3YYNx9CWarQ",
+               "width" : 768
+            }
+         ],
+         "rating" : 3.60,
+         "reference" : "CoQBcgAAAElvRlmlmGH6HWkluKfJElJ4RsJ-T4TK6HSexuMPvQ9GiAqEh-Yh1r4NSO3yIb3FNWuQxwhwb9-7ZgHqKqgcMZ30WCtiOZaBqIWhrFume1Y_7a36SXe9-GUVYkplHg6o5HD2iHUkIr2url7-W2C6rWdB_8Ym2gnQXJC4I3PCRF4LEhCFVjUxXb6AcotvAn-DmLGfGhQ1WFz2f4N3HtfKwN5_wFBH6r-BBw",
+         "types" : [ "park", "establishment" ],
+         "vicinity" : "Raleigh"
+      }
+   ],
+   "status" : "OK"
+}

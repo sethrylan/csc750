@@ -1,0 +1,432 @@
+{
+   "html_attributions" : [],
+   "next_page_token" : "CpQBiAAAAE8fmvd8kA2M2oGA5BrMSH79a358oK8liignl0xIvHGERh5kDoGBH03KHb2u7niVYVAzZaHhcsZIUpTe5TSYFAKHRBhrYkhyOBSYhD4MKyK04GVVEzUbwSEghcl9fIlcV_uTQx45KzFM3czVebo_lDrtq9k6YZsmmO_wqUmNllBWtzud5A5Iz2tWgoXZXmdU8RIQiDgN3zqaZ2HdcxqrC9sRcBoUTJsXkchfUE4O0a_0uEuuugESTjc",
+   "results" : [
+      {
+         "geometry" : {
+            "location" : {
+               "lat" : 32.7910070,
+               "lng" : -79.9258720
+            }
+         },
+         "icon" : "http://maps.gstatic.com/mapfiles/place_api/icons/aquarium-71.png",
+         "id" : "3d64c2b7c921982d2cc56bec7d9d0112782e8d48",
+         "name" : "South Carolina Aquarium",
+         "opening_hours" : {
+            "open_now" : false
+         },
+         "photos" : [
+            {
+               "height" : 694,
+               "html_attributions" : [],
+               "photo_reference" : "CoQBeQAAAPHiAlkLA62T6s8StK7bhiV8nXskdu8A7yaB3r0wwQe0_ip8oMlus2ciqmKn3fGAqWBnKvkU0pHSG1CEbDjpHUwT5athj8IxfiYq_B4gu4EkX7Ss6lit4-MAtRunDn-lIatQ68W3AwDNsMWnz1omHhagP1I8-H3-DnyI6jMCmyDQEhBhq1TBfmZAGqE9u9YoEkNvGhQSZsE7Lski40SpWhb0rnnitTvQqw",
+               "width" : 887
+            }
+         ],
+         "rating" : 3.70,
+         "reference" : "CoQBdAAAALUAhaNLsEjxtvGu3FKx1r6wGLyeXCqHU5xxaXdKkTl9gWex6Nn4spXFjA4d1FocUCjsLSfBllHhA3tMWn-Q6A7lsvPwDiVyzutp9VWrQAK-Xk0f87_hQYlfdmW6O10iHdaYrnhgwPe0y2l_rP4hRWOUUIDvytnyL5xS7h0p0ayZEhBq8AhLlT0dN7DWAf44J4gcGhTcIG2hQU6ofE-DClLrax_NUZg9YA",
+         "types" : [
+            "aquarium",
+            "restaurant",
+            "museum",
+            "food",
+            "amusement_park",
+            "establishment"
+         ],
+         "vicinity" : "100 Aquarium Wharf, Charleston"
+      },
+      {
+         "geometry" : {
+            "location" : {
+               "lat" : 32.7866520,
+               "lng" : -79.935710
+            }
+         },
+         "icon" : "http://maps.gstatic.com/mapfiles/place_api/icons/generic_business-71.png",
+         "id" : "1205d2101486f17bdc59313249c88e874d8c9579",
+         "name" : "Marion Square",
+         "photos" : [
+            {
+               "height" : 1632,
+               "html_attributions" : [ "From a Google User" ],
+               "photo_reference" : "CnRoAAAA-xjQ_827CUr1apT8JSy7opDmdY6H9cjPBgKsreUksb54dZLrSJiJMQOl5zAc5wb9TeOT9AB08rRCucScJMFBZN47pcwqo6DgyrqlqjOb3Jsv_a1WgeYi5cSDlLJxhboDIHmwwlgA648hgS3UfWs_rhIQr8Eil2rLGDLVj_sOqL-MjxoU6OPqwMGzkySSwoALwU3RtHbNJDA",
+               "width" : 1224
+            }
+         ],
+         "rating" : 4.90,
+         "reference" : "CnRrAAAAFvEuPpDkAiyw5DS6zv1-QoD6zxLp7JdZMhoyD3N91LcWrCzoBTC0dHi02zeYF9CvLBiGjrmHAD6bp3IjRYxjQ6OB1tc4e4FKjHQEfoa7DwiWJrq66q6UXd2VOxAZLKfTtQszEQe6Ba2XgNjAHBYNPBIQAH2CNMcn6VvuNugHFaDL3hoUj1_SqSzVA_e-WpbKRbSkIYfd_oY",
+         "types" : [ "park", "establishment" ],
+         "vicinity" : "329 Meeting Street, Charleston"
+      },
+      {
+         "geometry" : {
+            "location" : {
+               "lat" : 32.809640,
+               "lng" : -79.9930430
+            }
+         },
+         "icon" : "http://maps.gstatic.com/mapfiles/place_api/icons/museum-71.png",
+         "id" : "a56267e228d85c13ee82395f3d39138fd1695b2f",
+         "name" : "Charles Towne Landing",
+         "rating" : 4.60,
+         "reference" : "CoQBcwAAACpkOSnO7a5_aDt3jSVOpi1pFWXEGvJfoQNlAZ2BY36w6goRLRtvgIYC3Pxd3Tvt8Q4jWrq_NurV-2y8ONXsZZEnxYlAMuHZoLxolvNqFk7DoNERunmq5OdAQx6T5ubaJ48unXw13nqOY0VPq6Sh-aiL-6cEELBaBDTaC5NTm3kZEhDKPo1eJ5KDGNcDf8P_A8oCGhQ_Z9pE1bregLFwuM-z3pR2cYhWXA",
+         "types" : [ "park", "museum", "amusement_park", "establishment" ],
+         "vicinity" : "1500 Old Towne Road, Charleston"
+      },
+      {
+         "geometry" : {
+            "location" : {
+               "lat" : 32.8006230,
+               "lng" : -79.9571610
+            }
+         },
+         "icon" : "http://maps.gstatic.com/mapfiles/place_api/icons/generic_business-71.png",
+         "id" : "1df18428f4b97c349ffe049c6a4f29fe1fa89733",
+         "name" : "Hampton Park",
+         "reference" : "CnRpAAAATT5MOotLPLCwrF0O8LutkYyeu57v4UNXA4VDVKC8Y-xHJHU6UVAJLavChMgaT5dPHnapFnCp7aeeWHgccMOIviQiZ7ZS4XLiZQRLsHSMbpyhXYhJFLmKuq7uVyt0Bfa2rQrAas_o6JzWs-WvQx7yMhIQqqxbhlMl1CWXglwOct2WHhoUQg0KacaabU4HwduREkXQ1cDKTrQ",
+         "types" : [ "park", "establishment" ],
+         "vicinity" : "30 Mary Murray Drive, Charleston"
+      },
+      {
+         "geometry" : {
+            "location" : {
+               "lat" : 32.7699820,
+               "lng" : -79.9302880
+            }
+         },
+         "icon" : "http://maps.gstatic.com/mapfiles/place_api/icons/generic_business-71.png",
+         "id" : "34018dee2a163ec50b39125516181fe56d4ed24e",
+         "name" : "White Point Garden",
+         "photos" : [
+            {
+               "height" : 1632,
+               "html_attributions" : [ "From a Google User" ],
+               "photo_reference" : "CnRoAAAAl06N9HB5NfVxgkkXU_lwb2ksbF8T2U2nmmbRZ1k9KnKa6NTu64x3UsD8rIOYS3J1mwrwjGmISGpNC6SNria-Ukkl79Pu3Dk2793oRQ_aqHfMjqkJZVkNOS54a0Tkkz1NPdaW8_t8Gh89cVxtiJnX6RIQl2a4HE9JnOksctLmRa8jJRoUcTJmunEjvSeT8Lq33eurhunuy_o",
+               "width" : 1224
+            }
+         ],
+         "rating" : 4.80,
+         "reference" : "CnRvAAAAKghOWAizMq_AjQbxdHu4gofHgAq3mbBitGmB6schiWUCUhFKpYPTrefMVXrGkZsz1na3BOsC9n5sinG0U2e90Kbwh0K52evjRwdPd_tu89lOdGgELe0M0bo247zevMhe6vr00OYKhEfHV16a59hY8xIQMWp13HGTL2mji_asYMVc3RoUZbnyMqn1gnmgs8WOlJvLx2PoSYU",
+         "types" : [ "park", "establishment" ],
+         "vicinity" : "Charleston"
+      },
+      {
+         "geometry" : {
+            "location" : {
+               "lat" : 32.8074920,
+               "lng" : -79.9881080
+            }
+         },
+         "icon" : "http://maps.gstatic.com/mapfiles/place_api/icons/generic_business-71.png",
+         "id" : "f5a8c3c009ed082d28ee49bfd383f505cbdc7376",
+         "name" : "Charles Towne Landing",
+         "opening_hours" : {
+            "open_now" : false
+         },
+         "photos" : [
+            {
+               "height" : 1224,
+               "html_attributions" : [ "From a Google User" ],
+               "photo_reference" : "CoQBdwAAAOCPF3kVAfN-HgPPa6AwM1YYQu60fdLeezrCy7QHSaIQLHT5DVSgnVNAI8LhnIaZSzBG5N02XbdQnm5D_ezhst6Le4rlUcqu4NgJSUlG1MxW-eyKyqyb-A0KD1sWO11CV5F1p6Rgbrfeuk6PwqYcijqtjUXU957vyQ67oY3E68jbEhD1N2iTPdOZzuSZh_zdAqSOGhTg-B7pq21CR45CXCiNdcVtHE7dzA",
+               "width" : 1632
+            }
+         ],
+         "reference" : "CoQBcwAAAHUDq7Sq6mEQX8jmfPXB2--LKJkmMVT-yeiKypJAmbWw3OqVOGm_De_5M8eJajjLuzkzHS9MYl9yPKXM2GnKg-R2DvL-UCfieyjpZNO_D2aQOglaLreav_d0xZW21m2ggeVS293Az5d0oAxhgmCHh_Rint_r0EV4ggUDRXCNzS5tEhC5LArSjSmcyYFXyrCDKgigGhRuS6y8aeAf_WIS-bt_T7S2UM0E6w",
+         "types" : [ "park", "establishment" ],
+         "vicinity" : "1500 Old Towne Rd,, Charleston"
+      },
+      {
+         "geometry" : {
+            "location" : {
+               "lat" : 32.7779210,
+               "lng" : -79.93280799999999
+            }
+         },
+         "icon" : "http://maps.gstatic.com/mapfiles/place_api/icons/wine-71.png",
+         "id" : "7db34e656f82b1a20970254be4c06a3dd18f5499",
+         "name" : "Bin 152",
+         "opening_hours" : {
+            "open_now" : true
+         },
+         "rating" : 4.80,
+         "reference" : "CnRlAAAAe_d8JGIQzeFeXfOwcvtZ7Mv3seG7Fqpfv4dKSm0lsPKANAFqAg7G89-LI0TW0l5S0wcl0z9Gy1BSHedAbXTDDJp8avvTymwHWaK4z2E2Ptoi6DRtPXXl0lfHaE2S32GXGoPuGlOMysJF5ExJf07O4RIQPB3SNo8rS9I9snJjiJJa2xoUPGHqJ3q_i5lH93oUufq2gHavRGw",
+         "types" : [ "liquor_store", "bar", "art_gallery", "store", "establishment" ],
+         "vicinity" : "152 King Street, Charleston"
+      },
+      {
+         "geometry" : {
+            "location" : {
+               "lat" : 32.777590,
+               "lng" : -79.9289520
+            }
+         },
+         "icon" : "http://maps.gstatic.com/mapfiles/place_api/icons/art_gallery-71.png",
+         "id" : "00416f5f1be28d69918e07e20b74dc09f6b19f7b",
+         "name" : "Pink House Gallery",
+         "opening_hours" : {
+            "open_now" : false
+         },
+         "photos" : [
+            {
+               "height" : 1488,
+               "html_attributions" : [],
+               "photo_reference" : "CoQBdwAAAKAVQMJ6IzkZte0v2xVIogymF1fllyJ0KjHiqID2YudA7EBaToizFh0oJi-MlaG-AkWUf3hbIMsIwTSa-QKt1izp3jS7qkab3it4TTqVAqYZ0CkPLeegOXGrs0Su8CmQ8GlJWNl6ClOaKupJUtMTI7ljuWyLYmyIMx70ycEOVBUXEhC8cxN0n5Z0bZLZgO1KVpi0GhRBmVBX8T4xPWowEgbV5_9FBBOPXQ",
+               "width" : 1488
+            }
+         ],
+         "reference" : "CnRvAAAAuC9fAqiksjcprIvZQQMtHTMEfHyZ-DOoZF60nZVA47FTIP9X8Uwn9dfbF9tJhflT7cnstcUWdb4FavISGwtNB_7Qtgvvu9jorzQP5vMwUcuCMJ4INnhwy153ZUe2lfpz4-ggYWgpKmwqzK30Y6iTkRIQpI13byHAiKDy6fShUBE9lxoUCEcyd9axMeAEuM4biD6RSrtHa8s",
+         "types" : [ "art_gallery", "store", "establishment" ],
+         "vicinity" : "17 Chalmers Street, Charleston"
+      },
+      {
+         "geometry" : {
+            "location" : {
+               "lat" : 32.7787110,
+               "lng" : -79.927330
+            }
+         },
+         "icon" : "http://maps.gstatic.com/mapfiles/place_api/icons/art_gallery-71.png",
+         "id" : "94741cf1074b9b914a585f7582cf149ce2901922",
+         "name" : "Robert Lange Studios",
+         "opening_hours" : {
+            "open_now" : false
+         },
+         "photos" : [
+            {
+               "height" : 242,
+               "html_attributions" : [],
+               "photo_reference" : "CoQBcwAAANlrbF2fw1GvClDX3AkgZU1EiyajjGzNDmzN9TU5f4OVON5JnzXWbV3c-AQPZ40OrzkKx8Q8ihIFDbhuOdm5BNc_XAPXcABk9GOYnOhscv_WLErGc0qiPoNFcGJSyiowN8mP1vAEz0wPxKmD0kX0JpKeWQ2_Kx-0wimx_vIG_lWkEhBEvbsoCE5llRrGhJFhoj_zGhQBcoYe4dVzN6bs5tRzitckyXl72g",
+               "width" : 360
+            }
+         ],
+         "rating" : 5.0,
+         "reference" : "CoQBcQAAAOtuyTXsxT-_UDeqfMiOwMdQ9J4yf5ehVZnJhWDtlW8f5SU1E9JyQAoJjnYW0dHT6OezEkpnMyKyiPjGd7cFeYNAd_uuWMYti4bzBoiYb60rsrRRp3ELQXTIT_lEmZhDsl-vzTPBFZYOqSfzqKPqJGdTK_tTwDDOzEwKIWSHW9KxEhCXn2MjNk9HVtuAIdzwdDL7GhRAkUlMrpkFLDP8V5zNEUj8-HMiFw",
+         "types" : [ "art_gallery", "store", "establishment" ],
+         "vicinity" : "2 Queen Street, Charleston"
+      },
+      {
+         "geometry" : {
+            "location" : {
+               "lat" : 32.8133050,
+               "lng" : -79.9966680
+            }
+         },
+         "icon" : "http://maps.gstatic.com/mapfiles/place_api/icons/fitness-71.png",
+         "id" : "457b5bf71f62708371b17fdafb3623511e044edd",
+         "name" : "Pivotal Fitness",
+         "opening_hours" : {
+            "open_now" : true
+         },
+         "photos" : [
+            {
+               "height" : 396,
+               "html_attributions" : [],
+               "photo_reference" : "CnRsAAAAcg1RUQzV5jq2pinGFfea4hscVpYMXmh0ZGMiBdOSjJl3O1m3z1aHYXhNrPaiKNTCO8mrLW7XuFmzWrRX-t9zjhwAn8A0ZujTo3XkqSYECFwk64J0ZMAkzmkJaezqwPIyzR8xaf1V66AmZQqErTh-6BIQvIpf_CjHbT_p1dEUmt0ngRoUdRL7sVZFyUCHigoyzJ_7aBB3A0E",
+               "width" : 594
+            }
+         ],
+         "rating" : 3.0,
+         "reference" : "CnRtAAAAeLLl2H9K9S417ESFdhMI9VaL-9BAUYMT5AoCKoBxJoF2Jr33uAAKsN3Jz3XNqC5QUA_iD2Ixr1cVqcD1R6kNjeZf7c3dxw0vNMdgbKahErvDmJ4TI5L-L4Ev35MPa5RfBc4BlPxx7yqbvNuHjOo9ZhIQF5l_0CBV01REqrceLiYteRoUv4gQqUMU7gvZ6cz8mbf8i2LKwMA",
+         "types" : [ "gym", "health", "establishment" ],
+         "vicinity" : "1401 Sam Rittenberg Boulevard, Charleston"
+      },
+      {
+         "geometry" : {
+            "location" : {
+               "lat" : 32.7846560,
+               "lng" : -79.9322810
+            }
+         },
+         "icon" : "http://maps.gstatic.com/mapfiles/place_api/icons/generic_business-71.png",
+         "id" : "32ba5863a6b27729cff81522f1d6fef47835963a",
+         "name" : "The Bicycle Shoppe",
+         "opening_hours" : {
+            "open_now" : false
+         },
+         "rating" : 3.90,
+         "reference" : "CnRvAAAAYjbiSAht-ZSp_vleY4uTYalTNGngU_tSvBz81uxigCq_CwDt9bU3waxt7f4hXvQqbjS3o0H90ZQUOdHWkzPinf7EBQKK-VStPwwPsUjwqCIpNxud2AQCqzyfxe0Hh-XNoqCT7MYpiokuj-KJpNFSahIQ-elqSrdMWIXOXcca5O2k0hoU7vtSzVjFdjUAbwt-0lN5aiHTrWU",
+         "types" : [ "bicycle_store", "store", "establishment" ],
+         "vicinity" : "280 Meeting Street, Charleston"
+      },
+      {
+         "geometry" : {
+            "location" : {
+               "lat" : 32.7893720,
+               "lng" : -79.93996799999999
+            }
+         },
+         "icon" : "http://maps.gstatic.com/mapfiles/place_api/icons/art_gallery-71.png",
+         "id" : "2712de4ea86710aaad0e43393d3274a81a0877c3",
+         "name" : "Redux Contemporary Art Center",
+         "opening_hours" : {
+            "open_now" : false
+         },
+         "photos" : [
+            {
+               "height" : 972,
+               "html_attributions" : [ "From a Google User" ],
+               "photo_reference" : "CnRqAAAA0bk-xULRQYG0m-BkzsJdxbqZnurap5gVZxL9MSgWymGZlvpbR8HJ7AwZfPAVFSedqGAoHX1qxnKwDJzynve2GQoANeFTFxdoCFAc-jyoJMiJ1fMjj3NrW08CmB-KLfSW8ryqjsEFnikxIyzdmdOPWBIQh_h37ya1segwCcTckRJdjRoUO7Ngn3jN_Ioub20hbhxV2Ge4bNU",
+               "width" : 1296
+            }
+         ],
+         "reference" : "CoQBegAAAMUOPWVkFnTX1muSBuS_NZ4_D-kOVI4vG2IeuB8_8qCVYv9qhprBHEwftiINIOCtKRsPO6IQHPF6GMvVGytWVVvnehpmow-wizALC0Ug2BMred2q_cywbK-Z0n5CwbxU60pgMh44ZRhHyZZUgIgnwUAq3B2rQmSsQgfBpyrF7GnzEhAAYg2OEnjzbsCZ5ErIwW8DGhQN5gd5YdaJnNv-7VVGbOIY783ing",
+         "types" : [ "art_gallery", "store", "establishment" ],
+         "vicinity" : "136 Saint Philip Street, Charleston"
+      },
+      {
+         "geometry" : {
+            "location" : {
+               "lat" : 32.790690,
+               "lng" : -79.9252170
+            }
+         },
+         "icon" : "http://maps.gstatic.com/mapfiles/place_api/icons/generic_business-71.png",
+         "id" : "2ce843ec0d31699f68016e9b9b84db3b05517cf8",
+         "name" : "Liberty Square",
+         "reference" : "CnRrAAAA5h0sOXhSUDW1ZSOTml9Vb7LgSW_zeGaeZP1z9-e7k_YCX7N0o_QgmxWGlcnlBWhNkAseyOZ4pQnaIptDHqHSr4D_-BA1DeNfTVd1LRV4IwyPnnE7Llw8CBuGLQviWT7qrOijVafQ--s8wcQxio8FABIQ_wh4ULKsO9xFjE5u6ZKNXRoUdPu3jhFULSyOqzpB1EMLH9CKtZU",
+         "types" : [ "park", "establishment" ],
+         "vicinity" : "Concord Street, Charleston"
+      },
+      {
+         "geometry" : {
+            "location" : {
+               "lat" : 32.782140,
+               "lng" : -79.94452699999999
+            }
+         },
+         "icon" : "http://maps.gstatic.com/mapfiles/place_api/icons/generic_business-71.png",
+         "id" : "75a08b07e23e4adc41488c199012d83770a889e6",
+         "name" : "Cannon Park Dental (dba James Myers, DMD, LLC)",
+         "opening_hours" : {
+            "open_now" : false
+         },
+         "photos" : [
+            {
+               "height" : 623,
+               "html_attributions" : [],
+               "photo_reference" : "CrQBqwAAAG8W-3_b-sGUIEAG8DHW8RKvf6ZOCw4C-Hj8KxqvNN-ftrQDJjobm60ESvcro75-14mJC3gMnKDciBsw_iI7fzAbbTEQiPhOIBrJZX1fIMtkJjW-TxZRsjOmDCHpYj6usXit7weL50Yr16Ue5RANNaS_svb_p8gOG6KmZ3JLAXmN7js82TriLv7wkGG9rY-7sw94x9BbneA5J8bWrmIpsZUignWnSk9oglSLv9TPZfYWEhBioiahnYVzYSGj9SCLDBVPGhTmILDN6MLUOzvhpBOQPwe3efFV6w",
+               "width" : 880
+            }
+         ],
+         "reference" : "CpQBiwAAAA26-CbJ_lUpOzLlC9NQr3rM4V0miY5zbbydDkazrkfbwh7eSU5_1HBopR1qAlvRCjtsD-xEx5hVbjC0LpgWx9vyVG-KYI90o9x0nAZ_NGMMFnBgnvWmTA6NMnKEVDbH7Y-JA3ediyDnCYdIu6KhhqOWG-gTIA0rHoGgWJ-kf3C0H-gFJ2xSw1SxyK3y_4XwQRIQVu6Ep-W-O1y6Wsny3H-dNRoUYVYbN69wxR0SUimw5rSXLJDJfbQ",
+         "types" : [ "park", "establishment" ],
+         "vicinity" : "112 Ashley Avenue, Charleston"
+      },
+      {
+         "geometry" : {
+            "location" : {
+               "lat" : 32.7878440,
+               "lng" : -79.96016299999999
+            }
+         },
+         "icon" : "http://maps.gstatic.com/mapfiles/place_api/icons/generic_business-71.png",
+         "id" : "744728e110998e663b154631960854d15a4ca45f",
+         "name" : "Brittlebank Park",
+         "photos" : [
+            {
+               "height" : 286,
+               "html_attributions" : [ "From a Google User" ],
+               "photo_reference" : "CnRwAAAAz_eV1FmUJfE9NlCb_EJuf7IVVZwYlyoW0zTbM5ROFDpp1blQIaTIz0rVM3j5nAjgVGAwXOULksD0QopAMS6rJLsdfdHgLubT-e-H-VKHKTpxLk9IjA7_xVimjnh61t0NTBW3soIa9HEMu5wPAM20CxIQ1TNPukCgcFT4m-_l9RY8UBoU0DM8TZcHJTS6IawIa-0RpKMwulM",
+               "width" : 622
+            }
+         ],
+         "reference" : "CnRuAAAAOJufCs1p3Ya0pjp-7BvRLAKaoUGHh69Fb2lWhsfYulcSb1xa_MbtaVXECmewCmufZpJzIJWejOfiqZDLJ9d9MhEe0u4BP-dpoBwhhO5Xov6SmGJ4OgV5_T_qJIcJdKqlp3Hj_dylGetu4fL1azWYxxIQGVlwFxIYXhD_kSxUyU-PYhoUMDGUHfCFbqFsloLfcXavw6mZLcY",
+         "types" : [ "park", "establishment" ],
+         "vicinity" : "Next to Joe Riley Baseball Field Lockwood Drive, Charleston"
+      },
+      {
+         "geometry" : {
+            "location" : {
+               "lat" : 32.7781420,
+               "lng" : -79.9258260
+            }
+         },
+         "icon" : "http://maps.gstatic.com/mapfiles/place_api/icons/art_gallery-71.png",
+         "id" : "8eee3e99bcfde5e4b3523f238502dca311270532",
+         "name" : "City Gallery at Waterfront Park",
+         "reference" : "CoQBfQAAABXkhqY64L4uzR5QfAyU1pxdPXSD-aZ66zdryVl8e-F0myPIDQUKj-qEgU_CIBgkyw5NCSHDzXneKEurp_hey4m6ZVBqmiaHoGeZy3NbYrVx25Rx4nH-cw9kPFT1eWx_XRFF3mqwIP531RtpXns4NoojaKAcNylo0wrcMEBoQHwdEhAILZvX3c6L6iD_u-JZTv41GhT6d4AEdwK4GZhUKWvc1oXz3Id3cw",
+         "types" : [ "art_gallery", "store", "establishment" ],
+         "vicinity" : "34 Prioleau Street, Charleston"
+      },
+      {
+         "geometry" : {
+            "location" : {
+               "lat" : 32.8073320,
+               "lng" : -80.0120970
+            }
+         },
+         "icon" : "http://maps.gstatic.com/mapfiles/place_api/icons/fitness-71.png",
+         "id" : "c062c78b327e025f8ff494666523f46c7c65fce2",
+         "name" : "St Andrew's Family Fitness Plus!",
+         "opening_hours" : {
+            "open_now" : false
+         },
+         "reference" : "CoQBfgAAAMFmUPtgvcvThkVcJ6jH0Dq1OFO356lUQgUxEMUvTG4gVAmCYhhwskLHaeu99cMH9Nw0SS6iy8QN1ULJjvYe11h27xBDgCdmHaW3XDetEqBd_Z7WlQjB4jK2ZvBZjW2-aUSe3OKmk2kGOEkrM3Oj4yn2LJgDXPr-O0Qjk0P5JiwbEhAppYMvkMwN2CbRyEADg3sHGhRYo0JImWJzXMq3AxgpshNfVWaqfQ",
+         "types" : [ "gym", "health", "establishment" ],
+         "vicinity" : "1642 Sam Rittenberg Boulevard, Charleston"
+      },
+      {
+         "geometry" : {
+            "location" : {
+               "lat" : 32.7770720,
+               "lng" : -79.93055099999999
+            }
+         },
+         "icon" : "http://maps.gstatic.com/mapfiles/place_api/icons/generic_business-71.png",
+         "id" : "02d271dcf455bd524a2a6c2f5cb5144d4e8372cf",
+         "name" : "Washington Park",
+         "photos" : [
+            {
+               "height" : 1632,
+               "html_attributions" : [ "From a Google User" ],
+               "photo_reference" : "CnRoAAAAjo7at-aKTrfYg77NKcws7E7MIzo7xzxAqywrLEYeVVibnjL-QyGsl7oB7-18JSwphqcFy6Nx0booS-vpdDIR5X4I8XeyioEAcCZE6UcnYrVS60EvqmY_oxfUHhg-ngn3zKNKWFqRXDTK6mo8YW-EcBIQrAdI2qY1tKMmC51l6hCbihoUPLtqLx_vfCF7e_H8VKO0OhRp4UE",
+               "width" : 1224
+            }
+         ],
+         "reference" : "CnRsAAAAXX7GGGnsadLGlQWy7ceXLCyYEIQgJUodo5JBAsW5XofW1kH3c8Rv2mJ9OL8BC0lL30tg1UwKJAnnBvsnXmCfXHHkvCbNYouih8KGJGMrKiejO1OJkpemU-tBgyrL1B985qdWbh3GEq6UzPDido5zmxIQNOH71eJJAl2X1pEg_YCDHhoUmTJ0aXZbBRxCE6SrXVAoPyBolNE",
+         "types" : [ "park", "establishment" ],
+         "vicinity" : "Charleston"
+      },
+      {
+         "geometry" : {
+            "location" : {
+               "lat" : 32.7762290,
+               "lng" : -79.93262199999999
+            }
+         },
+         "icon" : "http://maps.gstatic.com/mapfiles/place_api/icons/art_gallery-71.png",
+         "id" : "5ff1b4dd7c8e7bdaca8bc616be88ef1a1f5fd4b3",
+         "name" : "Mary Martin Gallery",
+         "opening_hours" : {
+            "open_now" : false
+         },
+         "rating" : 5.0,
+         "reference" : "CoQBcQAAAJwf3wyyGn-jBnzrfk5uI4LHETJZWZZBHThRuIKWWsmiCoIDlIgDPX9VxhdWImCXPnJViQ_a3Sl0DEf0YFDCIJtNQy-umxRFaUzqy5M_lZugHrHYVkLH6oliAp3JVDzIB1FWXUamoqO85hUvvH0ERNhdHSIY1F1HfkLWzH1uO6kpEhCmn_vaKX3u7AJgmiFI2tUrGhRTkM0nM4m3lVRyMfqrDLoA9FBATQ",
+         "types" : [ "art_gallery", "store", "establishment" ],
+         "vicinity" : "103 Broad Street, Charleston"
+      },
+      {
+         "geometry" : {
+            "location" : {
+               "lat" : 32.7936250,
+               "lng" : -79.9907260
+            }
+         },
+         "icon" : "http://maps.gstatic.com/mapfiles/place_api/icons/fitness-71.png",
+         "id" : "1982c16659cfae219e7dffb1867704a5517b18ff",
+         "name" : "CrossFit Integrity",
+         "photos" : [
+            {
+               "height" : 968,
+               "html_attributions" : [ "From a Google User" ],
+               "photo_reference" : "CnRvAAAAChoz3esT6YEuUlJNU1g_q_lej9RFMu8yMHAr2bkE1Wh7WI8Zgm4kquvyuDlSEFob3iwAW0Ivnzg6zPqCdG4ua-guJ8HeM4VNxE4mswFSzOD-olq2cUOYSyri9aPjlI-O4M4HiQgceZj6iKNrTR706BIQewMYBe-ZlYkzON2lwqw3ZhoUcZMPKzjGRj5lwUh5p9285TON8KM",
+               "width" : 1296
+            }
+         ],
+         "reference" : "CnRwAAAAOV8Ppn4lq7zG70_vlLAQZ0SMmpAA5Az2JDZihm2hT5tl1o2wZDkEd-cB8GPFUXuohl7a3m7ZGuGKcXldTIclk4Vzj2V_ze7_IWQAYuik1UXGtzDCLDvxZUKKkWD1HHpJ2xpW4zjAoH_dEHqixYzeYxIQxLtTN8lFtVP9jsdQi3XqPhoU6C3rEsgX0mXxJHhuNmMlKcoRP94",
+         "types" : [ "gym", "health", "establishment" ],
+         "vicinity" : "1012 Saint Andrews Boulevard #A, Charleston"
+      }
+   ],
+   "status" : "OK"
+}

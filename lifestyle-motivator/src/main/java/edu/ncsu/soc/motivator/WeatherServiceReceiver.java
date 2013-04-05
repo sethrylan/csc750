@@ -22,6 +22,9 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
 
+import edu.ncsu.soc.motivator.domain.Forecast;
+import edu.ncsu.soc.motivator.domain.WeatherFactor;
+
 /**
  * Uses DarkSky API (https://developer.darkskyapp.com/docs/v2) to find weather
  * forecast for a location from the json returned by
@@ -31,8 +34,8 @@ import org.apache.http.util.EntityUtils;
  */
 public class WeatherServiceReceiver extends BroadcastReceiver {
 
+    static final String LOG_TAG = "WeatherServiceReceiver";
     public static final String WEATHER_SERVICE_ACTION = "WEATHER_SERVICE_ACTION";
-
     private static final float MILLION = 1E6f;
     private static final int CONNECTION_TIMEOUT_MS = 10000;
 
@@ -61,21 +64,21 @@ public class WeatherServiceReceiver extends BroadcastReceiver {
             // https://api.forecast.io/forecast/key/lat,long
             String urlString = this.context.getString(R.string.darksky_forecast_root) + "/" + this.context.getString(R.string.darksky_api_key) + "/"
                     + lastLatitude + "," + lastLongitude;
-            Log.d("WeatherServiceReceiver", "url = " + urlString);
+            Log.d(LOG_TAG, "url = " + urlString);
             new RetreiveJsonTask().execute(urlString);
         }
         
         String json = preferences.getString(this.context.getString(R.string.weather_json), "");
 
         if(!json.isEmpty()) {
-            Log.d("WeatherServiceReceiver", "JSON = " + JsonUtils.prettyPrint(json));
+            Log.d(LOG_TAG, "JSON = " + JsonUtils.prettyPrint(json));
             Forecast forecast = JsonUtils.createFromJson(Forecast.class, json);
             List<WeatherFactor> factors = getWeatherFactors(forecast);
             editor.putBoolean(this.context.getString(R.string.nice_weather), factors.size() == 0);
             editor.putString(this.context.getString(R.string.weather_reason), getWeatherReason(factors));
             editor.commit();
         } else {
-            Log.d("WeatherServiceReceiver", "JSON was empty.");
+            Log.d(LOG_TAG, "JSON was empty.");
         }
     }
 
@@ -84,7 +87,7 @@ public class WeatherServiceReceiver extends BroadcastReceiver {
         ConnectivityManager cm = (ConnectivityManager)this.context.getSystemService(this.context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = cm.getActiveNetworkInfo();
         if (networkInfo == null || !networkInfo.isConnected()) {
-            Log.d("WeatherServiceReceiver", "Not connected.");
+            Log.d(LOG_TAG, "Not connected.");
             return false;
         } else {
             return true;
@@ -128,10 +131,11 @@ public class WeatherServiceReceiver extends BroadcastReceiver {
         }
         return result.toString();
     }
-    
+        
     
     
     class RetreiveJsonTask extends AsyncTask<String, Void, String> {
+        static final String LOG_TAG = "WeatherServiceReceiver.RetreiveJsonTask";
         private Exception exception;
 
         @Override
@@ -140,7 +144,7 @@ public class WeatherServiceReceiver extends BroadcastReceiver {
             try {
                 return getResponseString(urlString);
             } catch (Exception e) {
-                Log.e("WeatherServiceReceiver.RetrieveJsonTask", "Error retrieve json from: " + urlString);
+                Log.e(LOG_TAG, "Error retrieve json from: " + urlString);
                 e.printStackTrace();
                 return "";
             }

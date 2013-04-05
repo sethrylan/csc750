@@ -29,6 +29,8 @@ import android.widget.Toast;
  */
 public class MotivatorAlarmService extends Service {
     
+    static final String LOG_TAG = "MotivatorAlarmService";
+
     protected SharedPreferences preferences;
     protected SharedPreferences.Editor editor;
 
@@ -55,7 +57,7 @@ public class MotivatorAlarmService extends Service {
      */
     @Override
     public void onCreate() {
-        Log.d(this.getClass().getSimpleName(), "onCreate");
+        Log.d(LOG_TAG, "onCreate");
 
         super.onCreate();
         
@@ -185,13 +187,13 @@ public class MotivatorAlarmService extends Service {
         
         if(texts.length > 0) {
             notificationBuilder.setContentTitle(texts[0]);
-            Log.d(this.getClass().getSimpleName(), "sendNotification(): " + "context: " + context + ", title: " + texts[0] + ", class: " + intentClass.getSimpleName());
+            Log.d(LOG_TAG, "sendNotification(): " + "context: " + context + ", title: " + texts[0] + ", class: " + intentClass.getSimpleName());
             if(texts.length > 1) {
                 notificationBuilder.setContentText(texts[1]);
-                Log.d(this.getClass().getSimpleName(), "sendNotification(): " + "context: " + context + ", title: " + texts[0] + ", text: " + texts[1] + ", class: " + intentClass.getSimpleName());
+                Log.d(LOG_TAG, "sendNotification(): " + "context: " + context + ", title: " + texts[0] + ", text: " + texts[1] + ", class: " + intentClass.getSimpleName());
                 if(texts.length > 2) {
                     notificationBuilder.setSubText(texts[2]);
-                    Log.d(this.getClass().getSimpleName(), "sendNotification(): " + "context: " + context + ", title: " + texts[0] + ", text: " + texts[1] + ", subtext :" + texts[2] + ", class: " + intentClass.getSimpleName());
+                    Log.d(LOG_TAG, "sendNotification(): " + "context: " + context + ", title: " + texts[0] + ", text: " + texts[1] + ", subtext :" + texts[2] + ", class: " + intentClass.getSimpleName());
                 }
             }
         }

@@ -1,4 +1,4 @@
-package edu.ncsu.soc.motivator;
+package edu.ncsu.soc.motivator.domain;
 
 public enum WeatherFactor {
     CLOUD ("too cloudy"),
