@@ -6,6 +6,8 @@
 	<string name="main_activity_title">Motivator Mapper</string>
 	<string name="start_service_button_text">Start Background Service</string>
 	<string name="stop_service_button_text">Stop Background Service</string>
+	<string name="settings_button_text">Settings</string>
+
 
 	<string name="alarm_service_started">Start Weather Service</string>
 	<string name="alarm_service_finished">Start Weather Service</string>
@@ -87,8 +89,7 @@
 	<string name="summary_fragment_preference">Shows another fragment of preferences</string>
 
 	<string name="title_next_screen_toggle_preference">Toggle preference</string>
-	<string name="summary_next_screen_toggle_preference">Preference that is on the next screen but same
-		hierarchy</string>
+	<string name="summary_next_screen_toggle_preference">Preference that is on the next screen but same hierarchy</string>
 
 	<string name="title_intent_preference">Intent preference</string>
 	<string name="summary_intent_preference">Launches an Activity from an Intent</string>

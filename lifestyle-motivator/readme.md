@@ -3,6 +3,7 @@ TODO:
 Preferences:
 http://stackoverflow.com/questions/2857121/where-to-store-android-preference-keys
 http://stackoverflow.com/questions/5246741/android-get-keys-from-preferences-xml
+http://stackoverflow.com/questions/531427/how-do-i-display-the-current-value-of-an-android-preference-in-the-preference-su
 
 The purpose of the lifestyle motivator is to help an individual maintain a healthy lifestyle.
 In the current setting, many users procrastinate or find excuses not to work out. In many
