@@ -125,6 +125,10 @@ public class MotivatorAlarmService extends Service {
         if(this.weatherService != null) {
             unregisterReceiver(this.weatherService);
         }
+        if(this.placesService != null) {
+            unregisterReceiver(this.placesService);
+        }
+
     }
 
     /**
