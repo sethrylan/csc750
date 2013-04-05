@@ -77,7 +77,6 @@ task unitTest(type:Test, dependsOn: assemble) {
 
 check.dependsOn unitTest
 
-
 tasks.withType(Test) {
     testLogging.showStandardStreams = true
     
