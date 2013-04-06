@@ -1,4 +1,7 @@
-import java.util.jar.Manifest;
+import org.gradle.api.Project
+import org.gradle.api.artifacts.ProjectDependency
+import org.gradle.plugins.ide.eclipse.model.BuildCommand
+import org.gradle.plugins.ide.eclipse.model.SourceFolder
 
 buildscript {
     repositories {
@@ -10,6 +13,7 @@ buildscript {
 }
 
 apply plugin: 'android'
+apply plugin: 'eclipse'
 
 group = 'edu.ncsu.soc.srgainey'
 version = '0.0.1'
@@ -54,6 +58,34 @@ android {
     }
 }
 
+
+eclipse{
+    project {
+        natures "com.android.ide.eclipse.adt.AndroidNature"
+
+        def builders = new LinkedList(buildCommands)
+        builders.addFirst(new BuildCommand("com.android.ide.eclipse.adt.PreCompilerBuilder"))
+        builders.addFirst(new BuildCommand("com.android.ide.eclipse.adt.ResourceManagerBuilder"))
+        builders.addLast(new BuildCommand("com.android.ide.eclipse.adt.ApkBuilder"))
+        buildCommands = new ArrayList(builders)
+    }
+    
+    classpath {
+        containers.removeAll { it == "org.eclipse.jdt.launching.JRE_CONTAINER" }
+        containers "com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"
+
+        plusConfigurations += configurations.compile
+
+        file {
+            whenMerged { classpath ->
+                classpath.entries.removeAll { it instanceof SourceFolder && (it.dir?.path == "build" || it.dir?.path == "src") }
+                classpath.entries.add(new SourceFolder("build/source/r/debug", null))
+                classpath.entries.add(new SourceFolder("src/main/java", null))
+                classpath.entries.add(new SourceFolder("src/test/java", null))
+            }
+        }
+    }
+}
 
 dependencies {
     compile fileTree(dir: 'libs', include: '*.jar'),

@@ -260,7 +260,8 @@ public class MotivatorMapActivity extends MapActivity {
             String placesJson = preferences.getString(getString(R.string.nearby_json), "");
             ListAdapter adapter = list.getAdapter();
             ((PlacesViewAdapter)adapter).setPlaces(getPlacesFromJson(placesJson));
-            list.invalidate();
+            ((PlacesViewAdapter)adapter).notifyDataSetChanged();
+            list.postInvalidate();
         }
 
         @Override

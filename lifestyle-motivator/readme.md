@@ -49,4 +49,4 @@ gradlew installDebug
 
 ### Developement
 
-Since the Eclipse Gradle plugin relies on the Java plugin for dependency/sourceSet management, it is necessary to add the jars from the eclipselibs directory in order to regain IDE support.
+Gradle 1.3
