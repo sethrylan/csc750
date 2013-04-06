@@ -36,6 +36,10 @@ public class MotivatorMapActivity extends MapActivity {
 
     static final String LOG_TAG = "MotivatorMap";
     
+    static final String START_BUTTON_ENABLED_KEY = "isStartButtonEnabled";
+    static final String STOP_BUTTON_ENABLED_KEY = "isStopButtonEnabled";
+
+    
     private static final int UPDATE_THRESHOLD_METERS = 0;
     private static final int UPDATE_THRESHOLD_MS = 0;
 
@@ -134,12 +138,22 @@ public class MotivatorMapActivity extends MapActivity {
         Button stopButton = ((Button)findViewById(R.id.StopServiceButton));
         Button settingsButton = ((Button)findViewById(R.id.SettingsButton));
         startButton.setOnClickListener(mStartButtonListener);
-        startButton.setEnabled(true);
         stopButton.setOnClickListener(mStopButtonListener);
-        stopButton.setEnabled(false);
+        startButton.setEnabled(preferences.getBoolean(getString(R.string.start_button_state), true));
+        stopButton.setEnabled(preferences.getBoolean(getString(R.string.stop_button_state), false));
         settingsButton.setOnClickListener(mSettingsButtonListener);
         settingsButton.setEnabled(true);
 
+    }
+            
+    private void saveButtonState() {
+        // onRestoreInstanceState is very fickle, but onSaveInstanceState is very consistent.
+        // So we save preferences here, and read them in onCreate without a Bundle
+        Button startButton = ((Button)findViewById(R.id.StartServiceButton));
+        Button stopButton = ((Button)findViewById(R.id.StopServiceButton));
+        editor.putBoolean(getString(R.string.start_button_state), startButton.isEnabled());
+        editor.putBoolean(getString(R.string.stop_button_state), stopButton.isEnabled());
+        editor.commit();
     }
     
     private List<Nearby.PlaceResult> getPlacesFromJson(String json) {
@@ -196,7 +210,7 @@ public class MotivatorMapActivity extends MapActivity {
         this.myLocationOverlay.disableCompass();
         this.locationManager.removeUpdates(this.locationListener);
     }
-    
+
     @Override
     protected boolean isRouteDisplayed() {
         return false;
@@ -210,13 +224,15 @@ public class MotivatorMapActivity extends MapActivity {
     @Override
     public void onStop() {
         super.onStop();
-        disableLocation();
+        this.disableLocation();
+        this.saveButtonState();
     }
     
     @Override
     public void onDestroy() {
         super.onDestroy();
-        disableLocation();
+        this.disableLocation();
+        this.saveButtonState();
     }
     
     /**

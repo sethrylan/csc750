@@ -2,6 +2,9 @@ package edu.ncsu.soc.motivator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -47,7 +50,7 @@ public class WeatherServiceReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        // Alternative to using an ASyncTask, you can run code in the main thread using this:
+        // Alternative to using an ASyncTask, you can run code in the main thread using:
 //        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 //        StrictMode.setThreadPolicy(policy); 
 
@@ -67,7 +70,20 @@ public class WeatherServiceReceiver extends BroadcastReceiver {
             String urlString = this.context.getString(R.string.darksky_forecast_root) + "/" + this.context.getString(R.string.darksky_api_key) + "/"
                     + lastLatitude + "," + lastLongitude;
             Log.d(LOG_TAG, "url = " + urlString);
-            new RetreiveJsonTask().execute(urlString);
+            try {
+                new RetreiveJsonTask().execute(urlString).get(5, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (TimeoutException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            
+
         }
         
         String json = preferences.getString(this.context.getString(R.string.weather_json), "");
@@ -96,35 +112,43 @@ public class WeatherServiceReceiver extends BroadcastReceiver {
     }
         
     private double getPreferenceDouble(int resourceId, int defaultResourceId) {
-        String defaultValue = preferences.getString(this.context.getString(defaultResourceId), "0.0");
-        return Double.valueOf(preferences.getString(this.context.getString(resourceId), defaultValue));
+        String defaultValue = this.context.getString(defaultResourceId, "0.0");
+        String keyName = this.context.getString(resourceId);
+        return Double.valueOf(this.preferences.getString(keyName, defaultValue));
     }
     
     // Preferences are only set after the user goes to the preference screen, so there are many checks to set the default values.
     private List<WeatherFactor> getWeatherFactors(Forecast forecast) {
         List<WeatherFactor> factors = new ArrayList<WeatherFactor>();
-        if(forecast.currently.cloudCover > getPreferenceDouble(R.string.max_cloud_cover, R.string.default_max_cloud_cover)) {
-            Log.d(LOG_TAG, forecast.currently.cloudCover + " > " + getPreferenceDouble(R.string.max_cloud_cover, R.string.default_max_cloud_cover));
+        double maxCloudCover = getPreferenceDouble(R.string.max_cloud_cover, R.string.default_max_cloud_cover);
+        double maxTemperature = getPreferenceDouble(R.string.max_temperature, R.string.default_max_temperature);
+        double minTemperature = getPreferenceDouble(R.string.min_temperature, R.string.default_min_temperature);
+        double maxWindSpeed = getPreferenceDouble(R.string.max_wind, R.string.default_max_wind);
+        double minVisibility = getPreferenceDouble(R.string.min_visibility, R.string.default_min_visibility);
+        double maxPrecipProbability = getPreferenceDouble(R.string.max_precip_probability, R.string.default_max_precip_probability);
+
+        if(forecast.currently.cloudCover > maxCloudCover) {
+            Log.d(LOG_TAG, "cloudCover:" + forecast.currently.cloudCover + " > " + maxCloudCover);
             factors.add(WeatherFactor.CLOUD);
         }
-        if(forecast.currently.temperature > getPreferenceDouble(R.string.max_temperature, R.string.default_max_temperature)) {
-            Log.d(LOG_TAG, forecast.currently.temperature + " > " + getPreferenceDouble(R.string.max_temperature, R.string.default_max_temperature));
+        if(forecast.currently.temperature > maxTemperature) {
+            Log.d(LOG_TAG, "temperature:" + forecast.currently.temperature + " > " + maxTemperature);
             factors.add(WeatherFactor.TEMPERATURE_HIGH);
         }
-        if(forecast.currently.temperature < getPreferenceDouble(R.string.min_temperature, R.string.default_min_temperature)) {
-            Log.d(LOG_TAG, forecast.currently.temperature + " < " + getPreferenceDouble(R.string.min_temperature, R.string.default_min_temperature));
+        if(forecast.currently.temperature < minTemperature) {
+            Log.d(LOG_TAG, "temperature:" + forecast.currently.temperature + " < " + minTemperature);
             factors.add(WeatherFactor.TEMPERATURE_LOW);
         }
-        if(forecast.currently.windSpeed > getPreferenceDouble(R.string.max_wind, R.string.default_max_wind)) {
-            Log.d(LOG_TAG, forecast.currently.windSpeed + " > " + getPreferenceDouble(R.string.max_wind, R.string.default_max_wind));
+        if(forecast.currently.windSpeed > maxWindSpeed) {
+            Log.d(LOG_TAG, "windSpeed:" + forecast.currently.windSpeed + " > " + maxWindSpeed);
             factors.add(WeatherFactor.WIND);
         }
-        if(forecast.currently.visibility > getPreferenceDouble(R.string.min_visibility, R.string.default_min_visibility)) {
-            Log.d(LOG_TAG, forecast.currently.visibility + " > " + getPreferenceDouble(R.string.min_visibility, R.string.default_min_visibility));
+        if(forecast.currently.visibility < minVisibility) {
+            Log.d(LOG_TAG, "visibility:" + forecast.currently.visibility + " < " + minVisibility);
             factors.add(WeatherFactor.VISIBILITY);
         }
-        if(forecast.currently.precipProbability > getPreferenceDouble(R.string.max_precip_probability, R.string.default_max_precip_probability)) {
-            Log.d(LOG_TAG, forecast.currently.precipProbability + " > " + getPreferenceDouble(R.string.max_precip_probability, R.string.default_max_precip_probability));
+        if(forecast.currently.precipProbability > maxPrecipProbability) {
+            Log.d(LOG_TAG, "precipProbability:" + forecast.currently.precipProbability + " > " + maxPrecipProbability);
             factors.add(WeatherFactor.PRECIPITATION);
         }
         return factors;

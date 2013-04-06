@@ -1,27 +1,44 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:layout_gravity="fill_horizontal"> 
- 
+    android:layout_gravity="fill_horizontal"
+    android:id="@+id/MainActivity"> 
     <TextView android:layout_width="fill_parent"
-        android:layout_height="wrap_content" android:textStyle="bold"
-        android:gravity="center" android:layout_margin="5px" android:text="@string/main_activity_title"/> 
-        
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="horizontal" android:layout_width="fill_parent"
+        android:layout_height="wrap_content" 
+        android:textStyle="bold"
+        android:gravity="center" 
+        android:layout_margin="5px" 
+        android:text="@string/main_activity_title"/> 
+    <TextView android:id="@+id/CurrentStatus"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" 
+        android:textStyle="bold"
+        android:gravity="center" 
+        android:layout_margin="5px"/> 
+    <LinearLayout android:id="@+id/ButtonBar"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="horizontal" 
+        android:layout_width="fill_parent"
         android:layout_height="100dip">
-        <Button android:layout_width="fill_parent" android:id="@+id/StartServiceButton"
-            android:layout_height="fill_parent" android:layout_weight="1"
+        <Button android:id="@+id/StartServiceButton"
+            android:layout_width="fill_parent" 
+            android:layout_height="fill_parent" 
+            android:layout_weight="1"
             android:text="@string/start_service_button_text"  />
-        <Button android:layout_width="fill_parent" android:id="@+id/StopServiceButton"
-            android:layout_height="fill_parent" android:layout_weight="1"
+        <Button android:id="@+id/StopServiceButton"
+            android:layout_width="fill_parent" 
+            android:layout_height="fill_parent" 
+            android:layout_weight="1"
             android:text="@string/stop_service_button_text" />
-        <Button android:layout_width="fill_parent" android:id="@+id/SettingsButton"
-            android:layout_height="fill_parent" android:layout_weight="1"
+        <Button android:id="@+id/SettingsButton"
+            android:layout_width="fill_parent" 
+            android:layout_height="fill_parent" 
+            android:layout_weight="1"
             android:text="@string/settings_button_text" />
     </LinearLayout>
         
-    <View android:layout_height="2dip" android:background="#FF909090"
+    <View android:layout_height="2dip" 
+        android:background="#FF909090"
         android:layout_width="fill_parent" /> 
         
         
@@ -31,7 +48,8 @@
               android:id="@+id/PlacesList">
     </ListView> 
     
-    <View android:layout_height="2dip" android:background="#FF909090"
+    <View android:layout_height="2dip" 
+        android:background="#FF909090"
         android:layout_width="fill_parent" /> 
  
     <com.google.android.maps.MapView android:id="@+id/MapView"

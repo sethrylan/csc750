@@ -225,8 +225,6 @@ public class MotivatorAlarmService extends Service {
             delimiter = ", ";
         }
         Log.d(LOG_TAG, "sendNotification(): " + "context: " + context + "texts: " + params.toString() + ", class: " + intentClass.getSimpleName());
-
-
         
         // creates explicit intent for an Activity
         Intent notificationIntent = new Intent(context, intentClass);

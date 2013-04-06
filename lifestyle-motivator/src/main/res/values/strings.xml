@@ -5,8 +5,11 @@
 	<string name="menu_settings">Settings</string>
 	<string name="main_activity_title">Motivator Mapper</string>
 	<string name="start_service_button_text">Start Background Service</string>
-	<string name="stop_service_button_text">Stop Background Service</string>
+    <string name="stop_service_button_text">Stop Background Service</string>
 	<string name="settings_button_text">Settings</string>
+
+    <string name="stop_button_state">start_button_state</string>
+    <string name="start_button_state">stop_button_state</string>
 
 
 	<string name="alarm_service_started">Start Weather Service</string>
@@ -40,13 +43,13 @@
     <string name="max_precip_probability">max_precip_probability</string>
 
 	<string name="default_max_temperature">80</string>
-	<string name="default_min_temperature">50</string>
+	<string name="default_min_temperature">79</string>
 	<string name="default_max_wind">20</string>
 	<string name="default_max_cloud_cover">.50</string>
 	<string name="default_min_visibility">5</string>
 	<string name="default_max_precip_probability">.4</string>
 
-    <string name="json_debug_length">50</string>
+    <string name="json_debug_length">50</string>    
 
 
 	<string name="preferences_from_xml">Preference/1. Preferences from XML</string>
