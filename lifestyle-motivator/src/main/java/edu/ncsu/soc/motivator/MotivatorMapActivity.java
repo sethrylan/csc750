@@ -27,6 +27,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MotivatorMapActivity extends MapActivity {
@@ -78,8 +79,8 @@ public class MotivatorMapActivity extends MapActivity {
             toast.show();
             initialGeoPoint = DEFAULT_GEOPOINT;
             initialLocation = DEFAULT_LOCATION;
-//            this.editor.putInt(this.getString(R.string.last_latitude_e6), DEFAULT_GEOPOINT.getLatitudeE6());
-//            this.editor.putInt(this.getString(R.string.last_longitude_e6), DEFAULT_GEOPOINT.getLongitudeE6());
+            this.editor.putInt(this.getString(R.string.last_latitude_e6), DEFAULT_GEOPOINT.getLatitudeE6());
+            this.editor.putInt(this.getString(R.string.last_longitude_e6), DEFAULT_GEOPOINT.getLongitudeE6());
             this.editor.commit();
         } else {
             initialGeoPoint = new GeoPoint(lastLatitude, lastLongitude);
@@ -92,7 +93,7 @@ public class MotivatorMapActivity extends MapActivity {
         // configure the map and set initial position until GPS is available
         this.mapView = (MapView)findViewById(R.id.MapView);
         this.mapView.getController().setCenter(initialGeoPoint);
-        this.mapView.getController().setZoom(15);
+        this.mapView.getController().setZoom(12);
 
         // create the map overlay
         Drawable marker = getResources().getDrawable(R.drawable.marker);
@@ -142,6 +143,9 @@ public class MotivatorMapActivity extends MapActivity {
         stopButton.setEnabled(preferences.getBoolean(getString(R.string.stop_button_state), false));
         settingsButton.setOnClickListener(mSettingsButtonListener);
         settingsButton.setEnabled(true);
+        
+        TextView statusText = (TextView)findViewById(R.id.CurrentStatus);
+        statusText.setText(preferences.getString(getString(R.string.current_status), "Acquiring Location and waiting for service."));
 
     }
     
@@ -169,7 +173,6 @@ public class MotivatorMapActivity extends MapActivity {
         public void onClick(View v) {
             ((Button)findViewById(R.id.StartServiceButton)).setEnabled(false);
             Intent intent = new Intent(MotivatorMapActivity.this, MotivatorAlarmService.class);
-//            intent.putExtra("vibration", true);
             startService(intent);
             ((Button)findViewById(R.id.StopServiceButton)).setEnabled(true);
             saveButtonState();
@@ -279,6 +282,10 @@ public class MotivatorMapActivity extends MapActivity {
             ((PlacesViewAdapter)adapter).setPlaces(getPlacesFromJson(placesJson));
             ((PlacesViewAdapter)adapter).notifyDataSetChanged();
             list.postInvalidate();
+            
+            TextView statusText = (TextView)findViewById(R.id.CurrentStatus);
+            statusText.setText(preferences.getString(getString(R.string.current_status), ""));
+            statusText.postInvalidate();
         }
 
         @Override

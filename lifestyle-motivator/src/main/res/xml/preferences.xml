@@ -5,6 +5,7 @@
 	    
 	<PreferenceCategory android:title="Weather Thresholds">
 		<EditTextPreference android:title="Maximum Temperature (Fahrenheit)"
+			android:id="@string/max_temperature"
 			android:inputType="number" 
 			android:key="@string/max_temperature"
 			android:summary="" 
@@ -12,6 +13,7 @@
 			android:defaultValue="@string/default_max_temperature">
 		</EditTextPreference>
 		<EditTextPreference android:title="Minimum Temperature (Fahrenheit)"
+            android:id="@+id/min_temperature"		
 			android:inputType="number" 
 			android:key="@string/min_temperature"
             android:summary=""
@@ -19,24 +21,28 @@
 			android:defaultValue="@string/default_min_temperature">
 		</EditTextPreference>
 		<EditTextPreference android:title="Max Wind Speed (mile/hour)"
+            android:id="@+id/max_wind"
             android:inputType="number" 
             android:key="@string/max_wind"
             android:persistent="true" 
             android:defaultValue="@string/default_max_wind">
         </EditTextPreference>
 		<EditTextPreference android:title="Max Cloud Cover (0.00-1.00)"
+            android:id="@+id/max_cloud_cover"
             android:inputType="number" 
             android:key="@string/max_cloud_cover"
             android:persistent="true" 
             android:defaultValue="@string/default_max_cloud_cover">
         </EditTextPreference>
 		<EditTextPreference android:title="Minimum Visibility (miles)"
+            android:id="@+id/min_visibility"
             android:inputType="number" 
             android:key="@string/min_visibility"
             android:persistent="true" 
             android:defaultValue="@string/default_min_visibility">
         </EditTextPreference>
 		<EditTextPreference android:title="Maximum Precipitation Probability (0.00-1.00)"
+            android:id="@+id/max_precip_probability"
             android:inputType="number" 
             android:key="@string/max_precip_probability"
             android:persistent="true" 

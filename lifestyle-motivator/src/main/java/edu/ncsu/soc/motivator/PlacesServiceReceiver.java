@@ -24,7 +24,7 @@ import edu.ncsu.soc.motivator.domain.Nearby;
 
 public class PlacesServiceReceiver extends BroadcastReceiver {
 
-    static final String LOG_TAG = "WeatherServiceReceiver";
+    static final String LOG_TAG = "PlacesServiceReceiver";
     public static final String ACTION = "PLACES_SERVICE_ACTION";
     public static final String SENSOR = "true";
     private static final int CONNECTION_TIMEOUT_MS = 2000;
@@ -47,13 +47,17 @@ public class PlacesServiceReceiver extends BroadcastReceiver {
         if(isConnected(context)) {
             float lastLatitude = this.preferences.getInt(this.context.getString(R.string.last_latitude_e6), 0) / MILLION;
             float lastLongitude = this.preferences.getInt(this.context.getString(R.string.last_longitude_e6), 0) / MILLION;
-
-            String types = "park";
-//            String types = "gym|bowling_alley|aquarium|art_gallery|bicycle_store";
+            boolean isNice = preferences.getBoolean(context.getString(R.string.nice_weather), true);
+            String types = null;
+            if(isNice) {
+                types = "park";
+            } else {
+                // The pipe character '|' is considered unsafe for URI, and the HttpClient uses URIs internally
+                types = "gym%7Cbowling_alley%7Caquarium%7Cart_gallery%7Cbicycle_store";
+            }
             String urlString = this.context.getString(R.string.google_places_nearby_root) + "?" + "location=" + lastLatitude + "," + lastLongitude + "&radius=" + RADIUS_METERS + "&types=" + types + "&sensor=" + SENSOR 
                     + "&key=" + this.context.getString(R.string.google_api_key);
             Log.d(LOG_TAG, "url = " + urlString);
-//            Toast.makeText(context, "Error encoding URL!", Toast.LENGTH_SHORT).show();
             new RetreiveJsonTask().execute(urlString);
         }
     }
@@ -92,28 +96,36 @@ public class PlacesServiceReceiver extends BroadcastReceiver {
                     editor.putLong(PlacesServiceReceiver.this.context.getString(R.string.last_places_update), System.currentTimeMillis());
                     Log.d(LOG_TAG, "JSON = " + JsonUtils.prettyPrint(json).substring(0, Integer.valueOf(context.getString(R.string.json_debug_length))));
                     editor.putString(PlacesServiceReceiver.this.context.getString(R.string.nearby_json), json);
-                    // Nearby nearby = JsonUtils.createFromJson(Nearby.class, json);
                     editor.commit();
                 } else {
                     Log.d(LOG_TAG, "JSON was empty.");
                 }
             }
-            
+                        
             long lastWeatherUpdate = preferences.getLong(context.getString(R.string.last_weather_update), 0);
             long lastPlacesUpdate = preferences.getLong(context.getString(R.string.last_places_update), 0);
 
             boolean isNice = preferences.getBoolean(context.getString(R.string.nice_weather), true);
             if(lastWeatherUpdate > 0 && lastPlacesUpdate > 0 ) {
+                String title = "";
+                String subtext = "";
+                String subsubtext = "";
+                String statusText = "";
                 if(isNice) {
-                    MotivatorAlarmService.sendNotification(context, MotivatorMapActivity.class, "The weather is " + isNice, "Nearest park is " + 1234 + " " + "meters" + " away");
+                    title = "The weather is nice.";
+                    subtext = "You should go to a park.";
+                    statusText = "The weather is nice. Here is a list of parks nearby. Click for map details.";
                 } else {
                     String weatherReason = preferences.getString(context.getString(R.string.weather_reason), "");
-                    MotivatorAlarmService.sendNotification(context, MotivatorMapActivity.class, "The weather is not nice.", weatherReason , "Maybe you should find a gym");
+                    title = "The weather is not nice.";
+                    subtext = weatherReason;
+                    subsubtext = "Maybe you should find a gym";
+                    statusText = "Sorry; the weather is not nice. Here is a list of gyms, bowling alleys, aquariums, galleries and bicycle stores. Click for map details.";
                 }            
-            }
-            
-            // update status text in main activity
-            
+                MotivatorAlarmService.sendNotification(context, MotivatorMapActivity.class, title , subtext, subsubtext);
+                editor.putString(context.getString(R.string.current_status), statusText);
+                editor.commit();
+            }            
         }
         
         private String getResponseString(String urlString) {

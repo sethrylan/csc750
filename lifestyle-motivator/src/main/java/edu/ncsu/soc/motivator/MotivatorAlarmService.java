@@ -8,7 +8,6 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -27,7 +26,7 @@ import android.widget.Toast;
 /**
  * Service runs in the background and sends notifications based on GPS/Places data
  */
-public class MotivatorAlarmService extends Service {
+public class MotivatorAlarmService extends Service implements LocationListener {
     
     static final String LOG_TAG = "MotivatorAlarmService";
 
@@ -35,14 +34,15 @@ public class MotivatorAlarmService extends Service {
     protected SharedPreferences.Editor editor;
 
     private static final int NOTIFICATION_ID = 42;
-    private static final int UPDATE_THRESHOLD_MS = 1000 * 60; // milliseconds
+    
+    // with non-aggressive update values, the GPS link will go silent between location updates
+    private static final int UPDATE_THRESHOLD_MS = 60 * 1000; // milliseconds
     private static final int UPDATE_THRESHOLD_METERS = 200; // meters
     public static final int WEATHER_INTERVAL_SECONDS = 30;
     public static final int PLACES_INTERVAL_SECONDS = 30;
     private static final float MILLION = 1E6f;
 
     private LocationManager locationManager;
-    private LocationListener locationListener;
     private NotificationManager notificationManager;
     private Notification notification;
     
@@ -78,9 +78,10 @@ public class MotivatorAlarmService extends Service {
         super.onCreate();
         
         // start location manager with non-aggressive threshold values to preserve battery life
-        this.locationListener = new AlarmLocationListener();
-        this.locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-        this.locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, UPDATE_THRESHOLD_MS, UPDATE_THRESHOLD_METERS, this.locationListener);
+        if(this.locationManager == null) {
+            this.locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        }
+        this.locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, UPDATE_THRESHOLD_MS, UPDATE_THRESHOLD_METERS, this);
 
         // initialize notification service
         this.notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
@@ -100,12 +101,17 @@ public class MotivatorAlarmService extends Service {
      */
     @Override
     public void onDestroy() {
+        Log.d(LOG_TAG, "onDestroy");
+
         super.onDestroy();
-        this.locationManager.removeUpdates(this.locationListener);
+        if(this.locationManager == null) {
+            this.locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        }
+        this.locationManager.removeUpdates(this);
         this.notificationManager.cancel(NOTIFICATION_ID);
                 
-        this.cancelAlarm(WeatherServiceReceiver.class);
-        this.cancelAlarm(PlacesServiceReceiver.class);
+        this.cancelAlarm(WeatherServiceReceiver.ACTION);
+        this.cancelAlarm(PlacesServiceReceiver.ACTION);
     }
 
     /**
@@ -193,38 +199,35 @@ public class MotivatorAlarmService extends Service {
     }
 
     /**
-     * Listens for GPS updates
+     * Updates the current Location and notification.
      */
-    private class AlarmLocationListener implements LocationListener {
-
-        /**
-         * Updates the current Location and notification.
-         */
-        public void onLocationChanged(Location location) {
-            MotivatorAlarmService.this.setRepeatingAlarm(MotivatorAlarmService.this, WeatherServiceReceiver.ACTION, WEATHER_INTERVAL_SECONDS * 1000);
-            MotivatorAlarmService.this.setRepeatingAlarm(MotivatorAlarmService.this, PlacesServiceReceiver.ACTION, PLACES_INTERVAL_SECONDS * 1000);
-            
-            int latitude = (int)(location.getLatitude() * MILLION);
-            int longitude = (int)(location.getLongitude() * MILLION);            
-            editor.putInt(getString(R.string.last_latitude_e6), latitude);
-            editor.putInt(getString(R.string.last_longitude_e6), longitude);
-            editor.commit();
-            
-        }
-
-        public void onProviderDisabled(String provider) {
-        }
-
-        public void onProviderEnabled(String provider) {
-        }
-
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-        }
+    public void onLocationChanged(Location location) {
+        MotivatorAlarmService.this.setRepeatingAlarm(MotivatorAlarmService.this, WeatherServiceReceiver.ACTION, WEATHER_INTERVAL_SECONDS * 1000);
+        MotivatorAlarmService.this.setRepeatingAlarm(MotivatorAlarmService.this, PlacesServiceReceiver.ACTION, PLACES_INTERVAL_SECONDS * 1000);
+        
+        int latitude = (int)(location.getLatitude() * MILLION);
+        int longitude = (int)(location.getLongitude() * MILLION);            
+        editor.putInt(getString(R.string.last_latitude_e6), latitude);
+        editor.putInt(getString(R.string.last_longitude_e6), longitude);
+        editor.commit();
+//        Toast.makeText(getApplicationContext(), "MotivatorAlarmService location update.", Toast.LENGTH_LONG).show();
     }
 
-//    protected void setRepeatingAlarm(Class<? extends BroadcastReceiver> c, int intervalMilliseconds) {
-//        this.setRepeatingAlarm(this, c, intervalMilliseconds);
-//    }
+    @Override
+    public void onProviderDisabled(String provider) {
+        Log.d(LOG_TAG, "onProviderDisabled");
+        Toast.makeText(getApplicationContext(), "Attempted to ping your location, and GPS was disabled.", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+        Log.d(LOG_TAG, "onProviderEnabled");
+        this.locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, UPDATE_THRESHOLD_MS, UPDATE_THRESHOLD_METERS, this);
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+    }
     
     protected void setRepeatingAlarm(Context context, String action, int intervalMilliseconds) {
         AlarmManager am = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
@@ -240,20 +243,11 @@ public class MotivatorAlarmService extends Service {
 //        am.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), intervalMilliseconds, pendingIntent);
 //    }
     
-    protected void cancelAlarm(Class<? extends BroadcastReceiver> c) {
-        Intent intent = new Intent(this, c);
+    protected void cancelAlarm(String action) {
+        Intent intent = new Intent(action);
         PendingIntent sender = PendingIntent.getBroadcast(this, 0, intent, 0);
         AlarmManager alarmManager = (AlarmManager)this.getSystemService(Context.ALARM_SERVICE);
         alarmManager.cancel(sender);
     }
-
-    /**
-     * @see http://developer.android.com/reference/android/content/SharedPreferences.OnSharedPreferenceChangeListener.html
-     */
-//    @Override
-//    public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, final String key) {
-//        this.setRepeatingAlarm(this, WeatherServiceReceiver.class, WEATHER_INTERVAL_SECONDS * 1000);
-//        Toast.makeText(this, "Updated preferences.", Toast.LENGTH_SHORT).show();
-//    }
 
 }
