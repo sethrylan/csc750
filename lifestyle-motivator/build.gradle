@@ -121,3 +121,7 @@ tasks.withType(Test) {
 task listCache << { configurations.compile.each { println it } }
 
 task listJars << { configurations.compile.each { File file -> println file.name } }
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.3'
+}
