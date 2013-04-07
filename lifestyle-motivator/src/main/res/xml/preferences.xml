@@ -4,6 +4,14 @@
 	<!-- InputTypes: http://developer.android.com/reference/android/widget/TextView.html#attr_android:inputType -->
 	    
 	<PreferenceCategory android:title="Weather Thresholds">
+	    <EditTextPreference android:title="Search Radius (meters)"
+            android:id="@string/places_radius"
+            android:inputType="number" 
+            android:key="@string/places_radius"
+            android:summary="" 
+            android:persistent="true"
+            android:defaultValue="@string/default_places_radius">
+        </EditTextPreference>
 		<EditTextPreference android:title="Maximum Temperature (Fahrenheit)"
 			android:id="@string/max_temperature"
 			android:inputType="number" 

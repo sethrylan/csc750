@@ -29,7 +29,6 @@ public class PlacesServiceReceiver extends BroadcastReceiver {
     public static final String SENSOR = "true";
     private static final int CONNECTION_TIMEOUT_MS = 2000;
     private static final float MILLION = 1E6f;
-    private static final int RADIUS_METERS = 5000;
     
     private Context context;
 
@@ -47,6 +46,7 @@ public class PlacesServiceReceiver extends BroadcastReceiver {
         if(isConnected(context)) {
             float lastLatitude = this.preferences.getInt(this.context.getString(R.string.last_latitude_e6), 0) / MILLION;
             float lastLongitude = this.preferences.getInt(this.context.getString(R.string.last_longitude_e6), 0) / MILLION;
+            long placesRadius = getPreferenceLong(R.string.places_radius, R.string.default_places_radius);
             boolean isNice = preferences.getBoolean(context.getString(R.string.nice_weather), true);
             String types = null;
             if(isNice) {
@@ -55,12 +55,19 @@ public class PlacesServiceReceiver extends BroadcastReceiver {
                 // The pipe character '|' is considered unsafe for URI, and the HttpClient uses URIs internally
                 types = "gym%7Cbowling_alley%7Caquarium%7Cart_gallery%7Cbicycle_store";
             }
-            String urlString = this.context.getString(R.string.google_places_nearby_root) + "?" + "location=" + lastLatitude + "," + lastLongitude + "&radius=" + RADIUS_METERS + "&types=" + types + "&sensor=" + SENSOR 
+            String urlString = this.context.getString(R.string.google_places_nearby_root) + "?" + "location=" + lastLatitude + "," + lastLongitude + "&radius=" + placesRadius + "&types=" + types + "&sensor=" + SENSOR 
                     + "&key=" + this.context.getString(R.string.google_api_key);
             Log.d(LOG_TAG, "url = " + urlString);
             new RetreiveJsonTask().execute(urlString);
         }
     }
+    
+    private long getPreferenceLong(int resourceId, int defaultResourceId) {
+        String defaultValue = this.context.getString(defaultResourceId, "0");
+        String keyName = this.context.getString(resourceId);
+        return Long.valueOf(this.preferences.getString(keyName, defaultValue));
+    }
+
     
     private static boolean isConnected(Context context) {
         ConnectivityManager cm = (ConnectivityManager)context.getSystemService(context.CONNECTIVITY_SERVICE);
@@ -114,13 +121,13 @@ public class PlacesServiceReceiver extends BroadcastReceiver {
                 if(isNice) {
                     title = "The weather is nice.";
                     subtext = "You should go to a park.";
-                    statusText = "The weather is nice. Here is a list of parks nearby. Click for map details.";
+                    statusText = "The weather is nice. Here is a list of parks nearby. Touch for map details.";
                 } else {
                     String weatherReason = preferences.getString(context.getString(R.string.weather_reason), "");
                     title = "The weather is not nice.";
                     subtext = weatherReason;
                     subsubtext = "Maybe you should find a gym";
-                    statusText = "Sorry; the weather is not nice. Here is a list of gyms, bowling alleys, aquariums, galleries and bicycle stores. Click for map details.";
+                    statusText = "Sorry; the weather is not nice. Here is a list of gyms, bowling alleys, aquariums, galleries and bicycle stores. Touch for map details.";
                 }            
                 MotivatorAlarmService.sendNotification(context, MotivatorMapActivity.class, title , subtext, subsubtext);
                 editor.putString(context.getString(R.string.current_status), statusText);

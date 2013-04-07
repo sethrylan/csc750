@@ -235,13 +235,6 @@ public class MotivatorAlarmService extends Service implements LocationListener {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
         am.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), intervalMilliseconds, pendingIntent);
     }
-
-//    protected void setRepeatingAlarm(Context context, Class<? extends BroadcastReceiver> c, int intervalMilliseconds) {
-//        AlarmManager am = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
-//        Intent intent = new Intent(context, c);
-//        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
-//        am.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), intervalMilliseconds, pendingIntent);
-//    }
     
     protected void cancelAlarm(String action) {
         Intent intent = new Intent(action);

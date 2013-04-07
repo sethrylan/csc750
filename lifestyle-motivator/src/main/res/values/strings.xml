@@ -38,7 +38,7 @@
 	<string name="last_places_update">last_places_update</string>
 	
 
-    <string name="json_debug_length">50</string>
+    <string name="json_debug_length">70</string>
 
     <string name="max_temperature">max_temperature</string>
     <string name="min_temperature">min_temperature</string>
@@ -46,9 +46,11 @@
     <string name="max_cloud_cover">max_cloud_cover</string>
     <string name="min_visibility">min_visibility</string>
     <string name="max_precip_probability">max_precip_probability</string>
-
+    <string name="places_radius">places_radius</string>
+    
+    <string name="default_places_radius">5000</string>
 	<string name="default_max_temperature">80</string>
-	<string name="default_min_temperature">79</string>
+	<string name="default_min_temperature">69</string>
 	<string name="default_max_wind">20</string>
 	<string name="default_max_cloud_cover">.50</string>
 	<string name="default_min_visibility">5</string>

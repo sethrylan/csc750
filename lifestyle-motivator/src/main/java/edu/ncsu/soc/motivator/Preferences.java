@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 public class Preferences extends PreferenceActivity implements OnSharedPreferenceChangeListener {
 
+    private EditTextPreference placesRadiusPreference;
     private EditTextPreference maxTemperaturePreference;
     private EditTextPreference minTemperaturePreference;
     private EditTextPreference maxCloudPreference;
@@ -34,6 +35,7 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
         addPreferencesFromResource(R.xml.preferences);
         
         // here the SharedPreference key is used as the layout ID
+        this.placesRadiusPreference = (EditTextPreference)getPreferenceScreen().findPreference(getString(R.string.places_radius));
         this.maxTemperaturePreference = (EditTextPreference)getPreferenceScreen().findPreference(getString(R.string.max_temperature));
         this.minTemperaturePreference = (EditTextPreference)getPreferenceScreen().findPreference(getString(R.string.min_temperature));
         this.maxCloudPreference = (EditTextPreference)getPreferenceScreen().findPreference(getString(R.string.max_cloud_cover));
@@ -46,6 +48,7 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
     @Override
     public void onResume() {
         super.onResume();
+        this.placesRadiusPreference.setSummary(preferences.getString(getString(R.string.places_radius), "0.0"));
         this.maxTemperaturePreference.setSummary(preferences.getString(getString(R.string.max_temperature), "0.0"));
         this.minTemperaturePreference.setSummary(preferences.getString(getString(R.string.min_temperature), "0.0"));
         this.maxCloudPreference.setSummary(preferences.getString(getString(R.string.max_cloud_cover), "0.0"));
@@ -72,6 +75,9 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals(getString(R.string.places_radius))) {
+            placesRadiusPreference.setSummary(sharedPreferences.getString(key, "0.0"));
+        }
         if (key.equals(getString(R.string.max_temperature))) {
             maxTemperaturePreference.setSummary(sharedPreferences.getString(key, "0.0"));
         }
