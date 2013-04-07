@@ -22,8 +22,6 @@ import android.util.Log;
 import edu.ncsu.soc.motivator.domain.Nearby;
 
 
-// https://maps.googleapis.com/maps/api/place/details/json?reference=CnRtAAAAfjFQWQEeuEmlVcWiW7M5mFhJzgIcXC0pyZYRNCoxd6bgHqSanrP5geZJiQ6seZhLvrF7OskQ7KQVJTCplhBhl-wl6tN4H4T0VmI-Vc0G87I81LBS4-MQ24SodZd32B3sD4C8KpmMHnn1ZRrQZUehmxIQiarzWr6Ie21P-lgf02pN4hoUMFw9xJPPPPrTfj7Y2jDhhKZGqWw&sensor=false&key=AIzaSyCQBT4HCyzFIwEgaItsjCKTRovII_E0wqU
-
 public class PlacesServiceReceiver extends BroadcastReceiver {
 
     static final String LOG_TAG = "WeatherServiceReceiver";
@@ -44,7 +42,6 @@ public class PlacesServiceReceiver extends BroadcastReceiver {
 
         // initialize preferences references
         this.preferences = PreferenceManager.getDefaultSharedPreferences(context);
-//        this.preferences = this.context.getSharedPreferences(this.context.getString(R.string.shared_preferences), Context.MODE_PRIVATE);
         this.editor = this.preferences.edit();
         
         if(isConnected()) {
@@ -59,19 +56,6 @@ public class PlacesServiceReceiver extends BroadcastReceiver {
 //            Toast.makeText(context, "Error encoding URL!", Toast.LENGTH_SHORT).show();
             new RetreiveJsonTask().execute(urlString);
         }
-        
-        String json = preferences.getString(this.context.getString(R.string.nearby_json), "");
-
-        if(!json.isEmpty()) {
-            Log.d(LOG_TAG, "JSON = " + JsonUtils.prettyPrint(json).substring(0, Integer.valueOf(context.getString(R.string.json_debug_length))));
-            Nearby nearby = JsonUtils.createFromJson(Nearby.class, json);
-//            editor.putBoolean(this.context.getString(R.string.nice_weather), factors.size() == 0);
-//            editor.putString(this.context.getString(R.string.weather_reason), getWeatherReason(factors));
-            editor.commit();
-        } else {
-            Log.d(LOG_TAG, "JSON was empty.");
-        }
-
     }
     
     private boolean isConnected() {
@@ -84,8 +68,6 @@ public class PlacesServiceReceiver extends BroadcastReceiver {
             return true;
         }
     }
-    
-    
     
     class RetreiveJsonTask extends AsyncTask<String, Void, String> {
         static final String LOG_TAG = "PlacesServiceReceiver.RetrieveJsonTask";
@@ -106,9 +88,18 @@ public class PlacesServiceReceiver extends BroadcastReceiver {
         @Override
         protected void onPostExecute(String json) {
             if(this.exception == null) {
-                editor.putString(PlacesServiceReceiver.this.context.getString(R.string.nearby_json), json);
-                editor.commit();
+                if(!json.isEmpty()) {
+                    Log.d(LOG_TAG, "JSON = " + JsonUtils.prettyPrint(json).substring(0, Integer.valueOf(context.getString(R.string.json_debug_length))));
+                    editor.putString(PlacesServiceReceiver.this.context.getString(R.string.nearby_json), json);
+                    // Nearby nearby = JsonUtils.createFromJson(Nearby.class, json);
+                    editor.commit();
+                } else {
+                    Log.d(LOG_TAG, "JSON was empty.");
+                }
+
             }
+            
+
         }
         
         private String getResponseString(String urlString) {

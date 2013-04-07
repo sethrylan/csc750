@@ -30,10 +30,9 @@
 	<string name="last_longitude_e6">last_longitude_e6</string>
 	<string name="nice_weather">nice_weather</string>
 	<string name="weather_reason">weather_reason</string>
-	<string name="weather_json">weather_json</string>
-	<string name="radar_json">radar_json</string>
 	<string name="nearby_json">nearby_json</string>
 
+    <string name="json_debug_length">50</string>
 
     <string name="max_temperature">max_temperature</string>
     <string name="min_temperature">min_temperature</string>
@@ -49,7 +48,6 @@
 	<string name="default_min_visibility">5</string>
 	<string name="default_max_precip_probability">.4</string>
 
-    <string name="json_debug_length">50</string>    
 
 
 	<string name="preferences_from_xml">Preference/1. Preferences from XML</string>

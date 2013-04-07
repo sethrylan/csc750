@@ -1,8 +1,10 @@
 package edu.ncsu.soc.motivator;
 
 import java.util.Calendar;
+import java.util.concurrent.TimeUnit;
 
 import edu.ncsu.soc.motivator.R;
+import edu.ncsu.soc.motivator.WeatherServiceReceiver.RetreiveJsonTask;
 
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -37,18 +39,16 @@ public class MotivatorAlarmService extends Service {
 
     private static final int NOTIFICATION_ID = 42;
     private static final int UPDATE_THRESHOLD_MS = 5000; // milliseconds
-    private static final int UPDATE_THRESHOLD_METERS = 5; // meters
-    private static final int WEATHER_INTERVAL_SECONDS = 5;
-    private static final int PLACES_INTERVAL_SECONDS = 5;
+    private static final int UPDATE_THRESHOLD_METERS = 50; // meters
+    private static final int WEATHER_INTERVAL_SECONDS = 30;
+    private static final int PLACES_INTERVAL_SECONDS = 30;
     private static final float MILLION = 1E6f;
 
     private LocationManager locationManager;
     private LocationListener locationListener;
-//    private Location currentLoc;
     private NotificationManager notificationManager;
     private Notification notification;
 
-    private int proximity;
     private String proximityUnit;
     
     private WeatherServiceReceiver weatherService = null;
@@ -73,7 +73,6 @@ public class MotivatorAlarmService extends Service {
         this.notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
 
         // initialize preferences references
-        
         this.preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 //        this.preferences = getApplicationContext().getSharedPreferences(getString(R.string.shared_preferences), Context.MODE_PRIVATE);
         this.editor = this.preferences.edit();
@@ -84,14 +83,14 @@ public class MotivatorAlarmService extends Service {
         Calendar triggerTime = Calendar.getInstance();
         triggerTime.setTimeInMillis(System.currentTimeMillis());
 //        triggerTime.add(Calendar.SECOND, INTERVAL_SECONDS);         
-        alarmManager.setInexactRepeating(AlarmManager.RTC, triggerTime.getTimeInMillis(), WEATHER_INTERVAL_SECONDS * 1000, pendingIntent);
+        alarmManager.setRepeating(AlarmManager.RTC, triggerTime.getTimeInMillis(), WEATHER_INTERVAL_SECONDS * 1000, pendingIntent);
 
         intent = new Intent(PlacesServiceReceiver.PLACES_SERVICE_ACTION);
         pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         triggerTime = Calendar.getInstance();
         triggerTime.setTimeInMillis(System.currentTimeMillis());
 //        triggerTime.add(Calendar.SECOND, INTERVAL_SECONDS);         
-        alarmManager.setInexactRepeating(AlarmManager.RTC, triggerTime.getTimeInMillis(), PLACES_INTERVAL_SECONDS * 1000, pendingIntent);
+        alarmManager.setRepeating(AlarmManager.RTC, triggerTime.getTimeInMillis(), PLACES_INTERVAL_SECONDS * 1000, pendingIntent);
 
         
         /*
@@ -140,7 +139,7 @@ public class MotivatorAlarmService extends Service {
     @Override
     public void onStart(Intent intent, int startId) {
 
-        proximity = intent.getIntExtra("proximity", 1);
+//        proximity = intent.getIntExtra("proximity", 1);
         proximityUnit = "meters";
 //        busStop = intent.getParcelableExtra("busstop");
 //        busStop = new BusStop();
@@ -199,14 +198,14 @@ public class MotivatorAlarmService extends Service {
      * @param intentClass   notification intent
      * @param texts         context title, content text and subtext
      */
-    protected void sendNotification(Context context, Class<? extends Activity> intentClass, String ...texts) {
+    protected static void sendNotification(Context context, Class<? extends Activity> intentClass, String ...texts) {
 
         if(texts.length < 1) {
             throw new IllegalArgumentException();
         }
 
         // create notification
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(getApplicationContext()).setSmallIcon(R.drawable.ic_launcher);
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context).setSmallIcon(R.drawable.ic_launcher);
         
         if(texts.length > 0) {
             notificationBuilder.setContentTitle(texts[0]);
@@ -232,18 +231,20 @@ public class MotivatorAlarmService extends Service {
 
         // stack builder object contains an artificial back stack for the activity, so 
         // that navigating backward from the Activity leads out of your application to the Home screen
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
         stackBuilder.addParentStack(MotivatorMapActivity.class);
         stackBuilder.addNextIntent(notificationIntent);
         PendingIntent pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
         notificationBuilder.setContentIntent(pendingIntent);
                 
-        this.notification = notificationBuilder.build();
-        this.notification.when = System.currentTimeMillis();
-        this.notification.flags |= Notification.FLAG_NO_CLEAR; 
+        Notification notification = notificationBuilder.build();
+        notification.when = System.currentTimeMillis();
+        notification.flags |= Notification.FLAG_NO_CLEAR; 
         
+        NotificationManager notificationManager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
+
         // ID allows you to update the notification later on.
-        this.notificationManager.notify(NOTIFICATION_ID, this.notification);
+        notificationManager.notify(NOTIFICATION_ID, notification);
     }
 
     /**
@@ -264,6 +265,25 @@ public class MotivatorAlarmService extends Service {
             // dist = convertMetersToYards(dist);
             // }
 
+            AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);         
+            Intent intent = new Intent(WeatherServiceReceiver.WEATHER_SERVICE_ACTION);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(MotivatorAlarmService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            Calendar triggerTime = Calendar.getInstance();
+            triggerTime.setTimeInMillis(System.currentTimeMillis());
+            alarmManager.setRepeating(AlarmManager.RTC, triggerTime.getTimeInMillis(), WEATHER_INTERVAL_SECONDS * 1000, pendingIntent);
+
+            intent = new Intent(PlacesServiceReceiver.PLACES_SERVICE_ACTION);
+            pendingIntent = PendingIntent.getBroadcast(MotivatorAlarmService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            triggerTime = Calendar.getInstance();
+            triggerTime.setTimeInMillis(System.currentTimeMillis());
+            alarmManager.setRepeating(AlarmManager.RTC, triggerTime.getTimeInMillis(), PLACES_INTERVAL_SECONDS * 1000, pendingIntent);
+            
+            int latitude = (int)(location.getLatitude() * MILLION);
+            int longitude = (int)(location.getLongitude() * MILLION);            
+            editor.putInt(getString(R.string.last_latitude_e6), latitude);
+            editor.putInt(getString(R.string.last_longitude_e6), longitude);
+            editor.commit();
+
             
             boolean isNice = MotivatorAlarmService.this.preferences.getBoolean(getString(R.string.nice_weather), true);
             if(isNice) {
@@ -274,11 +294,7 @@ public class MotivatorAlarmService extends Service {
             }
 //            sendNotification(getApplicationContext(), "Bus Stop: " + "name", 1234 + " " + proximityUnit + " away", MotivatorMapActivity.class);
             
-            int latitude = (int)(location.getLatitude() * MILLION);
-            int longitude = (int)(location.getLongitude() * MILLION);            
-            editor.putInt(getString(R.string.last_latitude_e6), latitude);
-            editor.putInt(getString(R.string.last_longitude_e6), longitude);
-            editor.commit();
+            
         }
 
         public void onProviderDisabled(String provider) {

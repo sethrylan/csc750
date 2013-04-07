@@ -41,65 +41,41 @@ public class WeatherServiceReceiver extends BroadcastReceiver {
     static final String LOG_TAG = "WeatherServiceReceiver";
     public static final String WEATHER_SERVICE_ACTION = "WEATHER_SERVICE_ACTION";
     private static final float MILLION = 1E6f;
-    private static final int CONNECTION_TIMEOUT_MS = 10000;
+    private static final int CONNECTION_TIMEOUT_MS = 1000;
 
     private Context context;
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
-
+    
     @Override
     public void onReceive(Context context, Intent intent) {
-
         // Alternative to using an ASyncTask, you can run code in the main thread using:
 //        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 //        StrictMode.setThreadPolicy(policy); 
-
+        
         this.context = context;
 
         // initialize preferences references
         this.preferences = PreferenceManager.getDefaultSharedPreferences(context);
-//        this.preferences = this.context.getSharedPreferences(this.context.getString(R.string.shared_preferences), Context.MODE_PRIVATE);
         this.editor = this.preferences.edit();
         
         if(isConnected()) {
-            float lastLatitude = this.preferences.getInt(this.context.getString(R.string.last_latitude_e6), 0) / MILLION;
-            float lastLongitude = this.preferences.getInt(this.context.getString(R.string.last_longitude_e6), 0) / MILLION;
-
-            // create URL in form:
-            // https://api.forecast.io/forecast/key/lat,long
-            String urlString = this.context.getString(R.string.darksky_forecast_root) + "/" + this.context.getString(R.string.darksky_api_key) + "/"
-                    + lastLatitude + "," + lastLongitude;
-            Log.d(LOG_TAG, "url = " + urlString);
-            try {
-                new RetreiveJsonTask().execute(urlString).get(5, TimeUnit.SECONDS);
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (TimeoutException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            
-
-        }
-        
-        String json = preferences.getString(this.context.getString(R.string.weather_json), "");
-
-        if(!json.isEmpty()) {
-            Log.d(LOG_TAG, "JSON = " + JsonUtils.prettyPrint(json).substring(0, Integer.valueOf(context.getString(R.string.json_debug_length))));
-            Forecast forecast = JsonUtils.createFromJson(Forecast.class, json);
-            List<WeatherFactor> factors = getWeatherFactors(forecast);
-            editor.putBoolean(this.context.getString(R.string.nice_weather), factors.size() == 0);
-            editor.putString(this.context.getString(R.string.weather_reason), getWeatherReason(factors));
-            editor.commit();
-        } else {
-            Log.d(LOG_TAG, "JSON was empty.");
+            new RetreiveJsonTask().execute(getUrl());
         }
     }
 
+    
+    private String getUrl() {
+        float lastLatitude = this.preferences.getInt(this.context.getString(R.string.last_latitude_e6), 0) / MILLION;
+        float lastLongitude = this.preferences.getInt(this.context.getString(R.string.last_longitude_e6), 0) / MILLION;
+        // create URL in form:
+        // https://api.forecast.io/forecast/key/lat,long
+        String urlString = this.context.getString(R.string.darksky_forecast_root) + "/" + this.context.getString(R.string.darksky_api_key) + "/"
+                + lastLatitude + "," + lastLongitude;
+        Log.d(LOG_TAG, "url = " + urlString);
+        return urlString;
+    }
+    
     private boolean isConnected() {
         ConnectivityManager cm = (ConnectivityManager)this.context.getSystemService(this.context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = cm.getActiveNetworkInfo();
@@ -170,7 +146,9 @@ public class WeatherServiceReceiver extends BroadcastReceiver {
     }
         
     
-    
+    /**
+     * Any UI access must be in pre/post-execute methods
+     */
     class RetreiveJsonTask extends AsyncTask<String, Void, String> {
         static final String LOG_TAG = "WeatherServiceReceiver.RetreiveJsonTask";
         private Exception exception;
@@ -190,10 +168,27 @@ public class WeatherServiceReceiver extends BroadcastReceiver {
         @Override
         protected void onPostExecute(String json) {
             if(this.exception == null) {
-                editor.putString(WeatherServiceReceiver.this.context.getString(R.string.weather_json), json);
-                editor.commit();
+                if(!json.isEmpty()) {
+                    Log.d(LOG_TAG, "JSON = " + JsonUtils.prettyPrint(json).substring(0, Integer.valueOf(context.getString(R.string.json_debug_length))));
+                    Forecast forecast = JsonUtils.createFromJson(Forecast.class, json);
+                    List<WeatherFactor> factors = getWeatherFactors(forecast);
+                    editor.putBoolean(WeatherServiceReceiver.this.context.getString(R.string.nice_weather), factors.size() == 0);
+                    editor.putString(WeatherServiceReceiver.this.context.getString(R.string.weather_reason), getWeatherReason(factors));
+                    editor.commit();
+                } else {
+                    Log.d(LOG_TAG, "JSON was empty.");
+                }
+                
+                boolean isNice = preferences.getBoolean(context.getString(R.string.nice_weather), true);
+                if(isNice) {
+                    MotivatorAlarmService.sendNotification(context, MotivatorMapActivity.class, "The weather is " + isNice, "Nearest park is ..");
+                } else {
+                    String weatherReason = preferences.getString(context.getString(R.string.weather_reason), "");
+                    MotivatorAlarmService.sendNotification(context, MotivatorMapActivity.class, "The weather is not nice.", weatherReason , "Maybe you should find a gym");
+                }
             }
         }
+        
         
         private String getResponseString(String urlString) {
             String result = "";
@@ -206,7 +201,7 @@ public class WeatherServiceReceiver extends BroadcastReceiver {
                 HttpResponse response = client.execute(new HttpGet(urlString));
                 if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
                     result = EntityUtils.toString(response.getEntity());
-                }
+                }                
             } catch (Exception e) {
                 e.printStackTrace();
                 return result;

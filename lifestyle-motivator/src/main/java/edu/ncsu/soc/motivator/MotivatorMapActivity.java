@@ -165,6 +165,7 @@ public class MotivatorMapActivity extends MapActivity {
         }
     }
 
+    // Alternatively, we could create one OnClickListener, and then check v.getId in a switch statement for button specific behaviour
     private OnClickListener mStartButtonListener = new OnClickListener() {
         public void onClick(View v) {
             ((Button)findViewById(R.id.StartServiceButton)).setEnabled(false);
@@ -172,6 +173,7 @@ public class MotivatorMapActivity extends MapActivity {
 //            intent.putExtra("vibration", true);
             startService(intent);
             ((Button)findViewById(R.id.StopServiceButton)).setEnabled(true);
+            saveButtonState();
         }
     };
     
@@ -180,6 +182,7 @@ public class MotivatorMapActivity extends MapActivity {
             ((Button)findViewById(R.id.StopServiceButton)).setEnabled(false);
             stopService(new Intent(MotivatorMapActivity.this, MotivatorAlarmService.class));
             ((Button)findViewById(R.id.StartServiceButton)).setEnabled(true);
+            saveButtonState();
         }
     };
 
@@ -225,14 +228,14 @@ public class MotivatorMapActivity extends MapActivity {
     public void onStop() {
         super.onStop();
         this.disableLocation();
-        this.saveButtonState();
+//        this.saveButtonState();
     }
     
     @Override
     public void onDestroy() {
         super.onDestroy();
         this.disableLocation();
-        this.saveButtonState();
+//        this.saveButtonState();
     }
     
     /**
@@ -245,6 +248,7 @@ public class MotivatorMapActivity extends MapActivity {
         this.myLocationOverlay.enableCompass();
         this.myLocationOverlay.enableMyLocation();
         // Register the listener with the Location Manager
+        // These updates also refresh the ListView
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, UPDATE_THRESHOLD_MS, UPDATE_THRESHOLD_METERS, this.locationListener);
     }
 
