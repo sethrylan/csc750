@@ -2,9 +2,6 @@ package edu.ncsu.soc.motivator;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -39,9 +36,9 @@ import edu.ncsu.soc.motivator.domain.WeatherFactor;
 public class WeatherServiceReceiver extends BroadcastReceiver {
 
     static final String LOG_TAG = "WeatherServiceReceiver";
-    public static final String WEATHER_SERVICE_ACTION = "WEATHER_SERVICE_ACTION";
+    public static final String ACTION = "WEATHER_SERVICE_ACTION";
     private static final float MILLION = 1E6f;
-    private static final int CONNECTION_TIMEOUT_MS = 1000;
+    private static final int CONNECTION_TIMEOUT_MS = 2000;
 
     private Context context;
     SharedPreferences preferences;
@@ -59,7 +56,7 @@ public class WeatherServiceReceiver extends BroadcastReceiver {
         this.preferences = PreferenceManager.getDefaultSharedPreferences(context);
         this.editor = this.preferences.edit();
         
-        if(isConnected()) {
+        if(isConnected(context)) {
             new RetreiveJsonTask().execute(getUrl());
         }
     }
@@ -76,8 +73,8 @@ public class WeatherServiceReceiver extends BroadcastReceiver {
         return urlString;
     }
     
-    private boolean isConnected() {
-        ConnectivityManager cm = (ConnectivityManager)this.context.getSystemService(this.context.CONNECTIVITY_SERVICE);
+    private static boolean isConnected(Context context) {
+        ConnectivityManager cm = (ConnectivityManager)context.getSystemService(context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = cm.getActiveNetworkInfo();
         if (networkInfo == null || !networkInfo.isConnected()) {
             Log.d(LOG_TAG, "Not connected.");
@@ -103,28 +100,29 @@ public class WeatherServiceReceiver extends BroadcastReceiver {
         double minVisibility = getPreferenceDouble(R.string.min_visibility, R.string.default_min_visibility);
         double maxPrecipProbability = getPreferenceDouble(R.string.max_precip_probability, R.string.default_max_precip_probability);
 
+        Log.d(LOG_TAG, "cloudCover:" + forecast.currently.cloudCover + " > " + maxCloudCover);
+        Log.d(LOG_TAG, "temperature:" + forecast.currently.temperature + " > " + maxTemperature);
+        Log.d(LOG_TAG, "temperature:" + forecast.currently.temperature + " < " + minTemperature);
+        Log.d(LOG_TAG, "windSpeed:" + forecast.currently.windSpeed + " > " + maxWindSpeed);
+        Log.d(LOG_TAG, "visibility:" + forecast.currently.visibility + " < " + minVisibility);
+        Log.d(LOG_TAG, "precipProbability:" + forecast.currently.precipProbability + " > " + maxPrecipProbability);
+
         if(forecast.currently.cloudCover > maxCloudCover) {
-            Log.d(LOG_TAG, "cloudCover:" + forecast.currently.cloudCover + " > " + maxCloudCover);
             factors.add(WeatherFactor.CLOUD);
         }
         if(forecast.currently.temperature > maxTemperature) {
-            Log.d(LOG_TAG, "temperature:" + forecast.currently.temperature + " > " + maxTemperature);
             factors.add(WeatherFactor.TEMPERATURE_HIGH);
         }
         if(forecast.currently.temperature < minTemperature) {
-            Log.d(LOG_TAG, "temperature:" + forecast.currently.temperature + " < " + minTemperature);
             factors.add(WeatherFactor.TEMPERATURE_LOW);
         }
         if(forecast.currently.windSpeed > maxWindSpeed) {
-            Log.d(LOG_TAG, "windSpeed:" + forecast.currently.windSpeed + " > " + maxWindSpeed);
             factors.add(WeatherFactor.WIND);
         }
         if(forecast.currently.visibility < minVisibility) {
-            Log.d(LOG_TAG, "visibility:" + forecast.currently.visibility + " < " + minVisibility);
             factors.add(WeatherFactor.VISIBILITY);
         }
         if(forecast.currently.precipProbability > maxPrecipProbability) {
-            Log.d(LOG_TAG, "precipProbability:" + forecast.currently.precipProbability + " > " + maxPrecipProbability);
             factors.add(WeatherFactor.PRECIPITATION);
         }
         return factors;
@@ -168,6 +166,7 @@ public class WeatherServiceReceiver extends BroadcastReceiver {
         @Override
         protected void onPostExecute(String json) {
             if(this.exception == null) {
+                editor.putLong(WeatherServiceReceiver.this.context.getString(R.string.last_weather_update), System.currentTimeMillis());
                 if(!json.isEmpty()) {
                     Log.d(LOG_TAG, "JSON = " + JsonUtils.prettyPrint(json).substring(0, Integer.valueOf(context.getString(R.string.json_debug_length))));
                     Forecast forecast = JsonUtils.createFromJson(Forecast.class, json);
@@ -177,14 +176,6 @@ public class WeatherServiceReceiver extends BroadcastReceiver {
                     editor.commit();
                 } else {
                     Log.d(LOG_TAG, "JSON was empty.");
-                }
-                
-                boolean isNice = preferences.getBoolean(context.getString(R.string.nice_weather), true);
-                if(isNice) {
-                    MotivatorAlarmService.sendNotification(context, MotivatorMapActivity.class, "The weather is " + isNice, "Nearest park is ..");
-                } else {
-                    String weatherReason = preferences.getString(context.getString(R.string.weather_reason), "");
-                    MotivatorAlarmService.sendNotification(context, MotivatorMapActivity.class, "The weather is not nice.", weatherReason , "Maybe you should find a gym");
                 }
             }
         }

@@ -1,10 +1,6 @@
 package edu.ncsu.soc.motivator;
 
-import java.util.Calendar;
-import java.util.concurrent.TimeUnit;
-
 import edu.ncsu.soc.motivator.R;
-import edu.ncsu.soc.motivator.WeatherServiceReceiver.RetreiveJsonTask;
 
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -12,13 +8,14 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
@@ -38,21 +35,37 @@ public class MotivatorAlarmService extends Service {
     protected SharedPreferences.Editor editor;
 
     private static final int NOTIFICATION_ID = 42;
-    private static final int UPDATE_THRESHOLD_MS = 5000; // milliseconds
-    private static final int UPDATE_THRESHOLD_METERS = 50; // meters
-    private static final int WEATHER_INTERVAL_SECONDS = 30;
-    private static final int PLACES_INTERVAL_SECONDS = 30;
+    private static final int UPDATE_THRESHOLD_MS = 1000 * 60; // milliseconds
+    private static final int UPDATE_THRESHOLD_METERS = 200; // meters
+    public static final int WEATHER_INTERVAL_SECONDS = 30;
+    public static final int PLACES_INTERVAL_SECONDS = 30;
     private static final float MILLION = 1E6f;
 
     private LocationManager locationManager;
     private LocationListener locationListener;
     private NotificationManager notificationManager;
     private Notification notification;
-
-    private String proximityUnit;
     
-    private WeatherServiceReceiver weatherService = null;
-    private PlacesServiceReceiver placesService = null;
+    
+
+    // This is the object that receives interactions from clients.  See
+    // RemoteService for a more complete example.
+    private final IBinder mBinder = new LocalBinder();
+
+
+    /**
+     * @see http://developer.android.com/reference/android/app/Service.html
+     */
+    public class LocalBinder extends Binder {
+        MotivatorAlarmService getService() {
+            return MotivatorAlarmService.this;
+        }
+    }
+    
+    @Override
+    public IBinder onBind(Intent intent) {
+        return mBinder;
+    }
 
 
     /**
@@ -74,39 +87,10 @@ public class MotivatorAlarmService extends Service {
 
         // initialize preferences references
         this.preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-//        this.preferences = getApplicationContext().getSharedPreferences(getString(R.string.shared_preferences), Context.MODE_PRIVATE);
         this.editor = this.preferences.edit();
 
-        AlarmManager alarmManager = (AlarmManager)this.getSystemService(Context.ALARM_SERVICE);         
-        Intent intent = new Intent(WeatherServiceReceiver.WEATHER_SERVICE_ACTION);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        Calendar triggerTime = Calendar.getInstance();
-        triggerTime.setTimeInMillis(System.currentTimeMillis());
-//        triggerTime.add(Calendar.SECOND, INTERVAL_SECONDS);         
-        alarmManager.setRepeating(AlarmManager.RTC, triggerTime.getTimeInMillis(), WEATHER_INTERVAL_SECONDS * 1000, pendingIntent);
-
-        intent = new Intent(PlacesServiceReceiver.PLACES_SERVICE_ACTION);
-        pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        triggerTime = Calendar.getInstance();
-        triggerTime.setTimeInMillis(System.currentTimeMillis());
-//        triggerTime.add(Calendar.SECOND, INTERVAL_SECONDS);         
-        alarmManager.setRepeating(AlarmManager.RTC, triggerTime.getTimeInMillis(), PLACES_INTERVAL_SECONDS * 1000, pendingIntent);
-
-        
-        /*
-         * Registration here equivalent to declarative method in AndroidManifest:
-         *      <receiver android:name=".WeatherServiceReceiver">
-         *           <intent-filter>
-         *               <action android:name="WEATHER_SERVICE_ACTION" />
-         *           </intent-filter>
-         *       </receiver>
-         */
-        this.weatherService = new WeatherServiceReceiver();
-        registerReceiver(this.weatherService, new IntentFilter(WeatherServiceReceiver.WEATHER_SERVICE_ACTION));
-        
-        this.placesService = new PlacesServiceReceiver();
-        registerReceiver(this.placesService, new IntentFilter(PlacesServiceReceiver.PLACES_SERVICE_ACTION));
-
+        this.setRepeatingAlarm(this, WeatherServiceReceiver.ACTION, WEATHER_INTERVAL_SECONDS * 1000);
+        this.setRepeatingAlarm(this, PlacesServiceReceiver.ACTION, PLACES_INTERVAL_SECONDS * 1000);
         
         sendBanner("Starting Lifestyle Motivator Service");
     }
@@ -119,18 +103,9 @@ public class MotivatorAlarmService extends Service {
         super.onDestroy();
         this.locationManager.removeUpdates(this.locationListener);
         this.notificationManager.cancel(NOTIFICATION_ID);
-        
-//        Intent alarmIntent = new Intent(getApplicationContext(), MotivatorMapActivity.class);
-//        PendingIntent pendingIntentAlarm = PendingIntent.getBroadcast(getApplicationContext(), PENDING_INTENT_REQUEST_CODE1, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-//        pendingIntentAlarm.cancel();
-        
-        if(this.weatherService != null) {
-            unregisterReceiver(this.weatherService);
-        }
-        if(this.placesService != null) {
-            unregisterReceiver(this.placesService);
-        }
-
+                
+        this.cancelAlarm(WeatherServiceReceiver.class);
+        this.cancelAlarm(PlacesServiceReceiver.class);
     }
 
     /**
@@ -138,29 +113,7 @@ public class MotivatorAlarmService extends Service {
      */
     @Override
     public void onStart(Intent intent, int startId) {
-
-//        proximity = intent.getIntExtra("proximity", 1);
-        proximityUnit = "meters";
-//        busStop = intent.getParcelableExtra("busstop");
-//        busStop = new BusStop();
-//        busStop.setLatitude(new Double("35.772052"));
-//        busStop.setLongitude(new Double("-78.673718"));
-
-//        Uri ringtoneUri = intent.getParcelableExtra("ringtoneUri");
-//        boolean vibration = intent.getBooleanExtra("vibration", false);
-                
         sendNotification(getApplicationContext(), MotivatorMapActivity.class, "Looking up current conditions", "acquiring current location...");
-
-//        sendNotification(getApplicationContext(), "Bus Stop: " + "busstopname", "acquiring location...", MotivatorMapActivity.class);
-
-//        Intent alarmIntent = new Intent(getApplicationContext(), MotivatorMapActivity.class);
-//        alarmIntent.putExtra("ringtoneUri", ringtoneUri);
-//        alarmIntent.putExtra("vibration", vibration);
-//        PendingIntent pendingIntentAlarm = PendingIntent.getBroadcast(getApplicationContext(), PENDING_INTENT_REQUEST_CODE1, alarmIntent,  PendingIntent.FLAG_CANCEL_CURRENT);
-//        float proximityInput = (float) proximity;
-        // if (proximityUnit.equals("Yards"))
-        // proximityInput = convertYardsToMeters(proximityInput);
-//        lm.addProximityAlert(busStop.getLatitude(), busStop.getLongitude(), proximityInput, -1, pendingIntentAlarm);
     }
 
     private static float yardsToMeters(float yards) {
@@ -169,14 +122,6 @@ public class MotivatorAlarmService extends Service {
 
     private static float metersToYards(float meters) {
         return (float)(meters * 1.0936133);
-    }
-
-    /**
-     * Unneeded abstract method
-     */
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
     }
     
     /**
@@ -256,58 +201,59 @@ public class MotivatorAlarmService extends Service {
          * Updates the current Location and notification.
          */
         public void onLocationChanged(Location location) {
-//            currentLoc = location;
-//            Location target = new Location(location);
-//            target.setLatitude(busStop.getLatitude());
-//            target.setLongitude(busStop.getLongitude());
-//            float dist = currentLoc.distanceTo(target); // in meters
-            // if (proximityUnit.equals("Yards")) {
-            // dist = convertMetersToYards(dist);
-            // }
-
-            AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);         
-            Intent intent = new Intent(WeatherServiceReceiver.WEATHER_SERVICE_ACTION);
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(MotivatorAlarmService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            Calendar triggerTime = Calendar.getInstance();
-            triggerTime.setTimeInMillis(System.currentTimeMillis());
-            alarmManager.setRepeating(AlarmManager.RTC, triggerTime.getTimeInMillis(), WEATHER_INTERVAL_SECONDS * 1000, pendingIntent);
-
-            intent = new Intent(PlacesServiceReceiver.PLACES_SERVICE_ACTION);
-            pendingIntent = PendingIntent.getBroadcast(MotivatorAlarmService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            triggerTime = Calendar.getInstance();
-            triggerTime.setTimeInMillis(System.currentTimeMillis());
-            alarmManager.setRepeating(AlarmManager.RTC, triggerTime.getTimeInMillis(), PLACES_INTERVAL_SECONDS * 1000, pendingIntent);
+            MotivatorAlarmService.this.setRepeatingAlarm(MotivatorAlarmService.this, WeatherServiceReceiver.ACTION, WEATHER_INTERVAL_SECONDS * 1000);
+            MotivatorAlarmService.this.setRepeatingAlarm(MotivatorAlarmService.this, PlacesServiceReceiver.ACTION, PLACES_INTERVAL_SECONDS * 1000);
             
             int latitude = (int)(location.getLatitude() * MILLION);
             int longitude = (int)(location.getLongitude() * MILLION);            
             editor.putInt(getString(R.string.last_latitude_e6), latitude);
             editor.putInt(getString(R.string.last_longitude_e6), longitude);
             editor.commit();
-
-            
-            boolean isNice = MotivatorAlarmService.this.preferences.getBoolean(getString(R.string.nice_weather), true);
-            if(isNice) {
-                sendNotification(getApplicationContext(), MotivatorMapActivity.class, "The weather is " + isNice, "Nearest park is " + 1234 + " " + proximityUnit + " away");
-            } else {
-                String weatherReason = MotivatorAlarmService.this.preferences.getString(getString(R.string.weather_reason), "");
-                sendNotification(getApplicationContext(), MotivatorMapActivity.class, "The weather is not nice.", weatherReason , "Maybe you should find a gym");
-            }
-//            sendNotification(getApplicationContext(), "Bus Stop: " + "name", 1234 + " " + proximityUnit + " away", MotivatorMapActivity.class);
-            
             
         }
 
         public void onProviderDisabled(String provider) {
-
         }
 
         public void onProviderEnabled(String provider) {
-
         }
 
         public void onStatusChanged(String provider, int status, Bundle extras) {
-
         }
     }
+
+//    protected void setRepeatingAlarm(Class<? extends BroadcastReceiver> c, int intervalMilliseconds) {
+//        this.setRepeatingAlarm(this, c, intervalMilliseconds);
+//    }
+    
+    protected void setRepeatingAlarm(Context context, String action, int intervalMilliseconds) {
+        AlarmManager am = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(action);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+        am.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), intervalMilliseconds, pendingIntent);
+    }
+
+//    protected void setRepeatingAlarm(Context context, Class<? extends BroadcastReceiver> c, int intervalMilliseconds) {
+//        AlarmManager am = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+//        Intent intent = new Intent(context, c);
+//        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+//        am.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), intervalMilliseconds, pendingIntent);
+//    }
+    
+    protected void cancelAlarm(Class<? extends BroadcastReceiver> c) {
+        Intent intent = new Intent(this, c);
+        PendingIntent sender = PendingIntent.getBroadcast(this, 0, intent, 0);
+        AlarmManager alarmManager = (AlarmManager)this.getSystemService(Context.ALARM_SERVICE);
+        alarmManager.cancel(sender);
+    }
+
+    /**
+     * @see http://developer.android.com/reference/android/content/SharedPreferences.OnSharedPreferenceChangeListener.html
+     */
+//    @Override
+//    public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, final String key) {
+//        this.setRepeatingAlarm(this, WeatherServiceReceiver.class, WEATHER_INTERVAL_SECONDS * 1000);
+//        Toast.makeText(this, "Updated preferences.", Toast.LENGTH_SHORT).show();
+//    }
 
 }

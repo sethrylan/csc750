@@ -1,58 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-	android:title="Settings">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" android:title="Settings">
 
 	<!-- InputTypes: http://developer.android.com/reference/android/widget/TextView.html#attr_android:inputType -->
 	    
 	<PreferenceCategory android:title="Weather Thresholds">
-		<EditTextPreference android:title="max_temperature"
+		<EditTextPreference android:title="Maximum Temperature (Fahrenheit)"
 			android:inputType="number" 
 			android:key="@string/max_temperature"
-			android:summary="@string/max_temperature" 
+			android:summary="" 
 			android:persistent="true"
 			android:defaultValue="@string/default_max_temperature">
 		</EditTextPreference>
-		<EditTextPreference android:title="min_temperature"
+		<EditTextPreference android:title="Minimum Temperature (Fahrenheit)"
 			android:inputType="number" 
 			android:key="@string/min_temperature"
+            android:summary=""
 			android:persistent="true" 
 			android:defaultValue="@string/default_min_temperature">
 		</EditTextPreference>
-		<EditTextPreference android:title="max_wind"
+		<EditTextPreference android:title="Max Wind Speed (mile/hour)"
             android:inputType="number" 
-            android:key="max_wind"
+            android:key="@string/max_wind"
             android:persistent="true" 
             android:defaultValue="@string/default_max_wind">
         </EditTextPreference>
-		<EditTextPreference android:title="max_cloud_cover"
+		<EditTextPreference android:title="Max Cloud Cover (0.00-1.00)"
             android:inputType="number" 
             android:key="@string/max_cloud_cover"
             android:persistent="true" 
             android:defaultValue="@string/default_max_cloud_cover">
         </EditTextPreference>
-		<EditTextPreference android:title="min_visibility"
+		<EditTextPreference android:title="Minimum Visibility (miles)"
             android:inputType="number" 
             android:key="@string/min_visibility"
             android:persistent="true" 
             android:defaultValue="@string/default_min_visibility">
         </EditTextPreference>
-		<EditTextPreference android:title="max_precip_probability"
+		<EditTextPreference android:title="Maximum Precipitation Probability (0.00-1.00)"
             android:inputType="number" 
             android:key="@string/max_precip_probability"
             android:persistent="true" 
             android:defaultValue="@string/default_max_precip_probability">
         </EditTextPreference>
-		
 	</PreferenceCategory>
-
-
-	<EditTextPreference android:title="Name"
-		android:inputType="text" android:summary="Set your login name here"
-		android:key="name" android:persistent="true" android:defaultValue=""></EditTextPreference>
-	<EditTextPreference android:title="Password"
-		android:inputType="textPassword" android:summary="" android:key="password"
-		android:persistent="true" android:defaultValue=""></EditTextPreference>
-	<CheckBoxPreference android:summary="Auto login on phone boot"
-		android:title="Auto login" android:key="autostart"
-		android:defaultValue="true"></CheckBoxPreference>
 </PreferenceScreen>

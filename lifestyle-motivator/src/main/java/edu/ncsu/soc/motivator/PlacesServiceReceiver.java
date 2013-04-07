@@ -25,9 +25,9 @@ import edu.ncsu.soc.motivator.domain.Nearby;
 public class PlacesServiceReceiver extends BroadcastReceiver {
 
     static final String LOG_TAG = "WeatherServiceReceiver";
-    public static final String PLACES_SERVICE_ACTION = "PLACES_SERVICE_ACTION";
+    public static final String ACTION = "PLACES_SERVICE_ACTION";
     public static final String SENSOR = "true";
-    private static final int CONNECTION_TIMEOUT_MS = 10000;
+    private static final int CONNECTION_TIMEOUT_MS = 2000;
     private static final float MILLION = 1E6f;
     private static final int RADIUS_METERS = 5000;
     
@@ -44,7 +44,7 @@ public class PlacesServiceReceiver extends BroadcastReceiver {
         this.preferences = PreferenceManager.getDefaultSharedPreferences(context);
         this.editor = this.preferences.edit();
         
-        if(isConnected()) {
+        if(isConnected(context)) {
             float lastLatitude = this.preferences.getInt(this.context.getString(R.string.last_latitude_e6), 0) / MILLION;
             float lastLongitude = this.preferences.getInt(this.context.getString(R.string.last_longitude_e6), 0) / MILLION;
 
@@ -58,8 +58,8 @@ public class PlacesServiceReceiver extends BroadcastReceiver {
         }
     }
     
-    private boolean isConnected() {
-        ConnectivityManager cm = (ConnectivityManager)this.context.getSystemService(this.context.CONNECTIVITY_SERVICE);
+    private static boolean isConnected(Context context) {
+        ConnectivityManager cm = (ConnectivityManager)context.getSystemService(context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = cm.getActiveNetworkInfo();
         if (networkInfo == null || !networkInfo.isConnected()) {
             Log.d(LOG_TAG, "Not connected.");
@@ -89,6 +89,7 @@ public class PlacesServiceReceiver extends BroadcastReceiver {
         protected void onPostExecute(String json) {
             if(this.exception == null) {
                 if(!json.isEmpty()) {
+                    editor.putLong(PlacesServiceReceiver.this.context.getString(R.string.last_places_update), System.currentTimeMillis());
                     Log.d(LOG_TAG, "JSON = " + JsonUtils.prettyPrint(json).substring(0, Integer.valueOf(context.getString(R.string.json_debug_length))));
                     editor.putString(PlacesServiceReceiver.this.context.getString(R.string.nearby_json), json);
                     // Nearby nearby = JsonUtils.createFromJson(Nearby.class, json);
@@ -96,19 +97,30 @@ public class PlacesServiceReceiver extends BroadcastReceiver {
                 } else {
                     Log.d(LOG_TAG, "JSON was empty.");
                 }
-
             }
             
+            long lastWeatherUpdate = preferences.getLong(context.getString(R.string.last_weather_update), 0);
+            long lastPlacesUpdate = preferences.getLong(context.getString(R.string.last_places_update), 0);
 
+            boolean isNice = preferences.getBoolean(context.getString(R.string.nice_weather), true);
+            if(lastWeatherUpdate > 0 && lastPlacesUpdate > 0 ) {
+                if(isNice) {
+                    MotivatorAlarmService.sendNotification(context, MotivatorMapActivity.class, "The weather is " + isNice, "Nearest park is " + 1234 + " " + "meters" + " away");
+                } else {
+                    String weatherReason = preferences.getString(context.getString(R.string.weather_reason), "");
+                    MotivatorAlarmService.sendNotification(context, MotivatorMapActivity.class, "The weather is not nice.", weatherReason , "Maybe you should find a gym");
+                }            
+            }
+            
+            // update status text in main activity
+            
         }
         
         private String getResponseString(String urlString) {
             String result = "";
-
             try {
                 HttpParams parameters = new BasicHttpParams();
                 HttpConnectionParams.setConnectionTimeout(parameters, CONNECTION_TIMEOUT_MS);
-
                 HttpClient client = new DefaultHttpClient(parameters);
                 HttpResponse response = client.execute(new HttpGet(urlString));
                 if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
@@ -120,8 +132,6 @@ public class PlacesServiceReceiver extends BroadcastReceiver {
             }
             return result;
         }
-
     }
-
 
 }

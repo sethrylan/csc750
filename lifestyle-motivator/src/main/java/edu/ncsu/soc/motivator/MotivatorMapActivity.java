@@ -67,7 +67,6 @@ public class MotivatorMapActivity extends MapActivity {
         GeoPoint initialGeoPoint = null;
         
         this.preferences = PreferenceManager.getDefaultSharedPreferences(this);
-//        this.preferences = this.getSharedPreferences(getString(R.string.shared_preferences), Context.MODE_PRIVATE);  
         this.editor = this.preferences.edit();
 
         // Retrieve GPS coordinates in form e6 (GeoPoint) form
@@ -79,8 +78,8 @@ public class MotivatorMapActivity extends MapActivity {
             toast.show();
             initialGeoPoint = DEFAULT_GEOPOINT;
             initialLocation = DEFAULT_LOCATION;
-            this.editor.putInt(this.getString(R.string.last_latitude_e6), DEFAULT_GEOPOINT.getLatitudeE6());
-            this.editor.putInt(this.getString(R.string.last_longitude_e6), DEFAULT_GEOPOINT.getLongitudeE6());
+//            this.editor.putInt(this.getString(R.string.last_latitude_e6), DEFAULT_GEOPOINT.getLatitudeE6());
+//            this.editor.putInt(this.getString(R.string.last_longitude_e6), DEFAULT_GEOPOINT.getLongitudeE6());
             this.editor.commit();
         } else {
             initialGeoPoint = new GeoPoint(lastLatitude, lastLongitude);
@@ -145,7 +144,7 @@ public class MotivatorMapActivity extends MapActivity {
         settingsButton.setEnabled(true);
 
     }
-            
+    
     private void saveButtonState() {
         // onRestoreInstanceState is very fickle, but onSaveInstanceState is very consistent.
         // So we save preferences here, and read them in onCreate without a Bundle
@@ -228,16 +227,14 @@ public class MotivatorMapActivity extends MapActivity {
     public void onStop() {
         super.onStop();
         this.disableLocation();
-//        this.saveButtonState();
     }
     
     @Override
     public void onDestroy() {
         super.onDestroy();
         this.disableLocation();
-//        this.saveButtonState();
     }
-    
+        
     /**
      * Called on application start or resume
      */
