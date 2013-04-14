@@ -11,12 +11,11 @@
     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-    xmlns:wn20schema="http://www.w3.org/2006/03/wn/wn20/schema/"
-	xml:base="http://www.w3.org/2006/03/wn/wn20/schema/"
+	xml:base="http://courses.ncsu.edu/csc750/"
     xml:lang="en-US">
 
 	<owl:Ontology rdf:about="">
-		<rdfs:comment>CSC750 Modelling Exercise</rdfs:comment>
+		<rdfs:comment>CSC750 RDF/OWL Modeling Exercise</rdfs:comment>
 	</owl:Ontology>
 
 	<!--===================-->
@@ -31,6 +30,13 @@
 	<owl:Class rdf:ID="AtomicGoal">
 		<owl:disjointWith rdf:resource="#CompositeGoal"/>
 		<rdfs:subClassOf rdf:resource="#Goal"/>
+		<!-- 9. An atomic goal has no decomposition. -->
+		<rdfs:subClassOf>
+			<owl:restriction>
+				<owl:onProperty rdf:resource="#decomposesTo"/>
+				<owl:cardinality rdf:datatype="&xsd;nonNegativeInteger">0</owl:cardinality>
+			</owl:restriction>
+		</rdfs:subClassOf>
 	</owl:Class>
 	<owl:Class rdf:ID="CompositeGoal">
 		<rdfs:subClassOf rdf:resource="#Goal"/>
@@ -44,7 +50,7 @@
 		</rdfs:subClassOf>
 	</owl:Class>
 
-	<!-- 4a. A decomposition of a goal can be an AND-decomposition or an OR-decomposition. -->
+	<!-- 4. A decomposition of a goal can be an AND-decomposition or an OR-decomposition. -->
 	<owl:Class rdf:ID="Decomposition"/>
 	<owl:Class rdf:ID="AND-Decomposition">
 		<owl:disjointWith rdf:resource="#OR-Decomposition"/>
@@ -68,7 +74,8 @@
 	</owl:ObjectProperty>
 	
 	<!-- 1. An actor adopts zero or more goals. -->
-	<!-- 2. A goal is adopted by exactly one actor. -->
+	<!-- 2. A goal is adopted by exactly one actor. 
+		 i.e., for all x,y,z: Adopts(y,x) AND Adopts(z,x) => y = z -->
 	<owl:InverseFunctionalProperty rdf:ID="adopts">
 		<rdfs:domain rdf:resource="#Actor"/>
 		<rdfs:range rdf:resource="#Goal"/>
