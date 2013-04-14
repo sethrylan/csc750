@@ -15,21 +15,45 @@
     xml:lang="en-US">
 
 	<owl:Ontology rdf:about="">
-		<rdfs:comment>CSC750 RDF/OWL Modeling Exercise</rdfs:comment>
+		<rdfs:comment>CSC750 RDF/OWL Modeling Exercise
+		
+		What works with RDF/RDFS:
+			Changing owl:Class to rdfs:Class will allow for declaration and subclassing of #Goal, #CompositeGoal, #AtomicGoal, #Actor, #Decomposition, #AND-Decomposition, #OR-Decomposition, 
+			Changing owl:Property to rdf:Property will allow for declaration and domain/range specification for #involves, #decomposesTo and #adopts.
+		What requires OWL:
+			InverseFunctionalProperty #adopts, cardinalities, disjointedness and #Goal covering axiom.
+		
+		See http://www.infowebml.ws/rdf-owl/Class-owl.htm for differences between owl:Class and rdf:Class.
+		</rdfs:comment>
 	</owl:Ontology>
+	
 
+	
+	
 	<!--===================-->
 	<!--===== Classes =====-->
 	<!--===================-->
-	<!-- see http://www.infowebml.ws/rdf-owl/Class-owl.htm on difference between owl:Class and rdfs:Class -->
+	
 	<owl:Class rdf:ID="Actor"/>
 
-	<!-- 6. A goal can be atomic or composite. -->
-	<!-- 7. A goal can be atomic or composite but not both. -->
-	<owl:Class rdf:ID="Goal"/>
+	<owl:Class rdf:ID="Goal">
+		<!-- 8. A goal must be atomic or composite -->
+		<!--    a.k.a., Covering Axiom             -->
+		<owl:equivalentClass>
+			<owl:Class>
+				<owl:unionOf rdf:parseType="Collection">
+					<owl:Class rdf:about="#AtomicGoal"/>
+					<owl:Class rdf:about="#CompositeGoal"/>
+				</owl:unionOf>
+			</owl:Class>
+		</owl:equivalentClass>
+	</owl:Class>
+	
 	<owl:Class rdf:ID="AtomicGoal">
-		<owl:disjointWith rdf:resource="#CompositeGoal"/>
+		<!-- 6a. A goal can be atomic or composite. -->
 		<rdfs:subClassOf rdf:resource="#Goal"/>
+		<!-- 7a. A goal can be atomic or composite but not both. -->
+		<owl:disjointWith rdf:resource="#CompositeGoal"/>
 		<!-- 9. An atomic goal has no decomposition. -->
 		<rdfs:subClassOf>
 			<owl:restriction>
@@ -38,8 +62,11 @@
 			</owl:restriction>
 		</rdfs:subClassOf>
 	</owl:Class>
+	
 	<owl:Class rdf:ID="CompositeGoal">
+		<!-- 6b. A goal can be atomic or composite. -->
 		<rdfs:subClassOf rdf:resource="#Goal"/>
+		<!-- 7b. A goal can be atomic or composite but not both. -->
 		<owl:disjointWith rdf:resource="#AtomicGoal"/>
 		<!-- 10. A composite goal has at least one decomposition. -->
 		<rdfs:subClassOf>
@@ -52,10 +79,12 @@
 
 	<!-- 4. A decomposition of a goal can be an AND-decomposition or an OR-decomposition. -->
 	<owl:Class rdf:ID="Decomposition"/>
+	
 	<owl:Class rdf:ID="AND-Decomposition">
 		<owl:disjointWith rdf:resource="#OR-Decomposition"/>
 		<rdfs:subClassOf rdf:resource="#Decomposition"/>
 	</owl:Class>
+	
 	<owl:Class rdf:ID="OR-Decomposition">
 		<owl:disjointWith rdf:resource="#AND-Decomposition"/>
 		<rdfs:subClassOf rdf:resource="#Decomposition"/>
@@ -64,8 +93,6 @@
 	<!--===================-->
 	<!--==== Properties ===-->
 	<!--===================-->
-	
-	
 	
 	<!-- 3. A goal can have zero or more decompositions. -->
 	<owl:ObjectProperty rdf:ID="decomposesTo">
