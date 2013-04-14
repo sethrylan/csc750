@@ -18,15 +18,45 @@
 		<rdfs:comment>CSC750 RDF/OWL Modeling Exercise
 		
 		What works with RDF/RDFS:
-			Changing owl:Class to rdfs:Class will allow for declaration and subclassing of #Goal, #CompositeGoal, #AtomicGoal, #Actor, #Decomposition, #AND-Decomposition, #OR-Decomposition, 
-			Changing owl:Property to rdf:Property will allow for declaration and domain/range specification for #involves, #decomposesTo and #adopts.
+			+++ Changing owl:Class to rdfs:Class will allow for declaration and subclassing of #Goal, #CompositeGoal, #AtomicGoal, #Actor, #Decomposition, #AND-Decomposition, #OR-Decomposition, 
+			+++ Changing owl:Property to rdf:Property will allow for declaration and domain/range specification for #involves, #decomposesTo and #adopts.
 		What requires OWL:
-			InverseFunctionalProperty #adopts, cardinalities, disjointedness and #Goal covering axiom.
+			+++ InverseFunctionalProperty #adopts, cardinalities, disjointedness and #Goal covering axiom.
 		
 		See http://www.infowebml.ws/rdf-owl/Class-owl.htm for differences between owl:Class and rdf:Class.
 		</rdfs:comment>
 	</owl:Ontology>
 	
+	
+	<!--===================-->
+	<!--==== Properties ===-->
+	<!--===================-->
+	
+	<!-- 3. A goal can have zero or more decompositions. -->
+	<owl:ObjectProperty rdf:ID="decomposesTo">
+		<rdfs:domain rdf:resource="#Goal"/>
+		<rdfs:range rdf:resource="#Decomposition"/>
+	</owl:ObjectProperty>
+	
+	<!-- 1. An actor adopts zero or more goals. -->
+	<!-- 2. A goal is adopted by exactly one actor. 
+		 i.e., for all x,y,z: Adopts(y,x) AND Adopts(z,x) => y = z -->
+	<owl:InverseFunctionalProperty rdf:ID="adopts">
+		<rdfs:domain rdf:resource="#Actor"/>
+		<rdfs:range rdf:resource="#Goal"/>
+	</owl:InverseFunctionalProperty>
+	
+	<!-- 5. A decomposition of a goal involves one or more goals. -->
+	<owl:ObjectProperty rdf:ID="involves">
+		<rdfs:domain rdf:resource="#Decomposition"/>
+		<rdfs:range rdf:resource="#Goal"/>
+	</owl:ObjectProperty>
+
+	<!--owl:ObjectProperty rdf:ID="adoptedBy">
+		<rdfs:domain rdf:resource="#Goal"/>
+		<rdfs:range rdf:resource="#Actor"/>
+	</owl:ObjectProperty-->
+
 
 	
 	
@@ -77,47 +107,20 @@
 		</rdfs:subClassOf>
 	</owl:Class>
 
-	<!-- 4. A decomposition of a goal can be an AND-decomposition or an OR-decomposition. -->
 	<owl:Class rdf:ID="Decomposition"/>
 	
+	<!-- 4a. A decomposition of a goal can be an AND-decomposition or an OR-decomposition. -->
 	<owl:Class rdf:ID="AND-Decomposition">
+		<rdfs:subClassOf rdf:resource="#Decomposition"/>
 		<owl:disjointWith rdf:resource="#OR-Decomposition"/>
-		<rdfs:subClassOf rdf:resource="#Decomposition"/>
 	</owl:Class>
 	
+	<!-- 4b. A decomposition of a goal can be an AND-decomposition or an OR-decomposition. -->
 	<owl:Class rdf:ID="OR-Decomposition">
-		<owl:disjointWith rdf:resource="#AND-Decomposition"/>
 		<rdfs:subClassOf rdf:resource="#Decomposition"/>
+		<owl:disjointWith rdf:resource="#AND-Decomposition"/>
 	</owl:Class>
 	
-	<!--===================-->
-	<!--==== Properties ===-->
-	<!--===================-->
-	
-	<!-- 3. A goal can have zero or more decompositions. -->
-	<owl:ObjectProperty rdf:ID="decomposesTo">
-		<rdfs:domain rdf:resource="#Goal"/>
-		<rdfs:range rdf:resource="#Decomposition"/>
-	</owl:ObjectProperty>
-	
-	<!-- 1. An actor adopts zero or more goals. -->
-	<!-- 2. A goal is adopted by exactly one actor. 
-		 i.e., for all x,y,z: Adopts(y,x) AND Adopts(z,x) => y = z -->
-	<owl:InverseFunctionalProperty rdf:ID="adopts">
-		<rdfs:domain rdf:resource="#Actor"/>
-		<rdfs:range rdf:resource="#Goal"/>
-	</owl:InverseFunctionalProperty>
-	
-	<!-- 5. A decomposition of a goal involves one or more goals. -->
-	<owl:ObjectProperty rdf:ID="involves">
-		<rdfs:domain rdf:resource="#Decomposition"/>
-		<rdfs:range rdf:resource="#Goal"/>
-	</owl:ObjectProperty>
-
-	<!--owl:ObjectProperty rdf:ID="adoptedBy">
-		<rdfs:domain rdf:resource="#Goal"/>
-		<rdfs:range rdf:resource="#Actor"/>
-	</owl:ObjectProperty-->
 		
 
 </rdf:RDF>
