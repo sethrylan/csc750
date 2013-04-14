@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE rdf:RDF [
+	<!ENTITY rdf  "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+	<!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+	<!ENTITY xsd  "http://www.w3.org/2001/XMLSchema#" >
+	<!ENTITY owl  "http://www.w3.org/2002/07/owl#" >
+]>
+
+<rdf:RDF
+	xmlns     ="&owl;"
+	xmlns:owl ="&owl;"
+	xml:base  ="http://www.w3.org/2002/07/owl"
+	xmlns:rdf ="&rdf;"
+	xmlns:rdfs="&rdfs;"
+>
+	<!--===================-->
+	<!--===== Classes =====-->
+	<!--===================-->
+	<!-- see http://www.infowebml.ws/rdf-owl/Class-owl.htm on difference between owl:Class and rdfs:Class -->
+	<owl:Class rdf:ID="Actor"/>
+
+	<owl:Class rdf:ID="Goal"/>
+	<owl:Class rdf:ID="AtomicGoal">
+		<owl:disjointWith rdf:resource="#CompositeGoal"/>
+		<rdfs:subClassOf rdf:resource="#Goal"/>
+	</owl:Class>
+	<owl:Class rdf:ID="CompositeGoal">
+		<rdfs:subClassOf rdf:resource="#Goal"/>
+		<owl:disjointWith rdf:resource="#AtomicGoal"/>
+		<!--owl:restriction>
+			<owl:onProperty rdf:resource="#decomposesTo"/>
+			<owl:minCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:minCardinality>
+		</owl:restriction-->
+	</owl:Class>
+
+	<owl:Class rdf:ID="Decomposition"/>
+	<owl:Class rdf:ID="AND-Decomposition">
+		<rdfs:subClassOf rdf:resource="#Decomposition"/>
+	</owl:Class>
+	<owl:Class rdf:ID="OR-Decomposition">
+		<rdfs:subClassOf rdf:resource="#Decomposition"/>
+	</owl:Class>
+	
+	<!--===================-->
+	<!--==== Properties ===-->
+	
+	<rdf:Property rdf:ID="decomposesTo"> 
+		<rdfs:label>decomposesTo</rdfs:label>
+		<rdfs:domain rdf:resource="#CompositeGoal"/>
+		<rdfs:range rdf:resource="#Decomposition"/>
+	</rdf:Property>
+
+	<owl:InverseFunctionalProperty rdf:ID="adoptedBy">
+		<rdfs:domain rdf:resource="#Actor"/>
+		<rdfs:range rdf:resource="#Goal"/>
+	</owl:InverseFunctionalProperty>
+		
+
+</rdf:RDF>
