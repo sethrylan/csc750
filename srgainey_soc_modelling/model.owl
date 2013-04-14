@@ -7,12 +7,19 @@
 ]>
 
 <rdf:RDF
-	xmlns     ="&owl;"
-	xmlns:owl ="&owl;"
-	xml:base  ="http://www.w3.org/2002/07/owl"
-	xmlns:rdf ="&rdf;"
-	xmlns:rdfs="&rdfs;"
->
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:wn20schema="http://www.w3.org/2006/03/wn/wn20/schema/"
+	xml:base="http://www.w3.org/2006/03/wn/wn20/schema/"
+    xml:lang="en-US">
+
+
+	<owl:Ontology rdf:about="">
+		<rdfs:comment>CSC750 Modelling Exercise</rdfs:comment>
+	</owl:Ontology>
+
 	<!--===================-->
 	<!--===== Classes =====-->
 	<!--===================-->
@@ -29,7 +36,7 @@
 		<owl:disjointWith rdf:resource="#AtomicGoal"/>
 		<!--owl:restriction>
 			<owl:onProperty rdf:resource="#decomposesTo"/>
-			<owl:minCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:minCardinality>
+			<owl:minCardinality rdf:datatype="&xsd;nonNegativeInteger">2</owl:minCardinality>
 		</owl:restriction-->
 	</owl:Class>
 
@@ -43,13 +50,12 @@
 	
 	<!--===================-->
 	<!--==== Properties ===-->
-	
-	<rdf:Property rdf:ID="decomposesTo"> 
-		<rdfs:label>decomposesTo</rdfs:label>
+	<!--===================-->
+	<owl:ObjectProperty rdf:ID="decomposesTo">
 		<rdfs:domain rdf:resource="#CompositeGoal"/>
 		<rdfs:range rdf:resource="#Decomposition"/>
-	</rdf:Property>
-
+	</owl:ObjectProperty>
+	
 	<owl:InverseFunctionalProperty rdf:ID="adoptedBy">
 		<rdfs:domain rdf:resource="#Actor"/>
 		<rdfs:range rdf:resource="#Goal"/>
