@@ -15,7 +15,6 @@
 	xml:base="http://www.w3.org/2006/03/wn/wn20/schema/"
     xml:lang="en-US">
 
-
 	<owl:Ontology rdf:about="">
 		<rdfs:comment>CSC750 Modelling Exercise</rdfs:comment>
 	</owl:Ontology>
@@ -34,10 +33,12 @@
 	<owl:Class rdf:ID="CompositeGoal">
 		<rdfs:subClassOf rdf:resource="#Goal"/>
 		<owl:disjointWith rdf:resource="#AtomicGoal"/>
-		<!--owl:restriction>
-			<owl:onProperty rdf:resource="#decomposesTo"/>
-			<owl:minCardinality rdf:datatype="&xsd;nonNegativeInteger">2</owl:minCardinality>
-		</owl:restriction-->
+		<rdfs:subClassOf>
+			<owl:restriction>
+				<owl:onProperty rdf:resource="#decomposesTo"/>
+				<owl:minCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:minCardinality>
+			</owl:restriction>
+		</rdfs:subClassOf>
 	</owl:Class>
 
 	<owl:Class rdf:ID="Decomposition"/>
@@ -55,6 +56,18 @@
 		<rdfs:domain rdf:resource="#CompositeGoal"/>
 		<rdfs:range rdf:resource="#Decomposition"/>
 	</owl:ObjectProperty>
+	
+	<owl:ObjectProperty rdf:ID="adopts">
+		<rdfs:domain rdf:resource="#Actor"/>
+		<rdfs:range rdf:resource="#Goal"/>
+	</owl:ObjectProperty>
+	
+	<owl:ObjectProperty rdf:ID="involves">
+		<rdfs:domain rdf:resource="#Decomposition"/>
+		<rdfs:range rdf:resource="#Goal"/>
+	</owl:ObjectProperty>
+
+	
 	
 	<owl:InverseFunctionalProperty rdf:ID="adoptedBy">
 		<rdfs:domain rdf:resource="#Actor"/>
